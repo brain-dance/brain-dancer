@@ -1,0 +1,22 @@
+{
+  "name": "brain-dancer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brain-dance/brain-dancer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brain-dance/brain-dancer/issues"
+  },
+  "homepage": "https://github.com/brain-dance/brain-dancer#readme",
+  "dependencies": {
+    "@tensorflow-models/posenet": "^2.2.0"
+  }
+}
