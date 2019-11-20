@@ -6,15 +6,8 @@
 //   objectOfThisOneFrame[point.part] = keypoints[point.part]
 // })
 
-var video = document.getElementsByTagName(video);
-
-// const getPermission = async () => {
-//   const permission = await navigator.mediaDevices.getUserMedia();
-//   return permission;
-// };
+var video = document.querySelector('#video');
 if (navigator.mediaDevices.getUserMedia) {
-  console.log(navigator);
-  console.log(navigator.mediaDevices);
   navigator.mediaDevices
     .getUserMedia({video: true})
     .then(function(stream) {
