@@ -10,25 +10,15 @@
       defer
       src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"
     ></script>
-    <script src="../brain/posenet.js"></script>
+    <script defer src="../brain/posenet.js"></script>
   </head>
   <body>
-    <video
-      id="video"
-      playsinline
-      style=" -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    outline: 1px solid black;
-    width: 640px;
-    height: 360px;
-    "
-    ></video>
+    <video id="video" playsinline autoplay="true"></video>
     <canvas
       id="output"
       style="position: absolute; top: 0; left: 0; z-index: 1; outline: 1px dashed red;width: 640px;
       height: 360px; margin: 8px;"
     ></canvas>
+    <p>Hi Jennie</p>
   </body>
 </html>
