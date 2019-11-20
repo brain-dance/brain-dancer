@@ -1,10 +1,13 @@
 import 'babel-polyfill';
-import tf from '@tensorflow/tfjs-node';
-import posenet from '@tensorflow-models/posenet';
-// const posenet = require('@tensorflow-models/posenet');
+// import tf from '@tensorflow/tfjs-node';
+// import {posenet} from '@tensorflow-models/posenet';
 
-const videoWidth = window.innerWidth || 640;
-const videoHeight = window.innerHeight || 360;
+const posenet = require('@tensorflow-models/posenet');
+
+console.log(posenet);
+
+const videoWidth = 640;
+const videoHeight = 360;
 
 export let handsKeyPoints;
 export let leftHandPosition;
@@ -17,7 +20,7 @@ async function setupCamera() {
     );
   }
 
-  const video = document.getElementById('video');
+  const video = document.querySelector('#video');
   video.width = videoWidth;
   video.height = videoHeight;
 
