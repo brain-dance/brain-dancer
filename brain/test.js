@@ -3,6 +3,7 @@
 // const tf = require('@tensorflow/tfjs-node');
 const posenet = require('@tensorflow-models/posenet');
 // console.log(typeof tf);
+console.log(posenet.scalePose.toString());
 // console.log(posenet.getAdjacentKeyPoints.toString());
 
 // {
