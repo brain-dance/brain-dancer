@@ -4,8 +4,6 @@ import 'babel-polyfill';
 
 const posenet = require('@tensorflow-models/posenet');
 
-console.log(posenet);
-
 const videoWidth = 640;
 const videoHeight = 360;
 
@@ -41,7 +39,7 @@ async function setupCamera() {
 let net;
 
 let poseNetConfig = {
-  algorithm: 'single-pose', //other option: multi-pose
+  algorithm: 'single-pose', //two options: single-pose or multi-pose
   input: {
     architecture: 'MobileNetV1',
     outputStride: 16,
@@ -61,6 +59,57 @@ let poseNetConfig = {
 };
 
 //call getWireframe function (something from ./wireframe.js) that pulls keypoints from posenet read, and returns an object
+
+const color = 'aqua';
+const lineWidth = 2;
+
+function toTuple({y, x}) {
+  return [y, x];
+}
+
+function drawPoint(ctx, y, x, r, color) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
+  ctx.beginPath();
+  ctx.moveTo(ax * scale, ay * scale);
+  ctx.lineTo(bx * scale, by * scale);
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+}
+
+function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+  const adjacentKeypoints = posenet.getAdjacentKeyPoints(
+    keypoints,
+    minConfidence
+  );
+
+  adjacentKeypoints.forEach(keypoints => {
+    drawSegment(
+      toTuple(keypoints[0].position),
+      toTuple(keypoints[1].position),
+      color,
+      scale,
+      ctx
+    );
+  });
+}
+
+function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
+  for (let i = 0; i < keypoints.length; i++) {
+    const keypoint = keypoints[i];
+    if (keypoint.score < minConfidence) {
+      continue;
+    }
+    const {y, x} = keypoint.position;
+    drawPoint(ctx, y * scale, x * scale, 3, color);
+  }
+}
 
 function getLeftHand(keypoints) {
   for (var i = 0; i < keypoints.length; i++) {
@@ -112,6 +161,7 @@ function detectPoseInRealTime(video, net) {
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
+    //draw the video onto the canvas from streaming webcam
     if (poseNetConfig.output.showVideo) {
       ctx.save();
       ctx.scale(-1, 1);
@@ -120,12 +170,15 @@ function detectPoseInRealTime(video, net) {
       ctx.restore();
     }
 
+    //loop through each pose and overlay wireframe skeleton
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
         if (poseNetConfig.output.showPoints) {
-          handsKeyPoints = keypoints;
-          leftHandPosition = getLeftHand(keypoints);
-          rightHandPosition = getRightHand(keypoints);
+          // handsKeyPoints = keypoints;
+          // leftHandPosition = getLeftHand(keypoints);
+          // rightHandPosition = getRightHand(keypoints);
+          drawKeypoints(keypoints, minPartConfidence, ctx);
+          drawSkeleton(keypoints, minPartConfidence, ctx);
         }
       }
     });
@@ -163,5 +216,4 @@ navigator.getUserMedia =
   navigator.webkitGetUserMedia ||
   navigator.mozGetUserMedia;
 
-// console.log(net);
 init();
