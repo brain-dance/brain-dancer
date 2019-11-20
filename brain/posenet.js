@@ -1,4 +1,7 @@
+import 'babel-polyfill';
+import tf from '@tensorflow/tfjs-node';
 import posenet from '@tensorflow-models/posenet';
+// const posenet = require('@tensorflow-models/posenet');
 
 const videoWidth = window.innerWidth || 640;
 const videoHeight = window.innerHeight || 360;
@@ -130,7 +133,7 @@ function detectPoseInRealTime(video, net) {
   poseDetectionFrame();
 }
 
-export async function init() {
+async function init() {
   // We load the model.
   net = await posenet.load({
     architecture: poseNetConfig.input.architecture,
