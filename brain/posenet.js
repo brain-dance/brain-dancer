@@ -44,7 +44,7 @@ let poseNetConfig = {
     architecture: 'MobileNetV1',
     outputStride: 16,
     inputResolution: {width: 640, height: 360},
-    multiplier: 0.75,
+    multiplier: 1,
     quantBytes: 2
   },
   singlePoseDetection: {
@@ -111,21 +111,21 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
   }
 }
 
-function getLeftHand(keypoints) {
-  for (var i = 0; i < keypoints.length; i++) {
-    if (keypoints[i].part === 'leftWrist') {
-      return keypoints[i].position;
-    }
-  }
-}
+// function getLeftHand(keypoints) {
+//   for (var i = 0; i < keypoints.length; i++) {
+//     if (keypoints[i].part === 'leftWrist') {
+//       return keypoints[i].position;
+//     }
+//   }
+// }
 
-function getRightHand(keypoints) {
-  for (var i = 0; i < keypoints.length; i++) {
-    if (keypoints[i].part === 'rightWrist') {
-      return keypoints[i].position;
-    }
-  }
-}
+// function getRightHand(keypoints) {
+//   for (var i = 0; i < keypoints.length; i++) {
+//     if (keypoints[i].part === 'rightWrist') {
+//       return keypoints[i].position;
+//     }
+//   }
+// }
 
 function detectPoseInRealTime(video, net) {
   const canvas = document.getElementById('output');
@@ -152,6 +152,7 @@ function detectPoseInRealTime(video, net) {
           decodingMethod: 'single-person'
         });
         poses = poses.concat(pose);
+        console.log('TCL: poseDetectionFrame -> poses', poses);
         minPoseConfidence = +poseNetConfig.singlePoseDetection
           .minPoseConfidence;
         minPartConfidence = +poseNetConfig.singlePoseDetection
