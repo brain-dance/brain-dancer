@@ -18,10 +18,12 @@
   "homepage": "https://github.com/brain-dance/brain-dancer#readme",
   "dependencies": {
     "@tensorflow-models/posenet": "^2.2.0",
-    "@tensorflow/tfjs": "^1.3.2",
     "@tensorflow/tfjs-node": "^1.3.2",
-    "babel-polyfill": "^6.26.0",
-    "recordrtc": "^5.5.8"
+    "recordrtc": "^5.5.8",
+    "canvas": "^2.6.0",
+    "path": "^0.12.7",
+    "@tensorflow/tfjs": "^1.3.2",
+    "babel-polyfill": "^6.26.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
