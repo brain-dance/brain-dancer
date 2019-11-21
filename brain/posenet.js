@@ -4,8 +4,8 @@ import 'babel-polyfill';
 
 const posenet = require('@tensorflow-models/posenet');
 
-const videoWidth = 640;
-const videoHeight = 360;
+const videoWidth = 720;
+const videoHeight = 480;
 
 export let handsKeyPoints;
 export let leftHandPosition;
