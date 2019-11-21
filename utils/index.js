@@ -48,6 +48,24 @@ const canvasify = async (imagePath, width = 600, height = 400) => {
   });
 };
 
+const labelPose = pose => {
+  const labeled = pose.keypoints.reduce((all, point) => {
+    all[point.part] = point.position;
+    return all;
+  }, {});
+
+  labeled.head = {
+    x: (labeled.leftEye.x + labeled.nose.x + labeled.rightEye.x) / 3,
+    y: (labeled.leftEye.y + labeled.nose.y + labeled.rightEye.y) / 3
+  };
+
+  delete labeled.leftEye;
+  delete labeled.rightEye;
+  delete labeled.nose;
+
+  return labeled;
+};
+
 const ANGLES = {
   leftKnee: {left: 'leftAnkle', right: 'leftHip', label: 'LAnkleLKneeLHip'},
   leftHip: [
@@ -79,15 +97,10 @@ const ANGLES = {
   }
 };
 
-const labelPose = pose =>
-  pose.keypoints.reduce((all, point) => {
-    all[point.part] = point.position;
-    return all;
-  }, {});
-
 const getAngles = pose => {
   const labeled = labelPose(pose);
-  return labeled.reduce((angles, point) => {
+  const angles = {};
+  for (const point in labeled) {
     if (ANGLES[point.part] && ANGLES.length) {
       ANGLES[point.part].forEach(vertex => {
         const {left, right, label} = vertex;
@@ -110,11 +123,39 @@ const getAngles = pose => {
         labeled[right].x,
         labeled[right].y
       );
+    } else if (point.part === 'leftEar') {
+      angles.head = angle(
+        labeled.leftEar.x,
+        labeled.leftEar.y,
+        labeled.leftEar.x + 10,
+        labeled.leftEar.y,
+        labeled.rightEar.x,
+        labeled.rightEar.y
+      );
     }
-  }, {});
+  }
+
+  return angles;
 };
 
-const angleDifferences = (pose, targetPose) => {};
+const angleDifferences = (pose, targetPose) => {
+  // if poses are not labeled
+  if (pose.score) pose = labelPose(pose);
+  if (targetPose.score) targetPose = labelPose(targetPose);
+
+  const poseAngles = getAngles(pose);
+  const targetAngles = getAngles(targetPose);
+
+  const differences = {};
+
+  for (const angle in poseAngles) {
+    if (Object.prototype.hasOwnProperty.call(poseAngles, angle)) {
+      differences[angle] = poseAngles[angle] - targetAngles[angle];
+    }
+  }
+
+  return differences;
+};
 
 module.exports = {
   canvasify,
