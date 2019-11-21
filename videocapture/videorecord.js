@@ -1,6 +1,3 @@
-const videojs = require('video.js');
-const RecordRTC = require('recordrtc');
-
 var options = {
   controls: true,
   width: 720,
@@ -13,7 +10,7 @@ var options = {
     record: {
       audio: true,
       video: true,
-      maxLength: 30,
+      maxLength: 10,
       debug: true
     }
   }

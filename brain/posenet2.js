@@ -1,12 +1,16 @@
 import 'babel-polyfill';
 // import tf from '@tensorflow/tfjs-node';
+// import {posenet} from '@tensorflow-models/posenet';
 
 const posenet = require('@tensorflow-models/posenet');
 
 const videoWidth = 720;
 const videoHeight = 480;
 
-//camera setup: get from DOM, set source to stream from webcam
+export let handsKeyPoints;
+export let leftHandPosition;
+export let rightHandPosition;
+
 async function setupCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     throw new Error(
@@ -18,6 +22,7 @@ async function setupCamera() {
   video.width = videoWidth;
   video.height = videoHeight;
 
+  console.log('vid', video);
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -25,15 +30,17 @@ async function setupCamera() {
       height: videoHeight
     }
   });
+  console.log('stream', stream);
   video.srcObject = stream;
 
+  console.log('srcObj', video.srcObject);
   return new Promise(resolve => {
     video.onloadedmetadata = () => resolve(video);
   });
 }
 
-//config: algorithm, accuracy, output
 let net;
+
 let poseNetConfig = {
   algorithm: 'single-pose', //two options: single-pose or multi-pose
   input: {
@@ -132,7 +139,7 @@ function detectPoseInRealTime(video, net) {
           decodingMethod: 'single-person'
         });
         poses = poses.concat(pose);
-        // console.log('TCL: poseDetectionFrame -> poses', poses);
+        console.log('TCL: poseDetectionFrame -> poses', poses);
         minPoseConfidence = +poseNetConfig.singlePoseDetection
           .minPoseConfidence;
         minPartConfidence = +poseNetConfig.singlePoseDetection
@@ -176,12 +183,13 @@ async function init() {
     multiplier: poseNetConfig.input.multiplier,
     quantBytes: poseNetConfig.input.quantBytes
   });
-
+  console.log(net);
   let video;
 
   try {
+    console.log('init');
     video = await setupCamera();
-    
+    console.log('is the camera set up');
     video.play();
   } catch (e) {
     throw e;
