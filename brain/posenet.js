@@ -29,6 +29,7 @@ async function setupCamera() {
       height: videoHeight
     }
   });
+
   video.srcObject = stream;
 
   return new Promise(resolve => {
@@ -127,6 +128,9 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
 //   }
 // }
 
+//global wireframes array
+let wireframes = [];
+
 function detectPoseInRealTime(video, net) {
   const canvas = document.getElementById('output');
   const ctx = canvas.getContext('2d');
@@ -151,8 +155,10 @@ function detectPoseInRealTime(video, net) {
           flipHorizontal: flipPoseHorizontal,
           decodingMethod: 'single-person'
         });
+        //ISSUE: POSES ARR NOT CONCATENATING POSE ARRAY
         poses = poses.concat(pose);
-        console.log('TCL: poseDetectionFrame -> poses', poses);
+        //push pose arr to wireframes (makes frame key of {} in line 194)
+        wireframes.push(pose);
         minPoseConfidence = +poseNetConfig.singlePoseDetection
           .minPoseConfidence;
         minPartConfidence = +poseNetConfig.singlePoseDetection
@@ -184,10 +190,14 @@ function detectPoseInRealTime(video, net) {
       }
     });
 
-    requestAnimationFrame(poseDetectionFrame);
+    //add frame to pose object
+    let frame = requestAnimationFrame(poseDetectionFrame);
+    poses.forEach(pose => {
+      pose.frame = frame;
+    });
   }
-
   poseDetectionFrame();
+  return wireframes;
 }
 
 async function init() {
@@ -210,6 +220,8 @@ async function init() {
   }
 
   detectPoseInRealTime(video, net);
+  //wireframes becomes array of arrays
+  console.log('Wireframes: ', wireframes);
 }
 
 navigator.getUserMedia =
