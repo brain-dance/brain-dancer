@@ -1,12 +1,12 @@
 import 'babel-polyfill';
 // import tf from '@tensorflow/tfjs-node';
-// import {posenet} from '@tensorflow-models/posenet';
 
 const posenet = require('@tensorflow-models/posenet');
 
 const videoWidth = 720;
 const videoHeight = 480;
 
+//camera setup: get from DOM, set source to stream from webcam
 async function setupCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     throw new Error(
@@ -15,6 +15,9 @@ async function setupCamera() {
   }
 
   const video = document.querySelector('#video');
+  video.width = videoWidth;
+  video.height = videoHeight;
+
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -22,17 +25,15 @@ async function setupCamera() {
       height: videoHeight
     }
   });
-
   video.srcObject = stream;
 
-  //it gets to here...
   return new Promise(resolve => {
     video.onloadedmetadata = () => resolve(video);
   });
 }
 
+//config: algorithm, accuracy, output
 let net;
-
 let poseNetConfig = {
   algorithm: 'single-pose', //two options: single-pose or multi-pose
   input: {
@@ -179,17 +180,12 @@ async function init() {
   let video;
 
   try {
-    console.log('net', net);
     video = await setupCamera();
-    console.log('supposedly set up');
-    //video will be 'played' when user clicks button
-    //so maybe video.play() not needed
-    // video.play();
+    video.play();
   } catch (e) {
     throw e;
   }
-  //not getting to this point somehow
-  console.log('detect');
+
   detectPoseInRealTime(video, net);
 }
 
