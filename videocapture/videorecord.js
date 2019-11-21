@@ -1,7 +1,7 @@
 var options = {
   controls: true,
-  width: 720,
-  height: 480,
+  width: 360,
+  height: 240,
   fluid: false,
   controlBar: {
     volumePanel: false

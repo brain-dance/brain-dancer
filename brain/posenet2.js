@@ -4,8 +4,8 @@ import 'babel-polyfill';
 
 const posenet = require('@tensorflow-models/posenet');
 
-const videoWidth = 720;
-const videoHeight = 480;
+const videoWidth = 360;
+const videoHeight = 240;
 
 async function setupCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -14,7 +14,8 @@ async function setupCamera() {
     );
   }
 
-  const video = document.querySelector('#video');
+  console.log('HELLO ARE YOU REBUILDING');
+  const video = document.querySelector('#video_html5_api');
   video.width = videoWidth;
   video.height = videoHeight;
 
@@ -32,7 +33,6 @@ async function setupCamera() {
   console.log('srcObj', video.srcObject);
   return new Promise(resolve => {
     video.onloadedmetadata = () => resolve(video);
-    console.log(video.onloadedmetadata());
   });
 }
 
@@ -43,7 +43,7 @@ let poseNetConfig = {
   input: {
     architecture: 'MobileNetV1',
     outputStride: 16,
-    inputResolution: {width: 640, height: 360},
+    inputResolution: {width: 360, height: 240},
     multiplier: 1,
     quantBytes: 2
   },
@@ -136,7 +136,7 @@ function detectPoseInRealTime(video, net) {
           decodingMethod: 'single-person'
         });
         poses = poses.concat(pose);
-        console.log('TCL: poseDetectionFrame -> poses', poses);
+        // console.log('TCL: poseDetectionFrame -> poses', poses);
         minPoseConfidence = +poseNetConfig.singlePoseDetection
           .minPoseConfidence;
         minPartConfidence = +poseNetConfig.singlePoseDetection
@@ -155,7 +155,7 @@ function detectPoseInRealTime(video, net) {
       ctx.restore();
     }
 
-    //loop through each pose and overlay wireframe skeleton
+    // loop through each pose and overlay wireframe skeleton
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
         if (poseNetConfig.output.showPoints) {
@@ -164,8 +164,12 @@ function detectPoseInRealTime(video, net) {
         }
       }
     });
-
-    requestAnimationFrame(poseDetectionFrame);
+    //add frame to pose object
+    let frame = requestAnimationFrame(poseDetectionFrame);
+    poses.forEach(pose => {
+      pose.frame = frame;
+    });
+    // requestAnimationFrame(poseDetectionFrame);
   }
 
   poseDetectionFrame();
