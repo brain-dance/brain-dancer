@@ -1,1 +1,5 @@
 node_modules
+
+# Parcel related files
+.cache/
+dist/
