@@ -7,10 +7,6 @@ const posenet = require('@tensorflow-models/posenet');
 const videoWidth = 720;
 const videoHeight = 480;
 
-export let handsKeyPoints;
-export let leftHandPosition;
-export let rightHandPosition;
-
 async function setupCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     throw new Error(
@@ -36,6 +32,7 @@ async function setupCamera() {
   console.log('srcObj', video.srcObject);
   return new Promise(resolve => {
     video.onloadedmetadata = () => resolve(video);
+    console.log(video.onloadedmetadata());
   });
 }
 
