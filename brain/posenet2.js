@@ -181,6 +181,7 @@ async function init() {
 
   try {
     video = await setupCamera();
+    
     video.play();
   } catch (e) {
     throw e;

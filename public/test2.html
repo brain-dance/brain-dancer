@@ -15,11 +15,31 @@
     <script defer src="../videocapture/videorecord.js"></script>
   </head>
   <body>
-    <video id="video" playsinline autoplay="true"></video>
+    <video
+      id="video"
+      playsinline
+      autoplay="true"
+      class="video-js vjs-default-skin"
+    >
+      <p class="vjs-no-js">
+        To view this video please enable JavaScript, or consider upgrading to a
+        web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank">
+          supports HTML5 video.
+        </a>
+      </p>
+    </video>
     <canvas
       id="output"
       style="position: absolute; top: 0; left: 0; z-index: 1; width: 720px;
-      height: 480px; margin: 8px;"
+      height: 450px; margin: 8px;"
     ></canvas>
   </body>
 </html>
+
+<!-- <link href="https://vjs.zencdn.net/7.6.0/video-js.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/videojs-record/3.8.0/css/videojs.record.min.css" rel="stylesheet">
+
+  <script src="https://unpkg.com/webrtc-adapter/out/adapter.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-record/3.8.0/videojs.record.min.js"></script> -->
