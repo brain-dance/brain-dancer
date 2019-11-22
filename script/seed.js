@@ -7,7 +7,7 @@ const {
   VideoFrame
 } = require('../server/db/models');
 const db = require('../server/db/db');
-const {green, red, yellowBright} = require('chalk');
+const {green, red} = require('chalk');
 
 const totalSeeds = 100;
 
@@ -41,10 +41,14 @@ const testTeams = [
 //TEST ACCOUNTS - Video
 const testVideos = [
   {
-    url: 'https://www.youtube.com/watch?v=bJ7Ez04B-1k'
+    url:
+      'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mkv',
+    status: 'performance'
   },
   {
-    url: 'https://www.youtube.com/watch?v=10IpwnESAm8'
+    url:
+      'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mkv',
+    status: 'practice'
   }
   //THINK OF EDGE CASES
 ];
@@ -52,19 +56,19 @@ const testVideos = [
 //TEST ACCOUNTS - Video frames
 const testVideoFrames = [
   {
-    framejson: 'videoframe 1 for routine',
+    framejson: 'videoframe 1 for performance',
     frameNumber: 10
   },
   {
-    framejson: 'videoframe 2 for routine',
+    framejson: 'videoframe 2 for performance',
     frameNumber: 100
   },
   {
-    framejson: 'videoframe 1 for practiceVid',
+    framejson: 'videoframe 1 for practice',
     frameNumber: 89
   },
   {
-    framejson: 'videoframe 2 for practiceVid',
+    framejson: 'videoframe 2 for practice',
     frameNumber: 1489
   }
 ];
@@ -72,7 +76,7 @@ const testVideoFrames = [
 //TEST ACCOUNTS - Calibration frame
 const testCalibrations = [
   {
-    framejson: `choreo calibration frame for routine video`
+    framejson: `choreo calibration frame for performance video`
   },
   {framejson: 'dancer calibration frame for practice video'}
 ];
@@ -115,28 +119,28 @@ async function createTestUsers() {
   waltzinMatildas.setVideos(seededVideos);
 
   //Video belongsTo User
-  let [routine, practiceVid] = seededVideos;
-  routine.setUser(choreographer);
-  practiceVid.setUser(choreographer);
+  let [performance, practice] = seededVideos;
+  performance.setUser(choreographer);
+  practice.setUser(choreographer);
 
   //Video hasMany VideoFrames
   let [
-    routineFrame1,
-    routineFrame2,
-    practiceVidFrame1,
-    practiceVidFrame2
+    performanceFrame1,
+    performanceFrame2,
+    practiceFrame1,
+    practiceFrame2
   ] = seededVideoFrames;
 
-  routine.setVideoframes(routineFrame1, routineFrame2);
+  performance.setVideoframes(performanceFrame1, performanceFrame2);
 
-  practiceVid.setVideoframes(practiceVidFrame1, practiceVidFrame2);
+  practice.setVideoframes(practiceFrame1, practiceFrame2);
 
   //Video hasOne CalibrationFrame
-  let [routineCalibration, practiceCalibration] = seededCalibrationFrame;
+  let [performanceCalibration, practiceCalibration] = seededCalibrationFrame;
 
-  routine.setCalibrationFrame = routineCalibration;
+  performance.setCalibrationFrame = performanceCalibration;
 
-  practiceVid.setCalibrationFrame = practiceCalibration;
+  practice.setCalibrationFrame = practiceCalibration;
 }
 
 //CREATE FAKE USERS
@@ -155,7 +159,8 @@ async function createFakeUsers() {
     };
 
     const video = {
-      url: faker.internet.url()
+      url: faker.internet.url(),
+      status: ['performance', 'practice'][Math.round(Math.random())]
     };
 
     const videoFrame = {
