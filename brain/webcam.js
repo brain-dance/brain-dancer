@@ -1,8 +1,6 @@
 import 'babel-polyfill';
-// import tf from '@tensorflow/tfjs-node';
-// import {posenet} from '@tensorflow-models/posenet';
-// const posenet = require('@tensorflow-models/posenet');
 
+//height slightly shorter to accommodate control bar for recording
 const videoWidth = 360;
 const videoHeight = 210;
 
@@ -17,7 +15,7 @@ async function setupCamera() {
   video.width = videoWidth;
   video.height = videoHeight;
 
-  console.log('vid', video);
+  // console.log('vid', video);
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -34,34 +32,16 @@ async function setupCamera() {
 
 let net;
 
-let poseNetConfig = {
-  // algorithm: 'single-pose', //two options: single-pose or multi-pose
-  // input: {
-  //   architecture: 'MobileNetV1',
-  //   outputStride: 16,
-  //   inputResolution: {width: 360, height: 240},
-  //   multiplier: 1,
-  //   quantBytes: 2
-  // },
-  // singlePoseDetection: {
-  //   minPoseConfidence: 0.1,
-  //   minPartConfidence: 0.5
-  // },
+let config = {
   output: {
     showVideo: true,
     showPoints: true
   }
-  // net: null
 };
 
 function detectPoseInRealTime(video, net) {
   const canvas = document.getElementById('output');
   const ctx = canvas.getContext('2d');
-
-  // since images are being fed from a webcam, we want to feed in the
-  // original image and then just flip the keypoints' x coordinates. If instead
-  // we flip the image, then correcting left-right keypoint pairs requires a
-  // permutation on all the keypoints.
 
   canvas.width = videoWidth;
   canvas.height = videoHeight;
@@ -70,7 +50,7 @@ function detectPoseInRealTime(video, net) {
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
     //draw the video onto the canvas from streaming webcam
-    if (poseNetConfig.output.showVideo) {
+    if (config.output.showVideo) {
       ctx.save();
       ctx.scale(-1, 1);
       ctx.translate(-videoWidth, 0);
@@ -84,21 +64,12 @@ function detectPoseInRealTime(video, net) {
 }
 
 async function init() {
-  // We load the model.
-  // net = await posenet.load({
-  //   architecture: poseNetConfig.input.architecture,
-  //   outputStride: poseNetConfig.input.outputStride,
-  //   inputResolution: poseNetConfig.input.inputResolution,
-  //   multiplier: poseNetConfig.input.multiplier,
-  //   quantBytes: poseNetConfig.input.quantBytes
-  // });
-  // console.log(net);
   let video;
 
   try {
     // console.log('init');
     video = await setupCamera();
-    console.log('camera is set up');
+    // console.log('camera is set up');
     video.play();
   } catch (e) {
     throw e;
