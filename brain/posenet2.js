@@ -6,20 +6,29 @@
 const posenet = require('@tensorflow-models/posenet');
 let myWorker;
 let messages = [];
-const videoWidth = 360;
-const videoHeight = 240;
+const videoWidth = 720;
+const videoHeight = 480;
+const canvas = document.getElementById('output');
+const ctx = canvas.getContext('2d');
+ctx.height = videoHeight;
+ctx.width = videoWidth;
+
 const workerCanv = document.createElement('canvas');
-workerCanv.width = videoWidth;
-workerCanv.height = videoHeight;
+workerCanv.width = videoWidth * 2;
+workerCanv.height = videoHeight * 2;
 const wcContext = workerCanv.getContext('2d');
 
-export const sendFrame = video => {
-  wcContext.clearRect(0, 0, workerCanv.width, workerCanv.heigh);
+const thingContainer = document.querySelector('#things');
+thingContainer.appendChild(workerCanv);
+
+export const sendFrame = (video, timestamp) => {
+  wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
-  //console.log(workerCanv.toDataURL());
-  myWorker.postMessage(
-    wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height)
-  );
+  console.log(workerCanv.toDataURL());
+  myWorker.postMessage({
+    image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
+    timestamp: timestamp
+  });
 };
 
 async function setupCamera() {
@@ -83,6 +92,7 @@ function drawPoint(ctx, y, x, r, color) {
 }
 
 function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
+  console.log('draw segment');
   ctx.beginPath();
   ctx.moveTo(ax * scale, ay * scale);
   ctx.lineTo(bx * scale, by * scale);
@@ -92,6 +102,7 @@ function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
 }
 
 function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+  console.log('draw skeleton', keypoints);
   const adjacentKeypoints = posenet.getAdjacentKeyPoints(
     keypoints,
     minConfidence
@@ -119,8 +130,6 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
   }
 }
 
-const canvas = document.getElementById('output');
-const ctx = canvas.getContext('2d');
 export function detectPoseInRealTime(video) {
   canvas.width = videoWidth;
   canvas.height = videoHeight;
@@ -144,10 +153,10 @@ export function detectPoseInRealTime(video) {
     //   // }
     //   // }
     // });
-    requestAnimationFrame(poseDetectionFrame);
+    // requestAnimationFrame(poseDetectionFrame);
   }
 
-  poseDetectionFrame();
+  // poseDetectionFrame();
 }
 
 async function init() {
@@ -157,9 +166,10 @@ async function init() {
 
   myWorker.onmessage = mess => {
     messages.push(mess.data);
-    drawKeypoints(mess.data.keypoints, 0.1, ctx);
-    drawSkeleton(mess.data.keypoints, 0.5, ctx);
-    console.log('received message');
+    ctx.clearRect(0, 0, videoWidth, videoHeight);
+    drawKeypoints(mess.data.pose.keypoints, 0, ctx, 0.75);
+    drawSkeleton(mess.data.pose.keypoints, 0, ctx, 0.75);
+    console.log('received message', mess);
   };
   let video;
 

@@ -10,7 +10,7 @@ let poseNetConfig = {
   input: {
     architecture: 'MobileNetV1',
     outputStride: 16,
-    inputResolution: {width: 360, height: 240},
+    inputResolution: {width: 720, height: 480},
     multiplier: 1,
     quantBytes: 2
   },
@@ -41,15 +41,17 @@ posenet
       try {
         //console.log("MESSAGE RECEIVED");
         // console.log(event);
-        let temp = new ImageData(event.data.data, 360);
+        // let temp = new ImageData(event.data.data, 360);
+        console.log('nnworker', event.data.image);
         net
-          .estimateSinglePose(temp, {
-            flipHorizontal: true,
+          .estimateSinglePose(event.data.image, {
+            flipHorizontal: false,
             decodingMethod: 'single-person'
           })
           .then(result => {
             // console.log("NN result is", result);
-            postMessage(result);
+
+            postMessage({pose: result, timestamp: event.data.timestamp});
           })
           .catch(err =>
             console.log('Inside estimate single pose, error occurred: ', err)

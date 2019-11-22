@@ -20,7 +20,7 @@ var options = {
 };
 
 let recordedData = {name: 'empty'};
-
+const video = document.querySelector('video');
 // apply some workarounds for certain browsers
 // applyVideoWorkaround();
 
@@ -48,8 +48,8 @@ player.on('error', function(element, error) {
 // user clicked the record button and started recording
 player.on('startRecord', function() {
   console.log('started recording!');
-  sendFrame(player);
-  detectPoseInRealTime(player);
+
+  detectPoseInRealTime(video);
 });
 
 // player.on('progressRecord', function() {
@@ -58,6 +58,7 @@ player.on('startRecord', function() {
 
 player.on('timestamp', function() {
   console.log('currently recording', player.currentTimestamp);
+  sendFrame(video);
 });
 
 // user completed recording and stream is available
