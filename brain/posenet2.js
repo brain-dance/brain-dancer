@@ -3,9 +3,21 @@ import 'babel-polyfill';
 // import {posenet} from '@tensorflow-models/posenet';
 
 const posenet = require('@tensorflow-models/posenet');
-
+let myWorker;
+let messages=[];
 const videoWidth = 360;
 const videoHeight = 240;
+const workerCanv=document.createElement('canvas');
+workerCanv.width=videoWidth;
+workerCanv.height=videoHeight;
+const wcContext=workerCanv.getContext('2d');
+
+const sendFrame=video=>{
+  wcContext.clearRect(0, 0, workerCanv.width, workerCanv.heigh);
+  wcContext.drawImage(video, 0, 0);
+  //console.log(workerCanv.toDataURL());
+  myWorker.postMessage(wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height))
+}
 
 async function setupCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -14,12 +26,17 @@ async function setupCamera() {
     );
   }
 
-  console.log('HELLO ARE YOU REBUILDING');
-  const video = document.querySelector('#video_html5_api');
+
+  //console.log('HELLO ARE YOU REBUILDING');
+
+  const video = document.querySelector('video');
+  video.addEventListener('timeupdate', ()=>sendFrame(video));
+  //video.addEventListener("timeupdate", (event)=>console.log(event));
+ // console.log("Theoretically, the video: ", video);
   video.width = videoWidth;
   video.height = videoHeight;
 
-  console.log('vid', video);
+  //console.log('vid', video);
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -110,31 +127,50 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
     drawPoint(ctx, y * scale, x * scale, 3, color);
   }
 }
+function getPoseForWorker(){
 
-function detectPoseInRealTime(video, net) {
+}
+
+
+
+/*function detectPoseInRealTime(video, net) {
   const canvas = document.getElementById('output');
   const ctx = canvas.getContext('2d');
+  canvas.width = videoWidth;
+  canvas.height = videoHeight;
+  
 
+  const otherCanvas=document.querySelector('.video-js canvas');
+  otherCanvas.width = videoWidth;
+  otherCanvas.height = videoHeight;
+  const currctx=otherCanvas.getContext('2d');
+  console.log(video);
+  currctx.drawImage(video, 0, 0)
+  myWorker.postMessage(currctx.getImageData(0, 0, otherCanvas.width, otherCanvas.height));
+  //console.log("My video has", Object.getPrototypeOf(video));
+  //myWorker.postMessage("Attempting to send data to worker");
+  //myWorker.postMessage(canvas.toBlob());
+  
   // since images are being fed from a webcam, we want to feed in the
   // original image and then just flip the keypoints' x coordinates. If instead
   // we flip the image, then correcting left-right keypoint pairs requires a
   // permutation on all the keypoints.
   const flipPoseHorizontal = true;
 
-  canvas.width = videoWidth;
-  canvas.height = videoHeight;
-
+  //ctx.toBlob(myWorker.postMessage)
+  //let temp=ctx.getImageData(0, 0, canvas.width, canvas.height);
+  //myWorker.postMessage(temp.data);
+  //requestAnimationFrame(detectPoseInRealTime);
+}
+  /*
   async function poseDetectionFrame() {
-    let poses = [];
+    /*let poses = [];
     let minPoseConfidence;
     let minPartConfidence;
 
     switch (poseNetConfig.algorithm) {
       case 'single-pose':
-        const pose = await net.estimatePoses(video, {
-          flipHorizontal: flipPoseHorizontal,
-          decodingMethod: 'single-person'
-        });
+        
         poses = poses.concat(pose);
         // console.log('TCL: poseDetectionFrame -> poses', poses);
         minPoseConfidence = +poseNetConfig.singlePoseDetection
@@ -154,7 +190,7 @@ function detectPoseInRealTime(video, net) {
       ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
       ctx.restore();
     }
-
+    
     // loop through each pose and overlay wireframe skeleton
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
@@ -173,18 +209,17 @@ function detectPoseInRealTime(video, net) {
   }
 
   poseDetectionFrame();
-}
+}*/
 
 async function init() {
   // We load the model.
-  net = await posenet.load({
-    architecture: poseNetConfig.input.architecture,
-    outputStride: poseNetConfig.input.outputStride,
-    inputResolution: poseNetConfig.input.inputResolution,
-    multiplier: poseNetConfig.input.multiplier,
-    quantBytes: poseNetConfig.input.quantBytes
-  });
-  console.log(net);
+    
+   myWorker=new Worker('nnworker.js');
+   let count=1;
+   myWorker.onmessage=(mess)=>{
+     messages.push(mess.data);
+     console.log(messages);
+   }
   let video;
 
   try {
@@ -196,7 +231,7 @@ async function init() {
     throw e;
   }
 
-  detectPoseInRealTime(video, net);
+//  detectPoseInRealTime(video, net);
 }
 
 navigator.getUserMedia =
