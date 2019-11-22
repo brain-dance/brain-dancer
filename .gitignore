@@ -10,3 +10,6 @@ bundle.js.map
 
 #Damn .DS_Store
 .DS_Store
+
+#ignore secret
+secrets.js
