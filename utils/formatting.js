@@ -1,6 +1,7 @@
 const {angle} = require('./scaling');
 const {createCanvas, loadImage} = require('canvas');
 const {singlePoseNet} = require('./posenet');
+const sizeOf = require('image-size');
 
 const getPose = async input => {
   const net = await singlePoseNet();
@@ -9,8 +10,10 @@ const getPose = async input => {
   });
 };
 
-const canvasify = async (imagePath, width = 600, height = 400) => {
-  const canvas = await createCanvas(width, height);
+const canvasify = async imagePath => {
+  console.log('canvasing');
+  const dim = sizeOf(imagePath);
+  const canvas = await createCanvas(dim.width, dim.height);
   const ctx = await canvas.getContext('2d');
   return loadImage(imagePath).then(img => {
     ctx.drawImage(img, 0, 0);

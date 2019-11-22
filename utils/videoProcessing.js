@@ -21,24 +21,21 @@ const removeFrames = frameList => {
 const generateWireframes = async videoPath => {
   const net = await singlePoseNet();
   await generateFrames(videoPath);
+  console.log('done generating frames');
 
   const frameList = await glob.sync('./utils/frame*');
-  const lst = [frameList[0], frameList[1], frameList[2]];
-  const poses = await Promise.all(
-    lst.map(frame => {
-      return canvasify(frame).then(canvas =>
-        net
-          .estimateSinglePose(canvas, {
-            flipHorizontal: true
-          })
-          .then(pose => pose)
-      );
-    })
+
+  const wireframes = await Promise.all(
+    frameList.map(frame =>
+      canvasify(frame).then(canvas => net.estimateSinglePose(canvas), {
+        flipHorizontal: true
+      })
+    )
   );
 
   removeFrames(frameList);
 
-  console.log(poses);
+  return wireframes;
 };
 
 const helper = async () => {
@@ -49,5 +46,5 @@ const helper = async () => {
 
 helper();
 
-// generateWireframes('./utils/boop.mp4');
+generateWireframes('./utils/boop.mp4');
 module.exports = {generateWireframes};
