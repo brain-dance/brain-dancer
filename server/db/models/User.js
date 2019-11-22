@@ -24,6 +24,9 @@ const User = db.define('user', {
   // calibrationModel: {
   //   type: Sequelize.STRING
   // },
+  googleId: {
+    type: Sequelize.STRING
+  },
   password: {
     type: Sequelize.STRING,
     allowNull: true,

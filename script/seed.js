@@ -18,6 +18,7 @@ const testUsers = [
     email: 'misty.copeland@dance.com',
     status: 'choreographer',
     // calibrationModel:,
+    googleId: faker.random.uuid(),
     password: '12345'
   },
   {
@@ -25,6 +26,7 @@ const testUsers = [
     email: 'fred.astaire@dance.com',
     status: 'dancer',
     // calibrationModel:,
+    googleId: faker.random.uuid(),
     password: '12345'
   }
   //THINK OF EDGE CASES
@@ -150,6 +152,7 @@ async function createFakeUsers() {
     const user = {
       name: faker.name.findName(),
       email: faker.internet.email(),
+      googleId: faker.random.uuid(),
       password: '12345',
       status: ['choreographer', 'dancer'][Math.round(Math.random())]
     };
