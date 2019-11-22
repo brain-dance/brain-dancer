@@ -3,9 +3,10 @@ import 'babel-polyfill';
 // import {posenet} from '@tensorflow-models/posenet';
 
 const posenet = require('@tensorflow-models/posenet');
+const _ = require('lodash');
 
-const videoWidth = 640;
-const videoHeight = 360;
+const videoWidth = 720;
+const videoHeight = 480;
 
 export let handsKeyPoints;
 export let leftHandPosition;
@@ -43,6 +44,7 @@ let poseNetConfig = {
   algorithm: 'single-pose', //two options: single-pose or multi-pose
   input: {
     architecture: 'MobileNetV1',
+    // architecture: 'ResNet50',
     outputStride: 16,
     inputResolution: {width: 640, height: 360},
     multiplier: 1,
@@ -112,25 +114,10 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
   }
 }
 
-// function getLeftHand(keypoints) {
-//   for (var i = 0; i < keypoints.length; i++) {
-//     if (keypoints[i].part === 'leftWrist') {
-//       return keypoints[i].position;
-//     }
-//   }
-// }
-
-// function getRightHand(keypoints) {
-//   for (var i = 0; i < keypoints.length; i++) {
-//     if (keypoints[i].part === 'rightWrist') {
-//       return keypoints[i].position;
-//     }
-//   }
-// }
-
 //global wireframes array
 let wireframes = [];
 
+//global pose
 function detectPoseInRealTime(video, net) {
   const canvas = document.getElementById('output');
   const ctx = canvas.getContext('2d');
@@ -143,28 +130,31 @@ function detectPoseInRealTime(video, net) {
 
   canvas.width = videoWidth;
   canvas.height = videoHeight;
+  // let i = 0;
 
+  let pose = {score: 0, keypoints: []};
   async function poseDetectionFrame() {
     let poses = [];
     let minPoseConfidence;
     let minPartConfidence;
 
-    switch (poseNetConfig.algorithm) {
-      case 'single-pose':
-        const pose = await net.estimatePoses(video, {
-          flipHorizontal: flipPoseHorizontal,
-          decodingMethod: 'single-person'
-        });
-        //ISSUE: POSES ARR NOT CONCATENATING POSE ARRAY
-        poses = poses.concat(pose);
-        //push pose arr to wireframes (makes frame key of {} in line 194)
-        wireframes.push(pose);
-        minPoseConfidence = +poseNetConfig.singlePoseDetection
-          .minPoseConfidence;
-        minPartConfidence = +poseNetConfig.singlePoseDetection
-          .minPartConfidence;
-        break;
-    }
+    const runPoseNet = async () => {
+      pose = await net.estimatePoses(video, {
+        flipHorizontal: flipPoseHorizontal,
+        decodingMethod: 'single-person'
+      });
+    };
+
+    const throttledRunPoseNet = _.debounce(runPoseNet, 100);
+
+    throttledRunPoseNet();
+
+    //ISSUE: POSES ARR NOT CONCATENATING POSE ARRAY
+    poses = poses.concat(pose);
+    //push pose arr to wireframes (makes frame key of {} in line 194)
+    wireframes.push(pose);
+    minPoseConfidence = +poseNetConfig.singlePoseDetection.minPoseConfidence;
+    minPartConfidence = +poseNetConfig.singlePoseDetection.minPartConfidence;
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
@@ -197,7 +187,7 @@ function detectPoseInRealTime(video, net) {
     });
   }
   poseDetectionFrame();
-  return wireframes;
+  // return wireframes;
 }
 
 async function init() {

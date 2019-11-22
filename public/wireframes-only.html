@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Brain dancer</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"
+    ></script>
+    <script defer src="../brain/posenet.js"></script>
+  </head>
+  <body>
+    <video id="video" playsinline autoplay="true"></video>
+    <canvas
+      id="output"
+      style="position: absolute; top: 0; left: 0; z-index: 1; width: 720px;
+      height: 480px; margin: 8px;"
+    ></canvas>
+  </body>
+</html>
