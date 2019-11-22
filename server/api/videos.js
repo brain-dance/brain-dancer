@@ -5,8 +5,9 @@ module.exports = router;
 //NOTE: Can add gateway middleware (requireLoggedIn, requireOnTeam, requireOwnVideo)
 // /api/videos route
 router.get('/', async (req, res, next) => {
-  //NOTE: Will have to send in userId and/or teamId from thunk [either / or]
-  const {teamId, userId} = req.body;
+  //NOTE: Hardcoded teamId for now; thunk will send in userId and/or teamId
+  // const {teamId, userId} = req.body;
+  const teamId = 1;
   try {
     let videos;
     if (teamId) {
@@ -27,10 +28,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const {id} = req.params;
-    const video = await Video.findByPk({
-      attributes: ['url', 'status'],
-      where: {id: id}
-    });
+    const video = await Video.findByPk(id);
     //NOTE: Sending back the video url + status; not the video file
     res.json(video);
   } catch (err) {
@@ -40,12 +38,18 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const {id} = req.user;
+    //NOTE: Will have req.user eventually via passport
+    // const {id} = req.user;
+    const id = 2;
     //NOTE: Will need thunk to provide teamId
     const {url, status, teamId} = req.body;
-    const video = await Video.create(url, status);
-    video.setUser(id);
-    video.setTeam(teamId);
+    const video = await Video.create({url, status});
+    if (id) {
+      video.setUser(id);
+    }
+    if (teamId) {
+      video.setTeam(teamId);
+    }
     res.status(200).json(video);
     //NOTE: Sends video url + status; doesn't upload to Cloudinary
   } catch (err) {
