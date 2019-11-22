@@ -1,9 +1,9 @@
 const posenet = require('@tensorflow-models/posenet');
 
-console.log("NETWORKER INITIATING");
+console.log('NETWORKER INITIATING');
 
 //init();
-const poses=[];
+const poses = [];
 
 let poseNetConfig = {
   algorithm: 'single-pose', //two options: single-pose or multi-pose
@@ -26,41 +26,43 @@ let poseNetConfig = {
 };
 
 let net;
-posenet.load({
-  architecture: poseNetConfig.input.architecture,
-  outputStride: poseNetConfig.input.outputStride,
-  inputResolution: poseNetConfig.input.inputResolution,
-  multiplier: poseNetConfig.input.multiplier,
-  quantBytes: poseNetConfig.input.quantBytes
-}).then(result=>{
-  //console.log("LOADED")
-  net=result
-  onmessage=(event)=>{
-    try{
-    //console.log("MESSAGE RECEIVED");
-   // console.log(event);
-      let temp=new ImageData(event.data.data, 360)
-    net.estimateSinglePose(temp, {
-    flipHorizontal: true,
-    decodingMethod: 'single-person'
-    
-  }).then(result=>{
-    console.log("NN result is", result);
-    postMessage(result);
-  }).catch(err=>console.log("Inside estimate single pose, error occurred: ", err));
-  //console.log(poses.length)
-  //postMessage(poses);
-}catch(err){
-  console.log("Error in web worker: ", err);
-  console.log("event that threw this error was: ", event)
-}
-};
-console.log("READY");
-})
-
-
-postMessage("Does this message ever get received?")
-
+posenet
+  .load({
+    architecture: poseNetConfig.input.architecture,
+    outputStride: poseNetConfig.input.outputStride,
+    inputResolution: poseNetConfig.input.inputResolution,
+    multiplier: poseNetConfig.input.multiplier,
+    quantBytes: poseNetConfig.input.quantBytes
+  })
+  .then(result => {
+    //console.log("LOADED")
+    net = result;
+    onmessage = event => {
+      try {
+        //console.log("MESSAGE RECEIVED");
+        // console.log(event);
+        let temp = new ImageData(event.data.data, 360);
+        net
+          .estimateSinglePose(temp, {
+            flipHorizontal: true,
+            decodingMethod: 'single-person'
+          })
+          .then(result => {
+            // console.log("NN result is", result);
+            postMessage(result);
+          })
+          .catch(err =>
+            console.log('Inside estimate single pose, error occurred: ', err)
+          );
+        //console.log(poses.length)
+        //postMessage(poses);
+      } catch (err) {
+        console.log('Error in web worker: ', err);
+        console.log('event that threw this error was: ', event);
+      }
+    };
+    console.log('READY');
+  });
 
 /*onMessage=(video)=>{poses.push(net.estimateSinglePose(video, {
   flipHorizontal: flipPoseHorizontal,

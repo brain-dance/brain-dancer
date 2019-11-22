@@ -22,7 +22,7 @@ let recordedData = {name: 'empty'};
 // apply some workarounds for certain browsers
 // applyVideoWorkaround();
 
-var player = videojs('video', options, function() {
+export const player = videojs('video', options, function() {
   // print version information at startup
   var msg =
     'Using video.js ' +
@@ -48,9 +48,9 @@ player.on('startRecord', function() {
   console.log('started recording!');
 });
 
-// player.on('progressRecord', function() {
-//   console.log('currently recording', player.record().getCurrentTime());
-// });
+player.on('progressRecord', function() {
+  console.log('currently recording', player.record().getDuration());
+});
 
 // player.on('timestamp', function() {
 //   console.log('currently recording', player.record().getCurrentTime());

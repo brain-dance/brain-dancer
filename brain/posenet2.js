@@ -1,23 +1,26 @@
 import 'babel-polyfill';
 // import tf from '@tensorflow/tfjs-node';
 // import {posenet} from '@tensorflow-models/posenet';
+import {player} from '../videocapture/videorecord'; //player from recording
 
 const posenet = require('@tensorflow-models/posenet');
 let myWorker;
-let messages=[];
+let messages = [];
 const videoWidth = 360;
 const videoHeight = 240;
-const workerCanv=document.createElement('canvas');
-workerCanv.width=videoWidth;
-workerCanv.height=videoHeight;
-const wcContext=workerCanv.getContext('2d');
+const workerCanv = document.createElement('canvas');
+workerCanv.width = videoWidth;
+workerCanv.height = videoHeight;
+const wcContext = workerCanv.getContext('2d');
 
-const sendFrame=video=>{
+const sendFrame = video => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.heigh);
   wcContext.drawImage(video, 0, 0);
   //console.log(workerCanv.toDataURL());
-  myWorker.postMessage(wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height))
-}
+  myWorker.postMessage(
+    wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height)
+  );
+};
 
 async function setupCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -26,13 +29,16 @@ async function setupCamera() {
     );
   }
 
-
   //console.log('HELLO ARE YOU REBUILDING');
 
   const video = document.querySelector('video');
-  video.addEventListener('timeupdate', ()=>sendFrame(video));
+  player.on('startRecord', function() {
+    video.addEventListener('timeupdate', () => sendFrame(video));
+    detectPoseInRealTime(video);
+  });
+
   //video.addEventListener("timeupdate", (event)=>console.log(event));
- // console.log("Theoretically, the video: ", video);
+  // console.log("Theoretically, the video: ", video);
   video.width = videoWidth;
   video.height = videoHeight;
 
@@ -44,7 +50,7 @@ async function setupCamera() {
       height: videoHeight
     }
   });
-  console.log('stream', stream);
+  // console.log('stream', stream);
   video.srcObject = stream;
 
   console.log('srcObj', video.srcObject);
@@ -52,30 +58,6 @@ async function setupCamera() {
     video.onloadedmetadata = () => resolve(video);
   });
 }
-
-let net;
-
-let poseNetConfig = {
-  algorithm: 'single-pose', //two options: single-pose or multi-pose
-  input: {
-    architecture: 'MobileNetV1',
-    outputStride: 16,
-    inputResolution: {width: 360, height: 240},
-    multiplier: 1,
-    quantBytes: 2
-  },
-  singlePoseDetection: {
-    minPoseConfidence: 0.1,
-    minPartConfidence: 0.5
-  },
-  output: {
-    showVideo: true,
-    showPoints: true
-  }
-  // net: null
-};
-
-//call getWireframe function (something from ./wireframe.js) that pulls keypoints from posenet read, and returns an object
 
 const color = 'aqua';
 const lineWidth = 2;
@@ -127,99 +109,49 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
     drawPoint(ctx, y * scale, x * scale, 3, color);
   }
 }
-function getPoseForWorker(){
 
-}
-
-
-
-/*function detectPoseInRealTime(video, net) {
-  const canvas = document.getElementById('output');
-  const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('output');
+const ctx = canvas.getContext('2d');
+function detectPoseInRealTime(video) {
   canvas.width = videoWidth;
   canvas.height = videoHeight;
-  
 
-  const otherCanvas=document.querySelector('.video-js canvas');
-  otherCanvas.width = videoWidth;
-  otherCanvas.height = videoHeight;
-  const currctx=otherCanvas.getContext('2d');
-  console.log(video);
-  currctx.drawImage(video, 0, 0)
-  myWorker.postMessage(currctx.getImageData(0, 0, otherCanvas.width, otherCanvas.height));
-  //console.log("My video has", Object.getPrototypeOf(video));
-  //myWorker.postMessage("Attempting to send data to worker");
-  //myWorker.postMessage(canvas.toBlob());
-  
-  // since images are being fed from a webcam, we want to feed in the
-  // original image and then just flip the keypoints' x coordinates. If instead
-  // we flip the image, then correcting left-right keypoint pairs requires a
-  // permutation on all the keypoints.
-  const flipPoseHorizontal = true;
-
-  //ctx.toBlob(myWorker.postMessage)
-  //let temp=ctx.getImageData(0, 0, canvas.width, canvas.height);
-  //myWorker.postMessage(temp.data);
-  //requestAnimationFrame(detectPoseInRealTime);
-}
-  /*
   async function poseDetectionFrame() {
-    /*let poses = [];
-    let minPoseConfidence;
-    let minPartConfidence;
-
-    switch (poseNetConfig.algorithm) {
-      case 'single-pose':
-        
-        poses = poses.concat(pose);
-        // console.log('TCL: poseDetectionFrame -> poses', poses);
-        minPoseConfidence = +poseNetConfig.singlePoseDetection
-          .minPoseConfidence;
-        minPartConfidence = +poseNetConfig.singlePoseDetection
-          .minPartConfidence;
-        break;
-    }
-
     ctx.clearRect(0, 0, videoWidth, videoHeight);
 
     //draw the video onto the canvas from streaming webcam
-    if (poseNetConfig.output.showVideo) {
-      ctx.save();
-      ctx.scale(-1, 1);
-      ctx.translate(-videoWidth, 0);
-      ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
-      ctx.restore();
-    }
-    
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.translate(-videoWidth, 0);
+    ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+    ctx.restore();
+
     // loop through each pose and overlay wireframe skeleton
-    poses.forEach(({score, keypoints}) => {
-      if (score >= minPoseConfidence) {
-        if (poseNetConfig.output.showPoints) {
-          drawKeypoints(keypoints, minPartConfidence, ctx);
-          drawSkeleton(keypoints, minPartConfidence, ctx);
-        }
-      }
-    });
-    //add frame to pose object
-    let frame = requestAnimationFrame(poseDetectionFrame);
-    poses.forEach(pose => {
-      pose.frame = frame;
-    });
-    // requestAnimationFrame(poseDetectionFrame);
+    // poses.forEach(({score, keypoints}) => {
+    //   // if (score >= minPoseConfidence) {
+    //   //   if (poseNetConfig.output.showPoints) {
+    //   drawKeypoints(keypoints, minPartConfidence, ctx);
+    //   drawSkeleton(keypoints, minPartConfidence, ctx);
+    //   // }
+    //   // }
+    // });
+    requestAnimationFrame(poseDetectionFrame);
   }
 
   poseDetectionFrame();
-}*/
+}
 
 async function init() {
   // We load the model.
-    
-   myWorker=new Worker('nnworker.js');
-   
-   myWorker.onmessage=(mess)=>{
-     messages.push(mess.data);
-   //  console.log(messages);
-   }
+
+  myWorker = new Worker('nnworker.js');
+
+  myWorker.onmessage = mess => {
+    messages.push(mess.data);
+    drawKeypoints(mess.data.keypoints, 0.1, ctx);
+    drawSkeleton(mess.data.keypoints, 0.5, ctx);
+    // console.log(messages);
+  };
   let video;
 
   try {
@@ -231,7 +163,7 @@ async function init() {
     throw e;
   }
 
-//  detectPoseInRealTime(video, net);
+  //  detectPoseInRealTime(video, net);
 }
 
 navigator.getUserMedia =
