@@ -1,36 +1,7 @@
-const posenet = require('@tensorflow-models/posenet');
 const {angle} = require('./scaling');
 const {createCanvas, loadImage} = require('canvas');
-
-const singlePoseNet = () => {
-  let poseNetConfig = {
-    algorithm: 'single-pose', //other option: multi-pose
-    input: {
-      architecture: 'MobileNetV1',
-      outputStride: 16,
-      inputResolution: {width: 640, height: 360},
-      multiplier: 0.75,
-      quantBytes: 2
-    },
-    singlePoseDetection: {
-      minPoseConfidence: 0.1,
-      minPartConfidence: 0.5
-    },
-    output: {
-      showVideo: true,
-      showPoints: true
-    }
-  };
-  return posenet
-    .load({
-      architecture: poseNetConfig.input.architecture,
-      outputStride: poseNetConfig.input.outputStride,
-      inputResolution: poseNetConfig.input.inputResolution,
-      multiplier: poseNetConfig.input.multiplier,
-      quantBytes: poseNetConfig.input.quantBytes
-    })
-    .then(net => net);
-};
+const {singlePoseNet} = require('./posenet');
+const sizeOf = require('image-size');
 
 const getPose = async input => {
   const net = await singlePoseNet();
@@ -39,8 +10,10 @@ const getPose = async input => {
   });
 };
 
-const canvasify = async (imagePath, width = 600, height = 400) => {
-  const canvas = await createCanvas(width, height);
+const canvasify = async imagePath => {
+  console.log('canvasing');
+  const dim = sizeOf(imagePath);
+  const canvas = await createCanvas(dim.width, dim.height);
   const ctx = await canvas.getContext('2d');
   return loadImage(imagePath).then(img => {
     ctx.drawImage(img, 0, 0);
