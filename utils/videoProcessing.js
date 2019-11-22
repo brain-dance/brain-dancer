@@ -1,7 +1,6 @@
 const extractFrames = require('ffmpeg-extract-frames');
 const {canvasify} = require('./formatting');
 const {singlePoseNet} = require('./posenet');
-
 const fs = require('fs');
 const glob = require('glob');
 
