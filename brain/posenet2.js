@@ -1,7 +1,7 @@
-import 'babel-polyfill';
+// import 'babel-polyfill';
 // import tf from '@tensorflow/tfjs-node';
 // import {posenet} from '@tensorflow-models/posenet';
-import {player} from '../videocapture/videorecord'; //player from recording
+// import {player} from '../videocapture/videorecord'; //player from recording
 
 const posenet = require('@tensorflow-models/posenet');
 let myWorker;
@@ -13,7 +13,7 @@ workerCanv.width = videoWidth;
 workerCanv.height = videoHeight;
 const wcContext = workerCanv.getContext('2d');
 
-const sendFrame = video => {
+export const sendFrame = video => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.heigh);
   wcContext.drawImage(video, 0, 0);
   //console.log(workerCanv.toDataURL());
@@ -30,12 +30,21 @@ async function setupCamera() {
   }
 
   //console.log('HELLO ARE YOU REBUILDING');
-
+  // let recordingListener;
   const video = document.querySelector('video');
-  player.on('startRecord', function() {
-    video.addEventListener('timeupdate', () => sendFrame(video));
-    detectPoseInRealTime(video);
-  });
+  console.log('this is a video', video);
+  // player.on('startRecord', function() {
+  //   console.log('start record');
+  //   recordingListener = video.addEventListener('timeupdate', () =>
+  //     sendFrame(video)
+  //   );
+  //   detectPoseInRealTime(video);
+  // });
+
+  // player.on('finishRecord', function() {
+  //   console.log('finish record');
+  //   video.removeEventListener('timeupdate', recordingListener);
+  // });
 
   //video.addEventListener("timeupdate", (event)=>console.log(event));
   // console.log("Theoretically, the video: ", video);
@@ -112,7 +121,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
 
 const canvas = document.getElementById('output');
 const ctx = canvas.getContext('2d');
-function detectPoseInRealTime(video) {
+export function detectPoseInRealTime(video) {
   canvas.width = videoWidth;
   canvas.height = videoHeight;
 
@@ -150,7 +159,7 @@ async function init() {
     messages.push(mess.data);
     drawKeypoints(mess.data.keypoints, 0.1, ctx);
     drawSkeleton(mess.data.keypoints, 0.5, ctx);
-    // console.log(messages);
+    console.log('received message');
   };
   let video;
 

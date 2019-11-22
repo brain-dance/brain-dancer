@@ -1,3 +1,5 @@
+import {sendFrame, detectPoseInRealTime} from '../brain/posenet2';
+
 var options = {
   controls: true,
   width: 360,
@@ -11,7 +13,7 @@ var options = {
       audio: true,
       video: true,
       maxLength: 10,
-      // timeSlice: 10, //necessary for timestamp
+      timeSlice: 1000, //necessary for timestamp
       debug: true
     }
   }
@@ -46,15 +48,17 @@ player.on('error', function(element, error) {
 // user clicked the record button and started recording
 player.on('startRecord', function() {
   console.log('started recording!');
+  sendFrame(player);
+  detectPoseInRealTime(player);
 });
 
-player.on('progressRecord', function() {
-  console.log('currently recording', player.record().getDuration());
-});
-
-// player.on('timestamp', function() {
-//   console.log('currently recording', player.record().getCurrentTime());
+// player.on('progressRecord', function() {
+//   console.log('currently recording', player.record().getDuration());
 // });
+
+player.on('timestamp', function() {
+  console.log('currently recording', player.currentTimestamp);
+});
 
 // user completed recording and stream is available
 player.on('finishRecord', function() {
