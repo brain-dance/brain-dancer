@@ -1,3 +1,7 @@
+// const videojs = require('video.js');
+// const RecordRTC = require('recordrtc');
+// const videojsRecord = require()
+
 var options = {
   controls: true,
   width: 360,
@@ -11,6 +15,7 @@ var options = {
       audio: true,
       video: true,
       maxLength: 10,
+      // timeSlice: 10, //necessary for timestamp
       debug: true
     }
   }
@@ -45,9 +50,21 @@ player.on('startRecord', function() {
   console.log('started recording!');
 });
 
+// player.on('progressRecord', function() {
+//   console.log('currently recording', player.record().getCurrentTime());
+// });
+
+// player.on('timestamp', function() {
+//   console.log('currently recording', player.record().getCurrentTime());
+// });
+
 // user completed recording and stream is available
 player.on('finishRecord', function() {
   // the blob object contains the recorded data that
   // can be downloaded by the user, stored on server etc.
+  // debugger;
+  console.log(player.record().getRecordType());
+  player.record().saveAs();
   console.log('finished recording: ', player.recordedData);
+  console.log('more recording info: ', player.recordedData);
 });
