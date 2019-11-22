@@ -9,6 +9,13 @@ const Video = db.define('video', {
       notEmpty: true,
       isUrl: true
     }
+  },
+  status: {
+    type: Sequelize.ENUM(['performance', 'practice']),
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   }
 });
 
