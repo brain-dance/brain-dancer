@@ -21,6 +21,7 @@ var options = {
   }
 };
 
+let recordedData = {name: 'empty'};
 // apply some workarounds for certain browsers
 // applyVideoWorkaround();
 
@@ -63,26 +64,27 @@ player.on('finishRecord', function() {
   // the blob object contains the recorded data that
   // can be downloaded by the user, stored on server etc.
   // debugger;
-  player.record().saveAs({video: 'video-name.webm'});
+  // player.record().saveAs({video: 'video-name.webm'});
   console.log('finished recording: ', player.recordedData);
-  var data = player.recordedData;
-  var serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
-  var formData = new FormData();
-  const timestamp = Date.now();
-  formData.append('file', data, data.name);
-  formData.append('upload_preset', 'acrhvgee');
-  // formData.append('api_key', '827834286977223');
-  // formData.append('timestamp', timestamp);
-  // formData.append('signature', `timestamp=${timestamp}`);
+  recordedData = player.recordedData;
+  // var data = player.recordedData;
+  // var serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
+  // var formData = new FormData();
+  // const timestamp = Date.now();
+  // formData.append('file', data, data.name);
+  // formData.append('upload_preset', 'acrhvgee');
+  // // formData.append('api_key', '827834286977223');
+  // // formData.append('timestamp', timestamp);
+  // // formData.append('signature', `timestamp=${timestamp}`);
 
-  console.log('uploading recording:', formData.file);
+  // console.log('uploading recording:', formData.file);
 
-  fetch(serverUrl, {
-    method: 'POST',
-    body: formData
-  })
-    .then(success => console.log('recording upload complete.'))
-    .catch(error => console.error('an upload error occurred!'));
+  // fetch(serverUrl, {
+  //   method: 'POST',
+  //   body: formData
+  // })
+  //   .then(success => console.log('recording upload complete.'))
+  //   .catch(error => console.error('an upload error occurred!'));
 });
 
 player.on('startConvert', function() {
@@ -92,3 +94,27 @@ player.on('startConvert', function() {
 player.on('finishConvert', function() {
   console.log('finish convert', player.convertedData);
 });
+
+function upload() {
+  // this upload handler is served using webpack-dev-server for
+  // this example, see build-config/fragments/dev.js
+  var serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
+  var data = recordedData;
+  var formData = new FormData();
+  formData.append('file', data, data.name);
+  formData.append('upload_preset', 'acrhvgee');
+  console.log('upload recording ' + data.name + ' to ' + serverUrl);
+  // start upload
+  fetch(serverUrl, {
+    method: 'POST',
+    body: formData
+  })
+    .then(success => console.log('upload recording complete.'))
+    .catch(error => console.error('an upload error occurred!'));
+}
+
+const uploadButton = document.getElementById('upload');
+uploadButton.addEventListener('click', () => {
+  upload();
+});
+// uploadButton.onclick = upload();
