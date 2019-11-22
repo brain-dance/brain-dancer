@@ -26,10 +26,18 @@
     "crypto": "^1.0.1",
     "faker": "^4.1.0",
     "sequelize": "^5.21.2"
+    "canvas": "^2.6.0",
+    "lodash": "^4.17.15",
+    "path": "^0.12.7",
+    "recordrtc": "^5.5.8",
+    "video-js": "^0.7.0",
+    "videojs": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/preset-react": "^7.7.0",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "video.js": "^7.6.6",
+    "videojs-record": "^3.8.0"
   }
 }
