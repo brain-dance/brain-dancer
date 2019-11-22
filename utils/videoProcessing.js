@@ -1,5 +1,5 @@
 const extractFrames = require('ffmpeg-extract-frames');
-const {canvasify, getPose} = require('./formatting');
+const {canvasify} = require('./formatting');
 const {singlePoseNet} = require('./posenet');
 
 const fs = require('fs');
@@ -38,13 +38,4 @@ const generateWireframes = async videoPath => {
   return wireframes;
 };
 
-const helper = async () => {
-  const frameList = await glob.sync('./utils/frame*');
-
-  removeFrames(frameList);
-};
-
-helper();
-
-generateWireframes('./utils/boop.mp4');
 module.exports = {generateWireframes};
