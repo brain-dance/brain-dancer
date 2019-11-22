@@ -87,17 +87,7 @@ player.on('finishRecord', function() {
   //   .catch(error => console.error('an upload error occurred!'));
 });
 
-player.on('startConvert', function() {
-  console.log('start convert');
-});
-
-player.on('finishConvert', function() {
-  console.log('finish convert', player.convertedData);
-});
-
 function upload() {
-  // this upload handler is served using webpack-dev-server for
-  // this example, see build-config/fragments/dev.js
   var serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
   var data = recordedData;
   var formData = new FormData();
@@ -117,4 +107,12 @@ const uploadButton = document.getElementById('upload');
 uploadButton.addEventListener('click', () => {
   upload();
 });
-// uploadButton.onclick = upload();
+
+function download() {
+  player.record().saveAs({video: 'video-name.webm'});
+}
+
+const downloadButton = document.getElementById('download');
+downloadButton.addEventListener('click', () => {
+  download();
+});
