@@ -215,10 +215,10 @@ async function init() {
   // We load the model.
     
    myWorker=new Worker('nnworker.js');
-   let count=1;
+   
    myWorker.onmessage=(mess)=>{
      messages.push(mess.data);
-     console.log(messages);
+   //  console.log(messages);
    }
   let video;
 
