@@ -6,6 +6,7 @@ import history from '../history';
  */
 const GET_USER = 'GET_USER';
 const REMOVE_USER = 'REMOVE_USER';
+const UPDATED_USER = 'UPDATED_USER';
 
 /**
  * INITIAL STATE
@@ -53,6 +54,15 @@ export const logout = () => async dispatch => {
     history.push('/login');
   } catch (err) {
     console.error(err);
+  }
+};
+
+export const updateMe = user => async dispatch => {
+  try {
+    const {data} = await axios.put(`/api/users/${user.id}`, user);
+    dispatch(getUser(data));
+  } catch (err) {
+    console.log(err);
   }
 };
 
