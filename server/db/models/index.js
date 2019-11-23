@@ -1,23 +1,40 @@
 const User = require('./user');
 const Team = require('./team');
+const UserTeam = require('./UserTeam');
 const CalibrationFrame = require('./calibrationframe');
-const Video = require('./video');
 const VideoFrame = require('./videoframe');
+const Routine = require('./routine');
+const Practice = require('./practice');
+const Assignment = require('./assignment');
 
-User.belongsToMany(Team, {through: 'userteams'});
+//Assignment
+User.hasMany(Assignment);
+Assignment.belongsTo(Routine); //and therefore one choreographer
 
-Team.belongsToMany(User, {through: 'userteams'});
-User.belongsToMany(Team, {through: 'userteams'});
-Team.hasMany(Video);
+//Team
+User.belongsToMany(Team, {through: UserTeam});
+Team.belongsToMany(User, {through: UserTeam});
+Team.hasMany(Routine);
 
-Video.belongsTo(User);
-Video.belongsTo(Team);
-Video.hasMany(VideoFrame);
-Video.hasOne(CalibrationFrame);
+//Routine
+Routine.belongsTo(User); //choreographer
+Routine.belongsTo(Team);
+Routine.hasMany(VideoFrame);
+Routine.hasOne(CalibrationFrame);
+CalibrationFrame.belongsTo(Routine);
+
+//Practice
+Practice.belongsTo(User); //dancer
+Practice.belongsTo(Routine);
+Practice.hasMany(VideoFrame);
+Practice.hasOne(CalibrationFrame);
+CalibrationFrame.belongsTo(Practice);
 
 module.exports = {
-  Video,
+  Routine,
+  Practice,
   VideoFrame,
+  UserTeam,
   Team,
   CalibrationFrame,
   User

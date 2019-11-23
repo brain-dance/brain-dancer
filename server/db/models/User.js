@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const db = require('../db');
 const crypto = require('crypto');
 
+//add profile image
+
 const User = db.define('user', {
   name: {
     type: Sequelize.STRING,
@@ -10,6 +12,7 @@ const User = db.define('user', {
       notEmpty: true
     }
   },
+
   email: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -17,9 +20,6 @@ const User = db.define('user', {
     validate: {
       isEmail: true
     }
-  },
-  status: {
-    type: Sequelize.ENUM(['choreographer', 'dancer'])
   },
   // calibrationModel: {
   //   type: Sequelize.STRING
@@ -47,6 +47,14 @@ const User = db.define('user', {
     get() {
       return () => this.getDataValue('salt');
     }
+  },
+  imgUrl: {
+    type: Sequelize.STRING,
+    validate: {
+      isUrl: true
+    },
+    defaultValue:
+      'https://d26oc3sg82pgk3.cloudfront.net/files/media/edit/image/30578/square_thumb%402x.jpg'
   }
 });
 
