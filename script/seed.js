@@ -32,9 +32,23 @@ const testUsers = [
 
 //TEST ACCOUNTS - Team
 const testTeams = [
-  {name: "Waltzin' Matildas"},
-  {name: 'Twinkle Toes'},
-  {name: 'TipTop HipHop'}
+  {
+    name: "Waltzin' Matildas",
+    description:
+      'Australian troupe committed to spreading the love of this ballad to the rest of the world.',
+    category: 'Wango'
+  },
+  {
+    name: 'Twinkle Toes',
+    description:
+      'Ballerinas with a passion for glitter and adapting Hollywood musicals for the ballet.',
+    category: 'Ballet'
+  },
+  {
+    name: 'TipTop HipHop',
+    description: 'We are all about hip hop.',
+    category: 'Hip hop'
+  }
   //THINK OF EDGE CASES
 ];
 
@@ -155,7 +169,11 @@ async function createFakeUsers() {
     };
 
     const team = {
-      name: faker.lorem.word() + ' ' + faker.lorem.word()
+      name: faker.lorem.word() + ' ' + faker.lorem.word(),
+      description: faker.lorem.sentence(),
+      category: ['ballet', 'hip hop', 'wango', 'tap', 'contemporary'][
+        Math.round(Math.random())
+      ]
     };
 
     const video = {
