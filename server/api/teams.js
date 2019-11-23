@@ -14,32 +14,25 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+//get team by id
 router.get('/:id', async (req, res, next) => {
   try {
     const {id} = req.params;
-    const video = await Video.findByPk(id);
-    //NOTE: Sending back the video url + status; not the video file
-    res.json(video);
+    const team = await Team.findByPk(id);
+    res.json(team);
   } catch (err) {
     next(err);
   }
 });
 
+//add new team
 router.post('/', async (req, res, next) => {
   try {
     //NOTE: Will have req.user eventually via passport
     // const {id} = req.user;
-    const id = 2;
-    //NOTE: Will need thunk to provide teamId
-    const {url, status, teamId} = req.body;
-    const video = await Video.create({url, status});
-    if (id) {
-      video.setUser(id);
-    }
-    if (teamId) {
-      video.setTeam(teamId);
-    }
-    res.status(200).json(video);
+    const {name, description, category} = req.body;
+    const newTeam = await Team.create({name, description, category});
+    res.status(200).json(newTeam);
     //NOTE: Sends video url + status; doesn't upload to Cloudinary
   } catch (err) {
     next(err);
