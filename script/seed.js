@@ -149,38 +149,29 @@ async function createTestUsers() {
     userId: 2,
     teamId: 3
   });
-  // await waltzinMatildas.setUser(choreographer);
-  // await waltzinMatildas.setUsers(dancer);
-
-  // await twinkleToes.setUsers(choreographer);
-  // await tipTopHipHop.setUsers(dancer);
-
-  //Team hasMany Video
-  // waltzinMatildas.setRoutine(seededRoutine);
-  // waltzinMatildas.setPractice(seededPractice);
 
   //Video belongsTo User
   await seededRoutine.setUser(choreographer);
   await seededPractice.setUser(dancer);
 
-  //Video hasMany VideoFrames
-  // let [
-  //   performanceFrame1,
-  //   performanceFrame2,
-  //   practiceFrame1,
-  //   practiceFrame2
-  // ] = seededVideoFrames;
+  //Routine / Practice hasMany VideoFrames
+  let [
+    performanceFrame1,
+    performanceFrame2,
+    practiceFrame1,
+    practiceFrame2
+  ] = seededVideoFrames;
 
-  // await seededRoutine.setVideoframes(performanceFrame1, performanceFrame2);
+  await seededRoutine.setVideoframes([performanceFrame1, performanceFrame2]);
 
-  // await seededPractice.setVideoframes(practiceFrame1, practiceFrame2);
+  await seededPractice.setVideoframes([practiceFrame1, practiceFrame2]);
 
   //Video hasOne CalibrationFrame
-  // let [performanceCalibration, practiceCalibration] = seededCalibrationFrame;
+  let [routineCalibration, practiceCalibration] = seededCalibrationFrame;
 
-  // await seededRoutine.setCalibrationFrame(performanceCalibration);
+  await routineCalibration.setRoutine(seededRoutine);
 
-  // await seededPractice.setCalibrationFrame(practiceCalibration);
+  await practiceCalibration.setPractice(seededPractice);
 }
 
 //CREATE FAKE USERS
@@ -190,22 +181,31 @@ async function createFakeUsers() {
     const user = {
       name: faker.name.findName(),
       email: faker.internet.email(),
-      password: '12345',
-      status: ['choreographer', 'dancer'][Math.round(Math.random())]
+      password: '12345'
     };
 
     const team = {
       name: faker.lorem.word() + ' ' + faker.lorem.word(),
       description: faker.lorem.sentence(),
-      category: ['ballet', 'hip hop', 'wango', 'tap', 'contemporary'][
-        Math.round(Math.random())
-      ]
+      category: [
+        'ballet',
+        'hip hop',
+        'waltz',
+        'tango',
+        'wango',
+        'contemporary'
+      ][Math.round(Math.random())]
     };
 
-    // const video = {
-    //   url: faker.internet.url(),
-    //   status: ['performance', 'practice'][Math.round(Math.random())]
-    // };
+    const routine = {
+      url: faker.internet.url(),
+      title: faker.lorem.word()
+    };
+
+    const practice = {
+      url: faker.internet.url(),
+      title: faker.lorem.word()
+    };
 
     const videoFrame = {
       framejson: faker.lorem.sentence(),
@@ -219,7 +219,8 @@ async function createFakeUsers() {
     await Promise.all([
       User.create(user),
       Team.create(team),
-      // Video.create(video),
+      Routine.create(routine),
+      Practice.create(practice),
       VideoFrame.create(videoFrame),
       CalibrationFrame.create(calibration)
     ]);
@@ -236,7 +237,7 @@ const seedDB = async () => {
 
     let totalTeams = totalSeeds + testTeams.length;
 
-    // let totalVideos = totalSeeds + testVideos.length;
+    let totalVideos = totalSeeds + 2;
 
     let totalVideoFrames = totalSeeds + testVideoFrames.length;
 
@@ -244,7 +245,7 @@ const seedDB = async () => {
 
     console.log(
       green(
-        `...5, 6, 7, 8! Database seeded with ${totalUsers} users, ${totalTeams} teams, videos, ${totalVideoFrames} video frames and ${totalCalibrations} calibrations.`
+        `...5, 6, 7, 8! Database seeded with ${totalUsers} users, ${totalTeams} teams, ${totalVideos} videos, ${totalVideoFrames} video frames and ${totalCalibrations} calibrations.`
       )
     );
   } catch (err) {

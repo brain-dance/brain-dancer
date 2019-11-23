@@ -21,12 +21,14 @@ Routine.belongsTo(User); //choreographer
 Routine.belongsTo(Team);
 Routine.hasMany(VideoFrame);
 Routine.hasOne(CalibrationFrame);
+CalibrationFrame.belongsTo(Routine);
 
 //Practice
 Practice.belongsTo(User); //dancer
 Practice.belongsTo(Routine);
 Practice.hasMany(VideoFrame);
 Practice.hasOne(CalibrationFrame);
+CalibrationFrame.belongsTo(Practice);
 
 module.exports = {
   Routine,
