@@ -3,6 +3,7 @@ module.exports = router;
 
 router.use('/videos', require('./videos'));
 router.use('/users', require('./users'));
+router.use('/teams', require('./teams'));
 
 router.use((req, res, next) => {
   const error = new Error('Not Found');
