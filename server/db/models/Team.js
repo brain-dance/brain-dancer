@@ -8,6 +8,12 @@ const Team = db.define('team', {
     validate: {
       notEmpty: true
     }
+  },
+  description: {
+    type: Sequelize.STRING
+  },
+  category: {
+    type: Sequelize.STRING
   }
 });
 
