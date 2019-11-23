@@ -1,19 +1,19 @@
-import React, {useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {getSingleTeam} from '../store';
+import React from 'react';
+import {withRouter} from 'react-router-dom';
+import {Routines} from './index';
+import Members from './Members';
 
-const TeamHome = props => {
-  const {teamId} = props.match.params;
-  const dispatch = useDispatch();
+const Team = props => {
+  const team = props.team;
+  // const dispatch = useDispatch();
 
-  const users = useSelector(state => state.users);
-  const team = useSelector(state => state.singleTeam);
-
-  useEffect(() => {
-    dispatch(getSingleTeam(teamId));
-  }, []);
-
-  return <h1>Hello</h1>;
+  return (
+    <div id="team">
+      <h1>{team.name}</h1>
+      <Routines routines={team.routines} />
+      <Members members={team.members} />
+    </div>
+  );
 };
 
-export default TeamHome;
+export default withRouter(Team);

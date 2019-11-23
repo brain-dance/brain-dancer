@@ -1,40 +1,80 @@
 import axios from 'axios';
 
-/**
- * ACTION TYPES
- */
-const SET_SINGLE_TEAM = 'SET_SINGLE_TEAM';
+// ACTION CONSTANTS
+const GET_ALL_TEAMS = 'GET_ALL_TEAMS';
+const ADD_TEAM = 'ADD_TEAM';
+const UPDATE_TEAM = 'UPDATE_TEAM';
+const DELETE_TEAM = 'DELETE_TEAM';
 
-/**
- * INTITIAL STATE
- */
-const singleTeam = {};
+// ACTION CREATORS
+const getAllTeams = teams => ({
+  type: GET_ALL_TEAMS,
+  teams
+});
 
-/**
- * ACTION CREATORS
- */
-const setSingleTeam = team => ({SET_SINGLE_TEAM, team});
+const addTeam = team => ({
+  type: ADD_TEAM,
+  team
+});
 
-/**
- * THUNK CREATORS
- */
-export const getSingleTeam = teamId => async dispatch => {
-  try {
-    const {data} = await axios.get(`/team/${teamId}`);
-    dispatch(setSingleTeam(data));
-  } catch (err) {
-    console.error(err);
-  }
+const updateTeam = team => ({
+  type: UPDATE_TEAM,
+  team
+});
+
+const deleteTeam = teamId => ({
+  type: DELETE_TEAM,
+  teamId
+});
+
+// THUNKS
+export const fetchTeams = () => async dispatch => {
+  const {data} = await axios.get('/api/teams');
+  dispatch(getAllTeams(data));
 };
 
-/**
- * REDUCER
- */
-export default (state = singleTeam, action) => {
+export const addTeamThunk = teamBody => async dispatch => {
+  const {data} = await axios.post('/api/teams', teamBody);
+  dispatch(addTeam(data));
+};
+
+export const updateTeamThunk = (teamId, teamBody) => async dispatch => {
+  const {data} = await axios.put(`/api/teams/${teamId}`, teamBody);
+  dispatch(updateTeam(data));
+};
+
+export const deleteTeamThunk = teamId => async dispatch => {
+  await axios.delete(`/api/teams/${teamId}`);
+  dispatch(deleteTeam(teamId));
+};
+
+// INITIAL STATE
+const teams = [];
+
+// REDUCER
+const reducer = (state = teams, action) => {
   switch (action.type) {
-    case SET_SINGLE_TEAM:
-      return action.team;
+    case GET_ALL_TEAMS:
+      return action.teams;
+    case ADD_TEAM:
+      //adds to team AND sets as active team
+      return [...state, action.team];
+    case UPDATE_TEAM:
+      return state.map(team => {
+        if (team.id === +action.team.id) {
+          return action.team;
+        } else {
+          return team;
+        }
+      });
+
+    case DELETE_TEAM:
+      return state.list.filter(team => team.id !== +action.teamId);
+
     default:
       return state;
   }
 };
+
+// EXPORT
+export default reducer;
