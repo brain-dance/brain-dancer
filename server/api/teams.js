@@ -28,18 +28,28 @@ router.get('/:id', async (req, res, next) => {
 //add new team
 router.post('/', async (req, res, next) => {
   try {
-    //NOTE: Will have req.user eventually via passport
-    // const {id} = req.user;
     const {name, description, category} = req.body;
     const newTeam = await Team.create({name, description, category});
     res.status(200).json(newTeam);
-    //NOTE: Sends video url + status; doesn't upload to Cloudinary
   } catch (err) {
     next(err);
   }
 });
 
-//NOTE: May need PUT later but cannot think of where it fits in user stories
+// update team (name, etc)
+router.put('/:id', async (req, res, next) => {
+  try {
+    const {name, description, category} = req.body;
+    await Team.update(
+      {name, description, category},
+      {where: {id: req.params.id}, returning: true}
+    );
+    const updatedTeam = Team.findByPk(req.params.id);
+    res.status(201).json(updatedTeam);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.delete('/:id', async (req, res, next) => {
   try {
