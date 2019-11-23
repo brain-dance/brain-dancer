@@ -38,7 +38,7 @@ router.post('/logout', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/me', async (req, res) => {
+router.get('/me', async (req, res, next) => {
   try {
     const {id} = req.user;
     //updated to include Teams for user profile page
