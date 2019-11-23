@@ -4,7 +4,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width initial-scale=1.0" />
     <title>Braindancer</title>
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
+    />
     <link rel="stylesheet" href="/style.css" />
+    <!--
+    style for video player -->
+    <link
+      href="https://vjs.zencdn.net/7.6.0/video-js.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/videojs-record/3.8.0/css/videojs.record.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- video JS stuff + recording -->
+    <script src="https://vjs.zencdn.net/7.6.0/video.min.js"></script>
+    <script src="https://unpkg.com/recordrtc/RecordRTC.js"></script>
+    <script src="https://unpkg.com/webrtc-adapter/out/adapter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-record/3.8.0/videojs.record.min.js"></script>
+
+    <style>
+      /* change player background color */
+      #video {
+        background-color: #541c6e;
+      }
+    </style>
     <script defer src="/bundle.js"></script>
   </head>
   <body>
