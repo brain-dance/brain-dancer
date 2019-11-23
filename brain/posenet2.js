@@ -10,8 +10,8 @@ const videoWidth = '720px';
 const videoHeight = '480px';
 const canvas = document.getElementById('output');
 const ctx = canvas.getContext('2d');
-ctx.height = videoHeight;
-ctx.width = videoWidth;
+//ctx.height = videoHeight;
+//ctx.width = videoWidth;
 
 const workerCanv = document.getElementById('skellies');
 // skelliesCanvas.width = videoWidth
@@ -29,7 +29,7 @@ const wcContext = workerCanv.getContext('2d');
 export const sendFrame = (video, timestamp) => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
-  console.log(workerCanv.toDataURL());
+  //console.log(workerCanv.toDataURL());
   myWorker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
     timestamp: timestamp
@@ -62,15 +62,15 @@ async function setupCamera() {
 
   //video.addEventListener("timeupdate", (event)=>console.log(event));
   // console.log("Theoretically, the video: ", video);
-  video.width = videoWidth;
-  video.height = videoHeight;
+  //video.width = videoWidth;
+  //video.height = videoHeight;
 
   //console.log('vid', video);
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
-      width: videoWidth,
-      height: videoHeight
+      width: video.width, //videoWidth,
+      height: video.height //videoHeight
     }
   });
   // console.log('stream', stream);
@@ -90,6 +90,7 @@ function toTuple({y, x}) {
 }
 
 function drawPoint(ctx, y, x, r, color) {
+  //console.log(ctx);
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle = color;
@@ -97,7 +98,8 @@ function drawPoint(ctx, y, x, r, color) {
 }
 
 function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
-  console.log('draw segment');
+  //console.log(ctx);
+  //console.log('draw segment');
   ctx.beginPath();
   ctx.moveTo(ax * scale, ay * scale);
   ctx.lineTo(bx * scale, by * scale);
@@ -122,6 +124,7 @@ function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       ctx
     );
   });
+  console.log(canvas.toDataURL())
 }
 
 function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
@@ -136,8 +139,8 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
 }
 
 export function detectPoseInRealTime(video) {
-  canvas.width = videoWidth;
-  canvas.height = videoHeight;
+//  canvas.width = videoWidth;
+  //canvas.height = videoHeight;
 
   async function poseDetectionFrame() {
     ctx.clearRect(0, 0, videoWidth, videoHeight);
@@ -171,7 +174,7 @@ async function init() {
 
   myWorker.onmessage = mess => {
     messages.push(mess.data);
-    ctx.clearRect(0, 0, videoWidth, videoHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawKeypoints(mess.data.pose.keypoints, 0, ctx, 0.75);
     drawSkeleton(mess.data.pose.keypoints, 0, ctx, 0.75);
     console.log('received message', mess);

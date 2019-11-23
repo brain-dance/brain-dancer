@@ -42,7 +42,7 @@ posenet
         //console.log("MESSAGE RECEIVED");
         // console.log(event);
         // let temp = new ImageData(event.data.data, 360);
-        console.log('nnworker', event.data.image);
+        //console.log('nnworker', event.data.image);
         net
           .estimateSinglePose(event.data.image, {
             flipHorizontal: false,
