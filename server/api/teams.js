@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Team} = require('../db/models');
+const {Team, User} = require('../db/models');
 module.exports = router;
 
 // /api/teams route
@@ -51,12 +51,20 @@ router.put('/:id', async (req, res, next) => {
   }
 });
 
+//remove a team (should be admin?)
 router.delete('/:id', async (req, res, next) => {
   try {
+    //check if logged in user is choreographer and belongs on team
+    // const reqUserTeams = await User.findByPk(req.user.id, {include: [{model: Team}]})
+    // const belongsToTeam = reqUserTeams.teams.filter(team=>{
+    //   team.id === req.params.id
+    // })
+    // if (req.user.status === 'choreographer' && belongsToTeam.length > 0)
+    // {
     const {id} = req.params;
-    await Video.destroy({where: {id: id}});
-    //NOTE: This will only delete Postgres entry; not video in Cloudinary
+    await Team.destroy({where: {id: id}});
     res.status(204).end();
+    // }
   } catch (err) {
     next(err);
   }
