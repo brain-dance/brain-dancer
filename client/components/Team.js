@@ -5,7 +5,6 @@ import Members from './Members';
 
 const Team = props => {
   const team = props.team;
-  // const dispatch = useDispatch();
 
   return (
     <div id="team">
