@@ -5,10 +5,16 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import user from './user';
 import teams from './teams';
 import assignment from './assignment';
-import routine from './routine';
+import singleRoutine from './routine';
 import practice from './practice';
 
-const reducer = combineReducers({user, teams, assignment, routine, practice});
+const reducer = combineReducers({
+  user,
+  teams,
+  assignment,
+  singleRoutine,
+  practice
+});
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 );
