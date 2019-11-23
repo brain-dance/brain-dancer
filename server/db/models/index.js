@@ -4,6 +4,8 @@ const CalibrationFrame = require('./calibrationframe');
 const Video = require('./video');
 const VideoFrame = require('./videoframe');
 
+User.belongsToMany(Team, {through: 'userteams'});
+
 Team.belongsToMany(User, {through: 'userteams'});
 User.belongsToMany(Team, {through: 'userteams'});
 Team.hasMany(Video);

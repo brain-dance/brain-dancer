@@ -1,3 +1,5 @@
+// ***** NEED TO CHANGE THIS FILE TO ROUTINES / PRACTICES *****
+
 const router = require('express').Router();
 const {Video} = require('../db/models');
 module.exports = router;
