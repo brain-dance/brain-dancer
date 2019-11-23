@@ -7,6 +7,7 @@ const VideoFrame = require('./videoframe');
 User.belongsToMany(Team, {through: 'userteams'});
 
 Team.belongsToMany(User, {through: 'userteams'});
+User.belongsToMany(Team, {through: 'userteams'});
 Team.hasMany(Video);
 
 Video.belongsTo(User);
