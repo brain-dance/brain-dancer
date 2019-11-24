@@ -11,24 +11,24 @@ const getAssignments = assignments => ({
 
 // thunks
 export const fetchAssignments = () => async dispatch => {
-  const {data} = await axios.get('/api/routines');
+  const {data} = await axios.get('/api/assignments');
   dispatch(getAssignments(data));
 };
 
 // initial state
-const initialState = [
-  {
-    routine: {},
-    team: {},
-    completed: false
-  }
-];
+const initialState = {
+  routine: {},
+  team: {},
+  completed: false
+};
 
 // reducer
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ASSIGNMENTS:
-      return {...state, assignments: action.assignments};
+    ///THIS GOES CONSTANTLY; I"M NOT SURE WHY....
+    // return {...state, assignment: action};
+    // return state;
     default:
       return state;
   }

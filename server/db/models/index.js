@@ -37,5 +37,6 @@ module.exports = {
   UserTeam,
   Team,
   CalibrationFrame,
-  User
+  User,
+  Assignment
 };

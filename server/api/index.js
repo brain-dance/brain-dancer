@@ -6,6 +6,7 @@ router.use('/users', require('./users'));
 router.use('/teams', require('./teams'));
 router.use('/routines', require('./routines'));
 router.use('/practices', require('./practices'));
+router.use('/assignments', require('./assignments'));
 
 router.use((req, res, next) => {
   const error = new Error('Not Found');
