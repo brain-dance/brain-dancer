@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Team, User} = require('../db/models');
+const {Team, User, Routine} = require('../db/models');
 module.exports = router;
 
 // /api/teams route
@@ -8,10 +8,27 @@ module.exports = router;
 router.get('/', async (req, res, next) => {
   try {
     let {id} = req.user;
-    const allTeams = await Team.findAll({
-      include: [{model: User, where: {id: id}}]
+
+    const teamIds = await User.findByPk(id, {
+      include: {model: Team}
+    }).then(user => user.teams.map(team => team.id));
+
+    let allTeams = await Team.findAll({
+      include: [{model: User}, {model: Routine}],
+      where: {
+        id: teamIds
+      }
     });
-    res.json(allTeams);
+
+    allTeams = allTeams.map(team => team.toJSON());
+
+    res.json(
+      allTeams.map(team => {
+        team.members = team.users;
+        delete team.users;
+        return team;
+      })
+    );
   } catch (err) {
     next(err);
   }
