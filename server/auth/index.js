@@ -38,12 +38,16 @@ router.post('/logout', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/me', async (req, res) => {
+router.get('/me', async (req, res, next) => {
   try {
-    const {id} = req.user;
-    //updated to include Teams for user profile page
-    const me = await User.findByPk(id, {include: [Team]});
-    res.json(me);
+    if (!req.user) {
+      res.send({});
+    } else {
+      const {id} = req.user;
+      //updated to include Teams for user profile page
+      const me = await User.findByPk(id, {include: [Team]});
+      res.json(me);
+    }
   } catch (err) {
     next(err);
   }
