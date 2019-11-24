@@ -6,5 +6,6 @@ export {default as Routines} from './Routines';
 export {default as Routine} from './Routine';
 export {default as Members} from './Members';
 export {default as Member} from './Member';
+export {default as Coreo} from './Coreo';
 export {Login, Signup} from './Auth-Form';
 // export {default as RecordPerformance} from './RecordPerformance';

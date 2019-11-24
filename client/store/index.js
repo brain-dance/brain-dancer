@@ -5,7 +5,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import user from './user';
 import teams from './teams';
 import assignment from './assignment';
-import singleRoutine from './routine';
+import singleRoutine from './singleRoutine';
 import practice from './practice';
 
 const reducer = combineReducers({
@@ -23,6 +23,6 @@ const store = createStore(reducer, middleware);
 export default store;
 export * from './user';
 export * from './teams';
-export * from './routine';
+export * from './singleRoutine';
 export * from './practice';
 export * from './assignment';

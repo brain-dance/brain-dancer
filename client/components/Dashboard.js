@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
+import Team from './Team';
 // import Team from './Team';
 
 /**
@@ -33,7 +34,7 @@ export const Dashboard = props => {
         </Grid.Column>
         <Grid.Column width={11}>
           {/* <Team team={selectedTeam} /> */}
-          <h3>Team will go here</h3>
+          <Team team={selectedTeam} />
         </Grid.Column>
       </Grid>
     );
