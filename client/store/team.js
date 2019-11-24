@@ -41,7 +41,6 @@ export const fetchTeams = () => async dispatch => {
 
 export const fetchUserTeams = () => async dispatch => {
   const {data} = await axios.get(`/api/teams`);
-  console.log('Thunk sends back user teams: ', data);
   dispatch(getUserTeams(data));
 };
 

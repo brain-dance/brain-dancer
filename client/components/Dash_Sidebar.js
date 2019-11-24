@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 // import {useDispatch, useSelector} from 'react-redux';
 import {Header, Segment, Grid} from 'semantic-ui-react';
 import TeamList from './TeamList';
+import Assignments from './Assignments';
 
 // import {getUser} from '../store/user';
 
@@ -18,6 +19,8 @@ export const DashSidebar = props => {
   return teams.length ? (
     <div>
       <Header as="h3">Assignments</Header>
+      <Assignments />
+      <br />
       <Grid>
         <Grid.Column width={3}>
           <Header as="h3">Teams</Header>
