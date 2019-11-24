@@ -1,7 +1,6 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-import {Routines} from './index';
-import Members from './Members';
+import {Routines, Members} from './index';
 
 const Team = props => {
   const team = props.team;

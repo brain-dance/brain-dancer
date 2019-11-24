@@ -1,12 +1,9 @@
 import axios from 'axios';
 
 // ACTION CONSTANTS
-<<<<<<< HEAD:client/store/teams.js
 const GET_ALL_TEAMS = 'GET_ALL_TEAMS';
-=======
 const GET_USER_TEAMS = 'GET_USER_TEAMS';
 const GET_SINGLE_TEAM = 'GET_SINGLE_TEAM';
->>>>>>> 361c8d0ba76eaa4cad24012dcaa4d26564aee6b1:client/store/team.js
 const ADD_TEAM = 'ADD_TEAM';
 const UPDATE_TEAM = 'UPDATE_TEAM';
 const DELETE_TEAM = 'DELETE_TEAM';
@@ -40,7 +37,7 @@ export const fetchTeams = () => async dispatch => {
 
 export const fetchUserTeams = () => async dispatch => {
   const {data} = await axios.get(`/api/teams`);
-  console.log('Thunk sends back user teams: ', data);
+
   dispatch(getUserTeams(data));
 };
 
@@ -68,7 +65,7 @@ const reducer = (state = teams, action) => {
     case GET_ALL_TEAMS:
       return action.teams;
     case GET_USER_TEAMS:
-      return  action.teams;
+      return action.teams;
     case GET_SINGLE_TEAM:
       return {...state, activeTeam: action.team};
     case ADD_TEAM:

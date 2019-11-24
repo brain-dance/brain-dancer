@@ -2,12 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
-<<<<<<< HEAD
 import Team from './Team';
-=======
-import {fetchUserTeams} from '../store/team';
->>>>>>> 361c8d0ba76eaa4cad24012dcaa4d26564aee6b1
-// import Team from './Team';
+import {fetchUserTeams} from '../store';
 
 /**
  * COMPONENT
@@ -22,7 +18,7 @@ export const Dashboard = props => {
 
   useEffect(() => {
     dispatch(fetchUserTeams());
-  }, [teams.length]);
+  }, []);
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
