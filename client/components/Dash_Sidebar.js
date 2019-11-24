@@ -4,8 +4,6 @@ import {Header, Segment, Grid} from 'semantic-ui-react';
 import TeamList from './TeamList';
 import Assignments from './Assignments';
 
-// import {getUser} from '../store/user';
-
 export const DashSidebar = props => {
   const {teams, selectedTeam, handleSelectTeam} = props;
   // const {teams} = user;

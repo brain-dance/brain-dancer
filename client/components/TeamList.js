@@ -35,7 +35,7 @@ export const TeamList = props => {
               size="mini"
               src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
             />
-            <Label color="teal">#Routines</Label>
+            <Label color="teal" />
             {team.name}
           </Menu.Item>
         );
