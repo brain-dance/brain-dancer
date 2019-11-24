@@ -4,10 +4,13 @@ module.exports = router;
 
 // /api/teams route
 
-//get all teams
+//get all teams a user belongs to
 router.get('/', async (req, res, next) => {
   try {
-    const allTeams = await Team.findAll();
+    let {id} = req.user;
+    const allTeams = await Team.findAll({
+      include: [{model: User, where: {id: id}}]
+    });
     res.json(allTeams);
   } catch (err) {
     next(err);
