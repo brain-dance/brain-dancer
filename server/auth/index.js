@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../db/models/user');
+const {User, Team} = require('../db/models');
 module.exports = router;
 
 router.post('/login', async (req, res, next) => {
@@ -38,8 +38,19 @@ router.post('/logout', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/me', (req, res) => {
-  res.json(req.user);
+router.get('/me', async (req, res, next) => {
+  try {
+    if (!req.user) {
+      res.send({});
+    } else {
+      const {id} = req.user;
+      //updated to include Teams for user profile page
+      const me = await User.findByPk(id, {include: [Team]});
+      res.json(me);
+    }
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.use('/google', require('./google'));

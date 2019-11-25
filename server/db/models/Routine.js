@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
 
-const Video = db.define('video', {
+const Routine = db.define('routine', {
   url: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -10,13 +10,9 @@ const Video = db.define('video', {
       isUrl: true
     }
   },
-  status: {
-    type: Sequelize.ENUM(['performance', 'practice']),
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
+  title: {
+    type: Sequelize.STRING
   }
 });
 
-module.exports = Video;
+module.exports = Routine;

@@ -83,7 +83,7 @@ function upload() {
     body: formData
   })
     .then(success => console.log('upload recording complete.'))
-    .catch(error => console.error('an upload error occurred!'));
+    .catch(error => console.error('an upload error occurred!', error));
 }
 
 const uploadButton = document.getElementById('upload');
