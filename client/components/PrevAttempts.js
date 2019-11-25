@@ -27,9 +27,6 @@ const Arrow = ({text, className}) => {
 const ArrowLeft = Arrow({text: '<', className: 'arrow-prev'});
 const ArrowRight = Arrow({text: '>', className: 'arrow-next'});
 
-//UPDATED THIS SELECTED VARIABLE
-// const selected = recordAttempts[0];
-
 const PrevAttempts = props => {
   const {recording} = props; ///recording = array of Blob objects
   const [selected, setSelected] = useState({});
