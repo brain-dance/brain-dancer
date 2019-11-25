@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {logout} from '../store';
-import {Button} from 'semantic-ui-react';
+import {Button, Menu} from 'semantic-ui-react';
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div>
     <h1>BrainDancer</h1>
-    <nav>
+    <Menu>
       {isLoggedIn ? (
         <div>
-          {/* The navbar will show these links after you log in */}
+          {/* The Menubar will show these links after you log in */}
           <Link to="/home">Home</Link>
           <a href="#" onClick={handleClick}>
             Logout
@@ -23,6 +23,14 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <Link to="/login">Login</Link>
           <Link to="/signup">Sign Up</Link>
         </div>
+
+        <Menu.Item
+        name="login"
+        onClick={}
+        >Login
+          </Menu.Item>
+        <Menu.Item>Sign Up
+          </Menu.Item>
       )}
     </nav>
     <hr />
