@@ -8,7 +8,8 @@ import {
   Dashboard,
   AddTeamForm,
   Choreo,
-  RecordPerformance
+  RecordPerformance,
+  RecordRoutine
 } from './components';
 import {me} from './store';
 
@@ -30,7 +31,7 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
         <Route path="/routines/:id" component={Choreo} />
-        <Route exact path="/recordPerformance" component={RecordPerformance} />
+        <Route exact path="/recordRoutine" component={RecordRoutine} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}

@@ -159,13 +159,13 @@ class RecordPerformance extends React.Component {
         volumePanel: false
       },
       plugins: {
-        // record: {
-        //   audio: true,
-        //   video: true,
-        //   maxLength: 10,
-        //   timeSlice: 1000, //necessary for timestamp
-        //   debug: true
-        // }
+        record: {
+          audio: true,
+          video: true,
+          maxLength: 10,
+          timeSlice: 1000, //necessary for timestamp
+          debug: true
+        }
       }
     };
   }

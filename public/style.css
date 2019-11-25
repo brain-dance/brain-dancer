@@ -1,3 +1,13 @@
 * {
   box-sizing: border-box;
 }
+
+#output {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 360px;
+  height: 210px;
+  margin: 8px;
+}
