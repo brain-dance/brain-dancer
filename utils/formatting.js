@@ -145,5 +145,6 @@ module.exports = {
   canvasify,
   labelPose,
   getAngles,
-  angleDifferences
+  angleDifferences,
+  ANGLES
 };

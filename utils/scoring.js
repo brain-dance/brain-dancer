@@ -1,5 +1,5 @@
 const {angleDifferences}=require('./formatting');
-
+import {drawSkeleton} from '../brain/posenet2';
 const errCost=(wfOne, wfTwo)=>{
     let errs=angleDifferences(wfOne.pose, wfTwo.pose);
     let temp=Object.keys(errs);
@@ -44,9 +44,12 @@ const minCostPairings=(playerwfs, choreowfs)=>{
 
     const rendermistakes=(playerwf, choreowf, errbound)=>{
         let temp=angleDifferences(playerwf.pose, choreowf.pose);
+
         let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound);
         //Path needs to be written.
-        //Takes an angle, returns the three points, translated to lie on the dancer wireframe in a sensible way.
+        //Takes the list of displayable angles, maps them to the relevant points.
+        //Implementation depends sufficiently on the actual wireframe object structure that I'm not touching it yet.
+        
 
         const path=()=>{}
         return toDisplay.map(path);
@@ -60,11 +63,13 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //Center in the canvas
         //Transform into the lookup map
         //Return the new arr, which then gets interacted with by an event handler
-        let translate={x: centroid(pwfs[0].pose).x-center.x, y: centroid(pwfs[0].pose).y-center.y};
+        let globalTranslate={x: centroid(pwfs[0].pose).x-center.x, y: centroid(pwfs[0].pose).y-center.y};
         const translator=wireframe=>wireframe.map(
-            coord=>({x: coord.x-translate.x, y: coord.y-translate.y})
+            coord=>({x: coord.x-globalTranslate.x, y: coord.y-globalTranslate.y})
         );
-        
+        //Note - optimal implementation does all the transformations in a single map
+        //No reason not to do that, except that this approach is easier to reason about
+        //May be worth changing if we run into performance issues
         return new Map(minCostPairings(pwfs, cws).map(
             pair=>{
                 return [{...pair[0], pose: translator(pair[0].pose)}, {...pair[1], pose: translator(pair[1].pose)}]
@@ -73,4 +78,14 @@ const minCostPairings=(playerwfs, choreowfs)=>{
             [pair[0], rendermistakes(pair[0], pair[1], errbound)]
         }).map(pair=>[pair[0].timestamp-pair[0].timestamp%refreshrate, pair]))
     }
-    module.exports={minCostPairings, parseForReplay}
+    const timeChangeCallback=(timestamp, map, ctx, width, height, refreshrate, lastupdate)=>{
+        let temp=timestamp-timestamp%refreshrate;
+        let newDraws=map.get(temp);
+        if(temp!==lastupdate&&newDraws){
+            ctx.clearRect(0, 0, width, height);
+            drawSkeleton(newDraws[0].pose, 0, ctx);
+            //newDraws[1] contains the error path, which should also be drawn.
+
+        }
+    }
+    module.exports={minCostPairings, parseForReplay, timeChangeCallback}
