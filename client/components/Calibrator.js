@@ -86,7 +86,7 @@ const Calibrator = props => {
         className="video-js vjs-default-skin"
       />
       <button type="button" onClick={handleCapture}>
-        Play
+        Take Picture
       </button>
       {count !== 0 && <div>{count}</div>}
     </div>
