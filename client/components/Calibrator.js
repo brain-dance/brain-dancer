@@ -55,7 +55,7 @@ const Calibrator = props => {
 
     // snapshot is available
     player.on('finishRecord', function() {
-      //   props.setCalibration(player.recordedData);
+      props.setCalibration(player.recordedData);
     });
 
     player.on('retry', function() {
@@ -71,7 +71,8 @@ const Calibrator = props => {
       if (i < 9) setCount(i);
       i++;
       if (i === 10) {
-        props.setCalibration(camera.record().start());
+        camera.record().start();
+
         setCount(0);
         clearInterval(countdown);
       }
