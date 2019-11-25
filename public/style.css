@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  padding: 0.3rem;
 }
 
 #output {
@@ -10,4 +11,19 @@
   width: 360px;
   height: 210px;
   margin: 8px;
+}
+
+#recording {
+  margin: 0 auto;
+  display: flex;
+  /* flex-direction: column; */
+  align-content: center;
+  align-items: center;
+  justify-content: space-around;
+  justify-items: space-around;
+}
+
+#gallery {
+  display: flex;
+  overflow: auto;
 }

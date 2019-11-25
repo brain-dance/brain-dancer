@@ -26,3 +26,4 @@ export * from './teams';
 export * from './singleRoutine';
 export * from './practice';
 export * from './assignment';
+export * from './routine';

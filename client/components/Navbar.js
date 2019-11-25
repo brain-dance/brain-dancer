@@ -3,29 +3,43 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {logout} from '../store';
-import {Button} from 'semantic-ui-react';
+import {Menu, Header, Icon, Divider} from 'semantic-ui-react';
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div>
-    <h1>BrainDancer</h1>
-    <nav>
-      {isLoggedIn ? (
-        <div>
-          {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
-        </div>
-      ) : (
-        <div>
-          {/* The navbar will show these links before you log in */}
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-        </div>
-      )}
-    </nav>
-    <hr />
+    {isLoggedIn ? (
+      <Menu secondary>
+        {/* The Menubar will show these links after you log in */}
+        <Menu.Item name="home" as={Link} to="/home">
+          <Header as="h1">BrainDancer</Header>
+        </Menu.Item>
+
+        <Menu.Item name="recordRoutine" as={Link} to="/new-routine">
+          <Icon name="record" /> Routine
+        </Menu.Item>
+        <Menu.Item name="recordPractice" as={Link} to="/new-practice">
+          <Icon name="record" /> Practice
+        </Menu.Item>
+
+        <Menu.Item position="right" name="logout" onClick={handleClick}>
+          Logout
+        </Menu.Item>
+      </Menu>
+    ) : (
+      <Menu secondary>
+        {/* The navbar will show these links before you log in */}
+        <Menu.Item name="login" as={Link} to="/login">
+          <Header as="h1">BrainDancer</Header>
+        </Menu.Item>
+        <Menu.Item position="right" name="login" as={Link} to="/login">
+          Login
+        </Menu.Item>
+        <Menu.Item position="right" name="signup" as={Link} to="/signup">
+          Sign Up
+        </Menu.Item>
+      </Menu>
+    )}
+    <Divider />
   </div>
 );
 
