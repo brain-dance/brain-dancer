@@ -17,6 +17,9 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         <Menu.Item name="home" as={Link} to="/home">
           Home
         </Menu.Item>
+        <Menu.Item name="recordPerformance" as={Link} to="/recordPerformance">
+          Record
+        </Menu.Item>
 
         <Menu.Item name="logout" onClick={handleClick}>
           Logout
