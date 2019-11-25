@@ -30,7 +30,7 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
         <Route path="/routines/:id" component={Choreo} />
-
+        <Route exact path="/recordPerformance" component={RecordPerformance} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
