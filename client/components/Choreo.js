@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {getSingleRoutine} from '../store';
 
-const Coreo = props => {
+const Choreo = props => {
   const routineId = props.match.params.id;
   const dispatch = useDispatch();
 
@@ -11,7 +11,7 @@ const Coreo = props => {
   }, []);
 
   return (
-    <div id="coreo">
+    <div id="choreo">
       {/* <Video /> */}
       {/* <Submissions /> */}
       {/* <Assignments /> */}
@@ -19,4 +19,4 @@ const Coreo = props => {
   );
 };
 
-export default Coreo;
+export default Choreo;

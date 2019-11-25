@@ -38,7 +38,6 @@ export const Dashboard = props => {
           />
         </Grid.Column>
         <Grid.Column width={11}>
-          {/* <Team team={selectedTeam} /> */}
           <Team team={selectedTeam} />
         </Grid.Column>
       </Grid>
