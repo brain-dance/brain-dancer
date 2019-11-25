@@ -1,7 +1,7 @@
 const {angleDifferences}=require('./formatting');
 
-const errCost=(firstPose, secondPose)=>{
-    let errs=angleDifferences(firstPose, secondPose);
+const errCost=(wfOne, wfTwo)=>{
+    let errs=angleDifferences(wfOne.pose, wfTwo.pose);
     let temp=Object.keys(errs);
     //let count = 0;
     return ((temp.reduce((acc, curr)=>acc+(curr**2), 0))**0.5)/temp.length;
@@ -9,6 +9,9 @@ const errCost=(firstPose, secondPose)=>{
 
 }
 const minCostPairings=(playerwfs, choreowfs)=>{
+    //So, what do these wireframes actually look like?
+    //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
+
     const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
     const minCostDynamic=(playerwfs, choreowfs, playerind=0, choreoind=0)=>{
             if(costarr[playerind][choreoind]) return costarr[playerind][choreoind]
@@ -40,6 +43,34 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     }
 
     const rendermistakes=(playerwf, choreowf, errbound)=>{
+        let temp=angleDifferences(playerwf.pose, choreowf.pose);
+        let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound);
+        //Path needs to be written.
+        //Takes an angle, returns the three points, translated to lie on the dancer wireframe in a sensible way.
+
+        const path=()=>{}
+        return toDisplay.map(path);
+       
 
     }
-    module.exports={minCostPairings}
+
+    const parseForReplay=(pwfs, cws, center, errbound, refreshrate)=>{
+        //Start with an array of player wireframes and choreographer wireframes
+        //Map to player wireframes paired with the mistake set of the choreo wireframes
+        //Center in the canvas
+        //Transform into the lookup map
+        //Return the new arr, which then gets interacted with by an event handler
+        let translate={x: centroid(pwfs[0].pose).x-center.x, y: centroid(pwfs[0].pose).y-center.y};
+        const translator=wireframe=>wireframe.map(
+            coord=>({x: coord.x-translate.x, y: coord.y-translate.y})
+        );
+        
+        return new Map(minCostPairings(pwfs, cws).map(
+            pair=>{
+                return [{...pair[0], pose: translator(pair[0].pose)}, {...pair[1], pose: translator(pair[1].pose)}]
+            }
+        ).map(pair=>{
+            [pair[0], rendermistakes(pair[0], pair[1], errbound)]
+        }).map(pair=>[pair[0].timestamp-pair[0].timestamp%refreshrate, pair]))
+    }
+    module.exports={minCostPairings, parseForReplay}
