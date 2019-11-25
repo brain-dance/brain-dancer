@@ -166,6 +166,7 @@ class RecordPerformance extends React.Component {
         ></video>
         <Button content="Upload" onClick={this.upload} />
         <Button content="Download" onClick={this.download} />
+        <br />
         <PrevAttempts
           recording={this.state.recording}
           recordedData={this.recordedData}
