@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
-import {fetchUserTeams} from '../store/team';
-// import Team from './Team';
+import Team from './Team';
+import {fetchUserTeams} from '../store';
 
 /**
  * COMPONENT
  */
 export const Dashboard = props => {
-  const teams = useSelector(state => state.team.list);
+  const teams = useSelector(state => state.teams);
   // const isChoreographer = user.status === 'choreographer';
   const dispatch = useDispatch();
 
@@ -18,7 +18,7 @@ export const Dashboard = props => {
 
   useEffect(() => {
     dispatch(fetchUserTeams());
-  }, [teams.length]);
+  }, []);
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
@@ -38,8 +38,7 @@ export const Dashboard = props => {
           />
         </Grid.Column>
         <Grid.Column width={11}>
-          {/* <Team team={selectedTeam} /> */}
-          <h3>Team will go here</h3>
+          <Team team={selectedTeam} />
         </Grid.Column>
       </Grid>
     );
