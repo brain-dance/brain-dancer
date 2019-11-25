@@ -1,27 +1,28 @@
 import React, {Component} from 'react';
 import ScrollMenu from 'react-horizontal-scrolling-menu';
+import {Menu, ArrowLeft, ArrowRight} from './HorizontalMenu';
 
 // import {Header, Segment, Grid} from 'semantic-ui-react';
 
-const MenuItem = ({text, selected}) => {
-  return <div className={`menu-item ${selected ? 'active' : ''}`}>{text}</div>;
-};
+// const MenuItem = ({text, selected}) => {
+//   return <div className={`menu-item ${selected ? 'active' : ''}`}>{text}</div>;
+// };
 
-export const Menu = (list, selected) =>
-  list.map(el => {
-    const {name} = el;
+// export const Menu = (list, selected) =>
+//   list.map(el => {
+//     const {name} = el;
 
-    return <MenuItem text={name} key={name} selected={selected} />;
-  });
+//     return <MenuItem text={name} key={name} selected={selected} />;
+//   });
 
-const Arrow = ({text, className}) => {
-  return <div className={className}>{text}</div>;
-};
+// const Arrow = ({text, className}) => {
+//   return <div className={className}>{text}</div>;
+// };
 
-const ArrowLeft = Arrow({text: '<', className: 'arrow-prev'});
-const ArrowRight = Arrow({text: '>', className: 'arrow-next'});
+// const ArrowLeft = Arrow({text: '<', className: 'arrow-prev'});
+// const ArrowRight = Arrow({text: '>', className: 'arrow-next'});
 
-const MySelected = 'video1';
+// const MySelected = 'video1';
 
 // const PrevAttempts = () => {
 const recorded = [
@@ -68,6 +69,8 @@ const recorded = [
   {name: 'video3'},
   {name: 'video3'}
 ];
+
+const selected = 'video 1';
 
 // return (
 const PrevAttempts = () => {
