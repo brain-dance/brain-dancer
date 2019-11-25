@@ -11,6 +11,8 @@ import {
   RecordPerformance
 } from './components';
 import {me} from './store';
+import RecordRoutine from './components/RecordRoutine';
+import RecordPractice from './components/RecordPractice';
 
 /**
  * COMPONENT
@@ -30,7 +32,7 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
         <Route path="/routines/:id" component={Choreo} />
-        <Route exact path="/recordPerformance" component={RecordPerformance} />
+
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
@@ -40,6 +42,8 @@ class Routes extends Component {
               path="/recordPerformance"
               component={RecordPerformance}
             />
+            <Route exact path="/new-routine" component={RecordRoutine} />
+            <Route exact path="/new-practice" component={RecordPractice} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
