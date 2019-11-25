@@ -4,7 +4,8 @@ import videojs from 'video.js';
 
 import RecordRTC from 'recordrtc';
 
-// import 'videojs-record';
+// import * as videojs from 'videojs';
+// import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
 //RESOURCES WHILE FIGURING OUT HOW TO STREAM
@@ -156,22 +157,22 @@ class RecordPerformance extends React.Component {
       fluid: false,
       controlBar: {
         volumePanel: false
+      },
+      plugins: {
+        // record: {
+        //   audio: true,
+        //   video: true,
+        //   maxLength: 10,
+        //   timeSlice: 1000, //necessary for timestamp
+        //   debug: true
+        // }
       }
-      // plugins: {
-      //   record: {
-      //     audio: true,
-      //     video: true,
-      //     maxLength: 10,
-      //     timeSlice: 1000, //necessary for timestamp
-      //     debug: true
-      //   }
-      // }
     };
   }
 
   componentDidMount() {
     console.log('hi', this.videoNode);
-    videojs.getPlugin('record');
+    // console.log(videojs.registerPlugin(RecordRTC));
     this.setupCamera();
     // instantiate Video.js
     this.player = videojs(this.videoNode, this.videoJsOptions, () => {
@@ -268,7 +269,7 @@ class RecordPerformance extends React.Component {
           ref={node => (this.videoNode = node)}
           controls={true}
           autoPlay
-          className="video-js"
+          className="video-js vjs-default-skin"
         ></video>
       </div>
     );
