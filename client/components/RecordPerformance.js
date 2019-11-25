@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 // import VideoPlayer from 'react-video-js-player';
 import videojs from 'video.js';
-
 import RecordRTC from 'recordrtc';
 
 import * as Record from 'videojs-record';
@@ -37,6 +36,10 @@ class RecordPerformance extends React.Component {
           debug: true
         }
       }
+    };
+    //trying to attach to state
+    this.state = {
+      recording: []
     };
   }
 
@@ -91,6 +94,10 @@ class RecordPerformance extends React.Component {
       // can be downloaded by the user, stored on server etc.
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
+      this.setState(state => {
+        return {recording: [...state.recording, this.recordedData]};
+      });
+      console.log('recording state: ', this.state.recording);
     });
   }
 
@@ -105,7 +112,6 @@ class RecordPerformance extends React.Component {
     this.videoNode.width = this.videoWidth;
     this.videoNode.height = this.videoHeight;
 
-    // console.log('vid', video);
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: {
@@ -114,7 +120,6 @@ class RecordPerformance extends React.Component {
       }
     });
     this.videoNode.srcObject = stream;
-    // console.log('hi, this is stream', stream);
 
     return new Promise(resolve => {
       this.videoNode.onloadedmetadata = () => resolve(this.videoNode);
@@ -162,7 +167,10 @@ class RecordPerformance extends React.Component {
         ></video>
         <Button content="Upload" onClick={this.upload} />
         <Button content="Download" onClick={this.download} />
-        <PrevAttempts />
+        <PrevAttempts
+          recording={this.state.recording}
+          recordedData={this.recordedData}
+        />
       </div>
     );
   }
