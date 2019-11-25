@@ -2,8 +2,12 @@ import React, {useEffect} from 'react';
 import videojs from 'video.js';
 
 import webrtc_adapter from 'webrtc-adapter';
-import rec from 'videojs-record/dist/videojs.record.js';
+import 'videojs-record/dist/videojs.record.js';
+
 import 'video.js/dist/video-js.css';
+import 'video.js/dist/video-js.min.css';
+import 'videojs-record/dist/css/videojs.record.css';
+import 'videojs-record/dist/css/videojs.record.min.css';
 
 const Calibrator = props => {
   let videoPlayer = React.createRef();
@@ -44,16 +48,22 @@ const Calibrator = props => {
     });
     // snapshot is available
     player.on('finishRecord', function() {
-      // the blob object contains the image data that
-      // can be downloaded by the user, stored on server etc.
-      console.log('snapshot ready: ', player.recordedData);
+      const calibrationImage = player.recordedData;
+      // We should probably end up using this calibration image somehow
     });
+
     player.on('retry', function() {
       console.log('retry');
     });
   }, []);
 
-  return <video id="myImage" ref={node => (videoPlayer = node)} />;
+  return (
+    <video
+      id="myImage"
+      ref={node => (videoPlayer = node)}
+      className="video-js vjs-default-skin"
+    />
+  );
 };
 
 export default Calibrator;
