@@ -1,38 +1,13 @@
 import React, {useState} from 'react';
 import ScrollMenu from 'react-horizontal-scrolling-menu';
+import {Segment} from 'semantic-ui-react';
+// import '../../PrevAttempts.css';
 
 //https://www.npmjs.com/package/react-horizontal-scrolling-menu
 
-const recordAttempts = [
-  {name: 'video1'},
-  {name: 'video2'},
-  {name: 'video3'},
-  {name: 'video4'},
-  {name: 'video5'},
-  {name: 'video6'},
-  {name: 'video7'},
-  {name: 'video8'},
-  {name: 'video9'},
-  {name: 'video11'},
-  {name: 'video12'},
-  {name: 'video13'},
-  {name: 'video14'},
-  {name: 'video15'},
-  {name: 'video16'},
-  {name: 'video17'},
-  {name: 'video18'},
-  {name: 'video19'},
-  {name: 'video121'},
-  {name: 'video131'},
-  {name: 'video141'},
-  {name: 'video151'},
-  {name: 'video161'},
-  {name: 'video171'},
-  {name: 'video181'},
-  {name: 'video191'}
-];
-
 ///recordedData (push to array)
+
+// const attempts = [{name: 'video1'}];
 
 const MenuItem = ({text, selected}) => {
   return <div className={`menu-item ${selected ? 'active' : ''}`}>{text}</div>;
@@ -40,6 +15,7 @@ const MenuItem = ({text, selected}) => {
 
 export const Menu = (list, selected) =>
   list.map(vid => {
+    // console.log(attempts);
     const {name} = vid;
     return <MenuItem text={name} key={name} selected={selected} />;
   });
@@ -54,15 +30,18 @@ const ArrowRight = Arrow({text: '>', className: 'arrow-next'});
 //UPDATED THIS SELECTED VARIABLE
 // const selected = recordAttempts[0];
 
-const PrevAttempts = () => {
-  const menuItems = Menu(recordAttempts, selected);
+const PrevAttempts = props => {
+  const {recording} = props; ///recording = array of Blob objects
   const [selected, setSelected] = useState({});
+  const menuItems = Menu(recording, selected);
 
   const onSelect = key => {
     setSelected(key);
   };
 
-  return (
+  return !recording.length ? (
+    <Segment>Record a video! It's fun!</Segment>
+  ) : (
     <div className="App">
       <ScrollMenu
         data={menuItems}

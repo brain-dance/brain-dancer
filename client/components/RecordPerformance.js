@@ -97,7 +97,6 @@ class RecordPerformance extends React.Component {
       this.setState(state => {
         return {recording: [...state.recording, this.recordedData]};
       });
-      console.log('recording state: ', this.state.recording);
     });
   }
 
