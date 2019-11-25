@@ -40,8 +40,6 @@ class RecordPerformance extends React.Component {
   }
 
   componentDidMount() {
-    console.log('hi', this.videoNode);
-    // console.log(videojs.registerPlugin(RecordRTC));
     this.setupCamera();
     // instantiate Video.js
     this.player = videojs(this.videoNode, this.videoJsOptions, () => {
