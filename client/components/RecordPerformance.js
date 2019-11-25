@@ -8,11 +8,15 @@ import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 import PrevAttempts from './PrevAttempts';
 
+import {Button} from 'semantic-ui-react';
+
 class RecordPerformance extends React.Component {
   constructor(props) {
     super(props);
     this.recordedData = {name: 'empty'};
     this.setupCamera = this.setupCamera.bind(this);
+    this.upload = this.upload.bind(this);
+    this.download = this.download.bind(this);
     this.videoWidth = 360;
     this.videoHeight = 210;
     this.videoNode = document.querySelector('#video');
@@ -76,10 +80,10 @@ class RecordPerformance extends React.Component {
     //   console.log('currently recording', player.record().getDuration());
     // });
 
-    this.player.on('timestamp', function() {
-      console.log('currently recording', this.player.currentTimestamp);
-      // sendFrame(video);
-    });
+    // this.player.on('timestamp', function() {
+    //   console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
+    //   // sendFrame(video);
+    // });
 
     // user completed recording and stream is available
     this.player.on('finishRecord', () => {
@@ -124,6 +128,25 @@ class RecordPerformance extends React.Component {
     }
   }
 
+  upload() {
+    const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
+    var data = this.recordedData;
+    var formData = new FormData();
+    formData.append('file', data, data.name);
+    formData.append('upload_preset', 'acrhvgee');
+    console.log('upload recording ' + data.name + ' to ' + serverUrl);
+    // start upload
+    fetch(serverUrl, {
+      method: 'POST',
+      body: formData
+    })
+      .then(success => console.log('upload recording complete.'))
+      .catch(error => console.error('an upload error occurred!', error));
+  }
+
+  download() {
+    this.player.record().saveAs({video: 'video-name.webm'});
+  }
   // wrap the player in a div with a `data-vjs-player` attribute
   // so videojs won't create additional wrapper in the DOM
   // see https://github.com/videojs/video.js/pull/3856
@@ -136,8 +159,9 @@ class RecordPerformance extends React.Component {
           controls={true}
           autoPlay
           className="video-js vjs-default-skin"
-        />
-        <PrevAttempts />
+        ></video>
+        <Button content="Upload" onClick={this.upload} />
+        <Button content="Download" onClick={this.download} />
       </div>
     );
   }
