@@ -62,7 +62,8 @@
     "sequelize": "^5.21.2",
     "video-js": "^0.7.0",
     "video-react": "^0.14.1",
-    "videojs": "^1.0.0"
+    "videojs": "^1.0.0",
+    "webrtc": "^1.14.1"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
