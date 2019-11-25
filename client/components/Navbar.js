@@ -12,7 +12,7 @@ const Navbar = ({handleClick, isLoggedIn}, props) => (
       {isLoggedIn ? (
         <Menu>
           {/* The Menubar will show these links after you log in */}
-          <Menu.Item name="home" component={Link} to="/home">
+          <Menu.Item name="home" as={Link} to="/home">
             Home
           </Menu.Item>
 
@@ -23,10 +23,10 @@ const Navbar = ({handleClick, isLoggedIn}, props) => (
       ) : (
         <Menu>
           {/* The navbar will show these links before you log in */}
-          <Menu.Item name="login" component={Link} to="/login">
+          <Menu.Item name="login" as={Link} to="/login">
             Login
           </Menu.Item>
-          <Menu.Item name="signup" component={Link} to="/signup">
+          <Menu.Item name="signup" as={Link} to="/signup">
             Sign Up
           </Menu.Item>
         </Menu>
