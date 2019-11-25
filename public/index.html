@@ -5,20 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Brain dancer</title>
-    <!-- <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"
-    ></script>
-    <script defer src="../brain/posenet.js"></script> -->
-    <!-- <script defer src="bundle.js"></script> -->
-  </head>
-   
     <link
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
     />
     <link rel="stylesheet" href="/style.css" />
+    <script defer src="/bundle.js"></script>
+
+    <!-- fun video styling that we can't get rid of for some reason -->
     <link
       href="https://vjs.zencdn.net/7.6.0/video-js.min.css"
       rel="stylesheet"
@@ -33,49 +27,9 @@
     <script src="https://unpkg.com/recordrtc/RecordRTC.js"></script>
     <script src="https://unpkg.com/webrtc-adapter/out/adapter.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-record/3.8.0/videojs.record.min.js"></script>
-
-    <style>
-      /* change player background color */
-      #video {
-
-        background-color: #ccc;
-      }
-    </style>
-
-    <!-- <script defer src="../brain/posenet2.js"></script> -->
-
-    <script defer src="/bundle.js"></script>
+    <!-- <script src="videojs.record.js"></script> -->
   </head>
   <body>
-    <video id="video" playsinline class="video-js vjs-default-skin">
-      <p class="vjs-no-js">
-        To view this video please enable JavaScript, or consider upgrading to a
-        web browser that
-        <a href="https://videojs.com/html5-video-support/" target="_blank">
-          supports HTML5 video.
-        </a>
-      </p>
-    </video>
-    <canvas
-      id="output"
-      style="position: absolute; top: 0; left: 0; z-index: 1; width: 360px;
-    height: 210px; margin: 8px;"
-    ></canvas>
-    <!--<canvas
-      id="skellies"
-      style="position: absolute; top: 0; left: 0; z-index: -1; width: 360px;
-    height: 210px; margin: 8px; display: hidden;"
-    ></canvas>-->
-    <!-- <div id="app"></div> -->
-    <p><button id="upload">Upload</button></p>
-    <p><button id="download">Download</button></p>
-     <div id="things"> Shows up somewhere
-        <canvas
-        id="skellies"
-        style="width: 360px;
-      height: 210px; margin: 8px;"
-      ></canvas>
-     </div> 
-    <script defer src="../videocapture/videorecord.js"></script>
+    <div id="app"></div>
   </body>
 </html>

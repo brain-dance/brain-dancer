@@ -2,7 +2,15 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {Login, Signup, Dashboard, AddTeamForm, Choreo} from './components';
+import {
+  Login,
+  Signup,
+  Dashboard,
+  AddTeamForm,
+  Choreo,
+  RecordPerformance,
+  RecordRoutine
+} from './components';
 import {me} from './store';
 
 /**
@@ -22,17 +30,17 @@ class Routes extends Component {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
-        {/* <Route path="/signup" component={AddTeamForm} /> */}
         <Route path="/routines/:id" component={Choreo} />
+        <Route exact path="/recordRoutine" component={RecordRoutine} />
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route exact path="/home" component={Dashboard} />
-            {/* <Route
+            <Route
               exact
               path="/recordPerformance"
               component={RecordPerformance}
-            /> */}
+            />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
