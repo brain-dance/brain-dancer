@@ -4,8 +4,7 @@ import videojs from 'video.js';
 
 import RecordRTC from 'recordrtc';
 
-// import * as videojs from 'videojs';
-// import * as Record from 'videojs-record';
+import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
 //RESOURCES WHILE FIGURING OUT HOW TO STREAM
