@@ -10,3 +10,4 @@ export {default as Choreo} from './Choreo';
 export {Login, Signup} from './Auth-Form';
 export {default as RecordPerformance} from './RecordPerformance';
 export {default as RecordRoutine} from './RecordRoutine';
+export {default as RecordPractice} from './RecordPractice';
