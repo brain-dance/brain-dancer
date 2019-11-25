@@ -125,12 +125,17 @@ const angleDifferences = (pose, targetPose) => {
   const targetAngles = getAngles(targetPose);
 
   const differences = {};
-
+//  differences.cost=0;
+  //let count=0;
   for (const angleName in poseAngles) {
     if (Object.prototype.hasOwnProperty.call(poseAngles, angleName)) {
+      count++;
       differences[angleName] = poseAngles[angleName] - targetAngles[angleName];
+      differences.cost+=differences[angleName]**2;
     }
   }
+  //differences.cost=differences.cost**0.5;
+  //differences.cost/=count;
 
   return differences;
 };

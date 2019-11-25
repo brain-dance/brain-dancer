@@ -108,7 +108,7 @@ function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
   ctx.stroke();
 }
 
-function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
   console.log('draw skeleton', keypoints);
   const adjacentKeypoints = posenet.getAdjacentKeyPoints(
     keypoints,
