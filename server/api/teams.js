@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Team, User} = require('../db/models');
+const {Team, User, Routine} = require('../db/models');
 module.exports = router;
 
 // /api/teams route
@@ -8,10 +8,33 @@ module.exports = router;
 router.get('/', async (req, res, next) => {
   try {
     let {id} = req.user;
-    const allTeams = await Team.findAll({
-      include: [{model: User, where: {id: id}}]
+
+    //get user's teams
+    const teamIds = await User.findByPk(id, {
+      include: {model: Team}
+    }).then(user => user.teams.map(team => team.id));
+
+    //load teams with eager-loaded data
+    let allTeams = await Team.findAll({
+      include: [{model: User}, {model: Routine}],
+      where: {
+        id: teamIds
+      }
     });
-    res.json(allTeams);
+
+    //unwrap sequelize object
+    allTeams = allTeams.map(team => team.toJSON());
+
+    //format and return teams
+    res.json(
+      allTeams.map(team => {
+        const thisUser = team.users.find(user => user.id === +id);
+        team.members = team.users;
+        delete team.users;
+        team.role = thisUser.userteams.role;
+        return team;
+      })
+    );
   } catch (err) {
     next(err);
   }

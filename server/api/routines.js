@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Routine} = require('../db/models');
+const {Routine, User, Assignment, Videoframe} = require('../db/models');
 module.exports = router;
 
 // router.get('/', async (req, res, next) => {
@@ -9,7 +9,36 @@ module.exports = router;
 // });
 
 router.get('/:id', async (req, res, next) => {
-  res.send();
+  /**
+   * routine should include:
+   *  choreographer
+   *  videoframes
+   *  assignments
+   *  calibrator videoframe
+   *  practices
+   */
+  try {
+    const routine = await Routine.findByPk(req.params.id, {
+      include: [
+        {
+          model: User
+        },
+        {
+          model: Videoframe
+        },
+        {
+          model: Assignment,
+          include: {
+            model: User //this isn't quite right, need models
+          }
+        }
+      ]
+    });
+
+    res.json(routine);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post('/', async (req, res, next) => {
