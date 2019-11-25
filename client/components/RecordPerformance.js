@@ -40,7 +40,7 @@ class RecordPerformance extends Component {
     //   alert('Your browser cannot stream from your webcam.');
     //   return;
     // }
-    this.requestUserMedia();
+    // this.requestUserMedia();
   }
 
   onPlayerReady(player) {
@@ -95,7 +95,6 @@ class RecordPerformance extends Component {
   render() {
     return (
       <div>
-        <p>Hi!</p>
         <VideoPlayer
           controls={true}
           // src={}
