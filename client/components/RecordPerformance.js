@@ -162,6 +162,7 @@ class RecordPerformance extends React.Component {
           ref={node => (this.videoNode = node)}
           controls={true}
           autoPlay
+          // poster
           className="video-js vjs-default-skin"
         ></video>
         <Button content="Upload" onClick={this.upload} />
