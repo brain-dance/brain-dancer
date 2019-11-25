@@ -46,9 +46,9 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     const rendermistakes=(playerwf, choreowf, errbound)=>{
         let temp=angleDifferences(playerwf.pose, choreowf.pose);
 
-        let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound).join('');
+        let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound).join('').toLowerCase();
         let toReturn=translate(choreowf.pose, centroid(playerwf.pose))
-        return toReturn.filter(el=>toDisplay.includes(el.part));
+        return toReturn.filter(el=>toDisplay.includes(el.part.toLowerCase()));
         //Path needs to be written.
         //Takes the list of displayable angles, maps them to the relevant points.
         //Implementation depends sufficiently on the actual wireframe object structure that I'm not touching it yet.
