@@ -1,4 +1,5 @@
 const {angleDifferences}=require('./formatting');
+const {translate, centroid}=require('./scaling');
 import {drawSkeleton} from '../brain/posenet2';
 const errCost=(wfOne, wfTwo)=>{
     let errs=angleDifferences(wfOne.pose, wfTwo.pose);
@@ -45,14 +46,16 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     const rendermistakes=(playerwf, choreowf, errbound)=>{
         let temp=angleDifferences(playerwf.pose, choreowf.pose);
 
-        let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound);
+        let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound).join('');
+        let toReturn=translate(choreowf.pose, centroid(playerwf.pose))
+        return toReturn.filter(el=>toDisplay.includes(el.part));
         //Path needs to be written.
         //Takes the list of displayable angles, maps them to the relevant points.
         //Implementation depends sufficiently on the actual wireframe object structure that I'm not touching it yet.
         
 
-        const path=()=>{}
-        return toDisplay.map(path);
+        //const path=()=>{}
+        //return toDisplay.map(path);
        
 
     }
@@ -84,6 +87,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         if(temp!==lastupdate&&newDraws){
             ctx.clearRect(0, 0, width, height);
             drawSkeleton(newDraws[0].pose, 0, ctx);
+            drawSkeleton(newDraws[1].pose, 0, ctx);
             //newDraws[1] contains the error path, which should also be drawn.
 
         }
