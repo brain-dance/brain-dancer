@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import videojs from 'video.js';
 
 import webrtc_adapter from 'webrtc-adapter';
@@ -10,6 +10,8 @@ import 'videojs-record/dist/css/videojs.record.css';
 import 'videojs-record/dist/css/videojs.record.min.css';
 
 const Calibrator = props => {
+  const [camera, setCamera] = useState({});
+  const [count, setCount] = useState(0);
   let videoPlayer = React.createRef();
 
   const options = {
@@ -19,7 +21,10 @@ const Calibrator = props => {
     fluid: false,
     controlBar: {
       volumePanel: false,
-      fullscreenToggle: false
+      fullscreenToggle: false,
+      deviceButton: false,
+      recordIndicator: false,
+      cameraButton: false
     },
     plugins: {
       record: {
@@ -40,29 +45,51 @@ const Calibrator = props => {
     });
 
     // error handling
+    console.log(player);
     player.on('deviceError', function() {
       console.warn('device error:', player.deviceErrorCode);
     });
     player.on('error', function(element, error) {
       console.error(error);
     });
+
     // snapshot is available
     player.on('finishRecord', function() {
-      const calibrationImage = player.recordedData;
-      // We should probably end up using this calibration image somehow
+      //   props.setCalibration(player.recordedData);
     });
 
     player.on('retry', function() {
       console.log('retry');
     });
+    player.record().getDevice();
+    setCamera(player);
   }, []);
 
+  const handleCapture = () => {
+    let i = 5;
+    const countdown = setInterval(() => {
+      if (i < 9) setCount(i);
+      i++;
+      if (i === 10) {
+        props.setCalibration(camera.record().start());
+        setCount(0);
+        clearInterval(countdown);
+      }
+    }, 800);
+  };
+
   return (
-    <video
-      id="myImage"
-      ref={node => (videoPlayer = node)}
-      className="video-js vjs-default-skin"
-    />
+    <div id="calibrator">
+      <video
+        id="myImage"
+        ref={node => (videoPlayer = node)}
+        className="video-js vjs-default-skin"
+      />
+      <button type="button" onClick={handleCapture}>
+        Play
+      </button>
+      {count !== 0 && <div>{count}</div>}
+    </div>
   );
 };
 
