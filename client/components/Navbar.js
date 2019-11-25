@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {logout} from '../store';
-import {Menu, Header} from 'semantic-ui-react';
+import {Menu, Header, Icon, Divider} from 'semantic-ui-react';
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div>
@@ -14,14 +14,14 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <Header as="h1">BrainDancer</Header>
         </Menu.Item>
 
-        <Menu.Item name="home" as={Link} to="/home">
-          Home
+        <Menu.Item name="recordRoutine" as={Link} to="/new-routine">
+          <Icon name="record" /> Routine
         </Menu.Item>
-        <Menu.Item name="recordPerformance" as={Link} to="/recordPerformance">
-          Record
+        <Menu.Item name="recordPractice" as={Link} to="/new-practice">
+          <Icon name="record" /> Practice
         </Menu.Item>
 
-        <Menu.Item name="logout" onClick={handleClick}>
+        <Menu.Item position="right" name="logout" onClick={handleClick}>
           Logout
         </Menu.Item>
       </Menu>
@@ -31,14 +31,15 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         <Menu.Item name="login" as={Link} to="/login">
           <Header as="h1">BrainDancer</Header>
         </Menu.Item>
-        <Menu.Item name="login" as={Link} to="/login">
+        <Menu.Item position="right" name="login" as={Link} to="/login">
           Login
         </Menu.Item>
-        <Menu.Item name="signup" as={Link} to="/signup">
+        <Menu.Item position="right" name="signup" as={Link} to="/signup">
           Sign Up
         </Menu.Item>
       </Menu>
     )}
+    <Divider />
   </div>
 );
 

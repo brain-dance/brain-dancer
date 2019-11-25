@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {addRoutineThunk} from '../store';
 
 import setupCamera from '../../utils/setupCamera';
 import videoJsOptions from '../../utils/videoJsOptions';
@@ -8,9 +11,16 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment} from 'semantic-ui-react';
+import {Button, Segment, Card, Form} from 'semantic-ui-react';
 
 const RecordRoutine = function(props) {
+  const dispatch = useDispatch();
+
+  const [title, setTitle] = useState('');
+  // const teamId = useSelector(state=>state.teamId)
+  const teamId = 1;
+  const userId = useSelector(state => state.user.id);
+
   let recordedData = {name: 'empty'};
 
   let videoNode = document.querySelector('#video');
@@ -69,20 +79,12 @@ const RecordRoutine = function(props) {
   }, [videoNode]);
 
   const upload = () => {
-    //stuff to put in POST route, then dispatch thunk here ;)
-    const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
-    var data = recordedData;
-    var formData = new FormData();
-    formData.append('file', data, data.name);
-    formData.append('upload_preset', 'acrhvgee');
-    console.log('upload recording ' + data.name + ' to ' + serverUrl);
-    // start upload
-    fetch(serverUrl, {
-      method: 'POST',
-      body: formData
-    })
-      .then(success => console.log('upload recording complete.'))
-      .catch(error => console.error('an upload error occurred!', error));
+    dispatch(addRoutineThunk(recordedData, title, teamId, userId));
+    //after a few seconds, or like a loading screen
+    // submission received!
+    // please check back shortly!
+    //we will email you
+    //redirect to routine page
   };
 
   const download = () => {
@@ -91,18 +93,31 @@ const RecordRoutine = function(props) {
 
   return (
     <div>
-      <video
-        id="video"
-        ref={node => (videoNode = node)}
-        controls={true}
-        autoPlay
-        className="video-js vjs-default-skin"
-      >
-        hello
-      </video>
-      <Segment>
-        <Button content="Upload" onClick={upload} />
-        <Button content="Download" onClick={download} />
+      <div id="recording">
+        <video
+          id="video"
+          ref={node => (videoNode = node)}
+          controls={true}
+          autoPlay
+          className="video-js vjs-default-skin"
+        ></video>
+        <Segment compact>
+          <Form>
+            <Form.Field>
+              <label>Title</label>
+              <input
+                value={title}
+                onChange={evt => setTitle(evt.target.value)}
+              />
+            </Form.Field>
+          </Form>
+          <p>When you are ready, submit your video for processing!</p>
+          <Button content="Submit" onClick={upload} />
+          <Button content="Download" onClick={download} />
+        </Segment>
+      </div>
+      <Segment id="gallery">
+        <p>Video list could be here, maybe as cards?</p>
       </Segment>
     </div>
   );
