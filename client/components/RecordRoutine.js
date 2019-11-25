@@ -11,14 +11,19 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Card, Form} from 'semantic-ui-react';
+import {Button, Segment, Card, Form, Message} from 'semantic-ui-react';
+
+import Calibrator from './Calibrator';
 
 const RecordRoutine = function(props) {
   const dispatch = useDispatch();
 
   const [title, setTitle] = useState('');
+  const [visible, setVisibility] = useState(false);
+  const [calibration, setCalibration] = useState({});
+
   // const teamId = useSelector(state=>state.teamId)
-  const teamId = 1;
+  const teamId = 1; // update with above ^ when teamId is queried in order to get to this page
   const userId = useSelector(state => state.user.id);
 
   let recordedData = {name: 'empty'};
@@ -85,14 +90,23 @@ const RecordRoutine = function(props) {
     // please check back shortly!
     //we will email you
     //redirect to routine page
+    setVisibility(true);
   };
 
   const download = () => {
     player.record().saveAs({video: 'video-name.webm'});
   };
 
+  const handleDismiss = () => {
+    setVisibility(false);
+  };
   return (
     <div>
+      {Object.keys(calibration).length ? (
+        ''
+      ) : (
+        <Calibrator calibration={calibration} setCalibration={setCalibration} />
+      )}
       <div id="recording">
         <video
           id="video"
@@ -114,6 +128,15 @@ const RecordRoutine = function(props) {
           <p>When you are ready, submit your video for processing!</p>
           <Button content="Submit" onClick={upload} />
           <Button content="Download" onClick={download} />
+          {visible ? (
+            <Message
+              onDismiss={handleDismiss}
+              header="Video submitted!"
+              content="Video processing. Check back soon :)"
+            />
+          ) : (
+            ''
+          )}
         </Segment>
       </div>
       <Segment id="gallery">
