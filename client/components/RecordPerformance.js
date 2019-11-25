@@ -33,6 +33,7 @@ class RecordPerformance extends React.Component {
           video: true,
           maxLength: 10,
           timeSlice: 1000, //necessary for timestamp
+          convertEngine: 'ts-ebml', //trying to get metadata....
           debug: true
         }
       }
@@ -95,6 +96,13 @@ class RecordPerformance extends React.Component {
       this.setState(state => {
         return {recording: [...state.recording, this.recordedData]};
       });
+    });
+
+    // converter ready and stream is available
+    this.player.on('finishConvert', function() {
+      // the convertedData object contains the converted data that
+      // can be downloaded by the user, stored on server etc.
+      console.log('finished converting: ', this.player.convertedData);
     });
   }
 

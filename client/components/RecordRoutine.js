@@ -13,7 +13,7 @@ import 'webrtc-adapter';
 
 import {Button, Segment, Card, Form, Message} from 'semantic-ui-react';
 
-import Calibrator from './Calibrator';
+// import Calibrator from './Calibrator';
 
 const RecordRoutine = function(props) {
   const dispatch = useDispatch();
