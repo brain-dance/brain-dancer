@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import VideoPlayer from 'react-video-js-player';
+import React from 'react';
+// import VideoPlayer from 'react-video-js-player';
 import videojs from 'video.js';
+
 import RecordRTC from 'recordrtc';
 
-// import record from 'videojs-record';
-
-// import webrtc from 'webrtc';
+// import 'videojs-record';
+import 'webrtc-adapter';
 
 //RESOURCES WHILE FIGURING OUT HOW TO STREAM
 //https://github.com/collab-project/videojs-record/blob/master/examples/react/index.js
@@ -150,7 +150,7 @@ class RecordPerformance extends React.Component {
     this.videoHeight = 210;
     this.videoNode = document.querySelector('#video');
     this.videoJsOptions = {
-      controls: false,
+      controls: true,
       width: 320,
       height: 240,
       fluid: false,
@@ -171,6 +171,7 @@ class RecordPerformance extends React.Component {
 
   componentDidMount() {
     console.log('hi', this.videoNode);
+    videojs.getPlugin('record');
     this.setupCamera();
     // instantiate Video.js
     this.player = videojs(this.videoNode, this.videoJsOptions, () => {
@@ -261,12 +262,13 @@ class RecordPerformance extends React.Component {
   // see https://github.com/videojs/video.js/pull/3856
   render() {
     return (
-      <div data-vjs-player>
+      <div>
         <video
           id="video"
           ref={node => (this.videoNode = node)}
+          controls={true}
           autoPlay
-          className="video-js vjs-default-skin"
+          className="video-js"
         ></video>
       </div>
     );
@@ -275,7 +277,7 @@ class RecordPerformance extends React.Component {
 
 // use correct video mimetype for opera
 if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
-  videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
+  this.videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
 }
 
 export default RecordPerformance;
