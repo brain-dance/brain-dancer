@@ -1,13 +1,7 @@
 import React, {useState} from 'react';
 import ScrollMenu from 'react-horizontal-scrolling-menu';
 import {Segment} from 'semantic-ui-react';
-// import '../../PrevAttempts.css';
-
-//https://www.npmjs.com/package/react-horizontal-scrolling-menu
-
-///recordedData (push to array)
-
-// const attempts = [{name: 'video1'}];
+// import VideoAttemptViewer from './VideoPlayer';
 
 const MenuItem = ({text, selected}) => {
   return <div className={`menu-item ${selected ? 'active' : ''}`}>{text}</div>;
@@ -15,7 +9,6 @@ const MenuItem = ({text, selected}) => {
 
 export const Menu = (list, selected) =>
   list.map(vid => {
-    // console.log(attempts);
     const {name} = vid;
     return <MenuItem text={name} key={name} selected={selected} />;
   });
@@ -47,6 +40,7 @@ const PrevAttempts = props => {
         selected={selected}
         onSelect={onSelect}
       />
+      {/* <VideoAttemptViewer /> */}
     </div>
   );
 };
