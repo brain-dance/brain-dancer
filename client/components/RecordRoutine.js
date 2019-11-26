@@ -25,7 +25,8 @@ class RecordRoutine extends React.Component {
     this.state = {
       title: '',
       visible: false,
-      calibration: {}
+      calibration: {},
+      recording: []
     };
     this.teamId = props.match.params.teamId;
     this.upload = this.upload.bind(this);
@@ -82,6 +83,9 @@ class RecordRoutine extends React.Component {
       // can be downloaded by the user, stored on server etc.
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
+      this.setState(state => {
+        return {recording: [...state.recording, this.recordedData]};
+      });
     });
     // return player.dispose();
   }
@@ -157,7 +161,10 @@ class RecordRoutine extends React.Component {
           </Segment>
         </div>
         <Segment id="gallery">
-          <p>Video list could be here, maybe as cards?</p>
+          <PrevAttempts
+            recording={this.state.recording}
+            recordedData={this.recordedData}
+          />
         </Segment>
       </div>
     );
