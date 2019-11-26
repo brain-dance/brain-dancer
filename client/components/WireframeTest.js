@@ -10,9 +10,9 @@ import 'video.js/dist/video-js.min.css';
 import 'videojs-record/dist/css/videojs.record.css';
 import 'videojs-record/dist/css/videojs.record.min.css';
 
-import Worker from './singleImageNet.worker.js';
+import MyWorker from './singleImageNet.worker.js';
 
-const worker = new Worker();
+const worker = new MyWorker();
 
 worker.onmessage = event => {
   const canvas = document.querySelector('canvas');
