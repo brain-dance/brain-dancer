@@ -17,3 +17,5 @@ secrets.js
 #compiled worker ignore
 worker.js
 worker.js.map
+
+.vs_code
