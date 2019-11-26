@@ -124,7 +124,7 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       ctx
     );
   });
-  console.log(canvas.toDataURL())
+  console.log(canvas.toDataURL());
 }
 
 function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
@@ -139,7 +139,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
 }
 
 export function detectPoseInRealTime(video) {
-//  canvas.width = videoWidth;
+  //  canvas.width = videoWidth;
   //canvas.height = videoHeight;
 
   async function poseDetectionFrame() {
