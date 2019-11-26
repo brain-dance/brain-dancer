@@ -27,3 +27,11 @@
   display: flex;
   overflow: auto;
 }
+
+#skelliesAndForm {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: space-around;
+  justify-items: space-around;
+}

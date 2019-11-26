@@ -12,7 +12,7 @@ import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 import PrevAttempts from './PrevAttempts';
 
-import {Button, Segment, Card, Form, Message} from 'semantic-ui-react';
+import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
@@ -27,6 +27,7 @@ class RecordRoutine extends React.Component {
       visible: false,
       calibration: {},
       recording: []
+      modalOpen: true
     };
     this.teamId = props.match.params.teamId;
     this.upload = this.upload.bind(this);
@@ -110,21 +111,21 @@ class RecordRoutine extends React.Component {
   }
 
   setCalibration(calibration) {
-    this.setState({...this.state, calibration});
+    this.setState({...this.state, calibration, modalOpen: false});
   }
 
   render() {
     return (
       <div>
         <div>
-          {Object.keys(this.state.calibration).length ? (
-            ''
-          ) : (
-            <Calibrator
-              calibration={this.state.calibration}
-              setCalibration={this.setCalibration}
-            />
-          )}
+          <Modal open={this.state.modalOpen}>
+            <Modal.Content>
+              <Calibrator
+                calibration={this.state.calibration}
+                setCalibration={this.setCalibration}
+              />
+            </Modal.Content>
+          </Modal>
         </div>
         <div id="recording">
           <video

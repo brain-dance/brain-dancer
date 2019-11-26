@@ -13,3 +13,9 @@ bundle.js.map
 
 #ignore secret
 secrets.js
+
+#compiled worker ignore
+worker.js
+worker.js.map
+
+.vscode
