@@ -1,5 +1,11 @@
 const router = require('express').Router();
-const {Routine, User, Assignment, Team, VideoFrame} = require('../db/models');
+const {
+  Routine,
+  User,
+  Assignment,
+  Practice,
+  VideoFrame
+} = require('../db/models');
 module.exports = router;
 
 const {generateWireframes} = require('../../utils/videoProcessing');
@@ -24,14 +30,19 @@ router.get('/:id', async (req, res, next) => {
           model: User
         },
         {
-           model: VideoFrame
+          model: VideoFrame
         },
         {
-           model: Assignment,
-           include: [{
-            model: User //this isn't quite right, need models
-           }]
-         }
+          model: Practice
+        },
+        {
+          model: Assignment,
+          include: [
+            {
+              model: User //this isn't quite right, need models
+            }
+          ]
+        }
       ]
     });
 

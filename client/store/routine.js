@@ -55,7 +55,7 @@ export const addRoutineThunk = (
   }
 };
 
-// initial state
+// initial state - array of all routines (in a team)
 const initialState = [];
 
 // reducer
