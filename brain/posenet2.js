@@ -8,15 +8,15 @@ let myWorker;
 let messages = [];
 const videoWidth = '720px';
 const videoHeight = '480px';
-const canvas = document.getElementById('output');
-const ctx = canvas.getContext('2d');
+// const canvas = document.getElementById('output');
+// const ctx = canvas.getContext('2d');
 //ctx.height = videoHeight;
 //ctx.width = videoWidth;
 
-const workerCanv = document.getElementById('skellies');
+// const workerCanv = document.getElementById('skellies');
 // skelliesCanvas.width = videoWidth
 // skelliesCanvas.height = videoHeight
-const wcContext = workerCanv.getContext('2d');
+// const wcContext = workerCanv.getContext('2d');
 
 // const workerCanv = document.createElement('canvas');
 // workerCanv.width = videoWidth * 2;

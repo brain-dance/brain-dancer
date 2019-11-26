@@ -30,6 +30,13 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: {inline: true, name: 'public/worker.js'}
+        }
       }
     ]
   }

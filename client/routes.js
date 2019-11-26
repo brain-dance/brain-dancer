@@ -13,6 +13,7 @@ import {
 } from './components';
 import {WatchRoutine} from './components/watchvideo';
 import {me} from './store';
+import WireframeTest from './components/WireframeTest';
 
 /**
  * COMPONENT
@@ -32,6 +33,7 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
         {/* <Route path="/routines/:id" component={Choreo} /> */}
+        <Route path="/test" component={WireframeTest} />
 
         {isLoggedIn && (
           <Switch>
