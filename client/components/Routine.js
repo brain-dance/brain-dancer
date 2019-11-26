@@ -10,7 +10,7 @@ const Routine = props => {
 
   return (
     <div className="routine-card" onClick={() => handleClick(routine.id)}>
-      <h2>{routine.title}</h2>
+      <p>{routine.title}</p>
     </div>
   );
 };
