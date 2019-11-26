@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import videojs from 'video.js';
-import {drawSkeleton} from '../../brain/posenet2';
+import {drawSkeleton} from '../../frontUtils/draw';
 
 import webrtc_adapter from 'webrtc-adapter';
 import 'videojs-record/dist/videojs.record.js';
@@ -10,9 +10,10 @@ import 'video.js/dist/video-js.min.css';
 import 'videojs-record/dist/css/videojs.record.css';
 import 'videojs-record/dist/css/videojs.record.min.css';
 
-import MyWorker from './singleImageNet.worker.js';
+import MyWorker from '../workers/videoNet.worker.js';
 
 const worker = new MyWorker();
+worker.postMessage({resolution: {width: 320, height: 240}});
 
 worker.onmessage = event => {
   const canvas = document.querySelector('canvas');
@@ -67,7 +68,7 @@ const Test = props => {
     player.on('finishRecord', function() {
       const canvas = document.querySelector('canvas');
       const ctx = canvas.getContext('2d');
-      worker.postMessage(ctx.getImageData(0, 0, 320, 240));
+      worker.postMessage({image: ctx.getImageData(0, 0, 320, 240)});
     });
 
     player.on('retry', function() {
