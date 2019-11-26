@@ -24,6 +24,7 @@ router.get('/:id', async (req, res, next) => {
    *  practices
    */
   try {
+    console.log(`In GET route, included entities are User: ${typeof User}; Routine: ${typeof Routine}, Assignment: ${typeof Assignment}; Team: ${typeof Team}, vd: ${typeof VideoFrame}`);
     const routine = await Routine.findByPk(req.params.id, {
       include: [
         {
