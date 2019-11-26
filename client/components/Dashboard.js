@@ -3,22 +3,28 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Grid} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
-import {fetchUserTeams} from '../store';
+import Assignments from './Assignments';
+import {fetchUserTeams, fetchUserAssignments} from '../store';
 
 /**
  * COMPONENT
  */
 export const Dashboard = props => {
   const teams = useSelector(state => state.teams);
-  // const isChoreographer = user.status === 'choreographer';
+  const assignments = useSelector(state => state.assignments);
   const dispatch = useDispatch();
 
-  //TK: Identify which team displays when user logs in (currently first one)
+  //TK: Identify which team/assign displays when user logs in (currently first one)
   const [selectedTeam, setSelectedTeam] = useState([]);
+  // const [selectedAssgn, setSelectedAssgn] = useState([]);
 
   useEffect(() => {
     dispatch(fetchUserTeams());
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchUserAssignments());
+  }, [assignments.length]);
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
@@ -35,6 +41,7 @@ export const Dashboard = props => {
             selectedTeam={selectedTeam}
             setSelectedTeam={setSelectedTeam}
             handleSelectTeam={handleSelectTeam}
+            assignments={assignments}
           />
         </Grid.Column>
         <Grid.Column width={11}>

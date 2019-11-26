@@ -2,22 +2,17 @@ import React, {useState} from 'react';
 // import {useDispatch, useSelector} from 'react-redux';
 import {Header, Segment, Grid} from 'semantic-ui-react';
 import TeamList from './TeamList';
-
-// import {getUser} from '../store/user';
+import Assignments from './Assignments';
 
 export const DashSidebar = props => {
   const {teams, selectedTeam, handleSelectTeam} = props;
-  // const {teams} = user;
-
-  // const [isClickedAddTeam, setIsClickedAddTeam] = useState(false);
-
-  // const handleClickAddTeam = () => {
-  //   setIsClickedAddTeam(true);
-  // };
+  const {assignments} = props;
+  console.log('TCL: assignments', assignments);
 
   return teams.length ? (
     <div>
       <Header as="h3">Assignments</Header>
+      <Assignments assignments={assignments} />
       <Grid>
         <Grid.Column width={3}>
           <Header as="h3">Teams</Header>
