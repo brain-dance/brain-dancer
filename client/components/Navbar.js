@@ -13,14 +13,12 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         <Menu.Item name="home" as={Link} to="/home">
           <Header as="h1">BrainDancer</Header>
         </Menu.Item>
-
         <Menu.Item name="recordRoutine" as={Link} to="/new-routine">
           <Icon name="record" /> Routine
         </Menu.Item>
         <Menu.Item name="recordPractice" as={Link} to="/new-practice">
           <Icon name="record" /> Practice
         </Menu.Item>
-
         <Menu.Item position="right" name="logout" onClick={handleClick}>
           Logout
         </Menu.Item>
@@ -31,12 +29,14 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         <Menu.Item name="login" as={Link} to="/login">
           <Header as="h1">BrainDancer</Header>
         </Menu.Item>
-        <Menu.Item position="right" name="login" as={Link} to="/login">
-          Login
-        </Menu.Item>
-        <Menu.Item position="right" name="signup" as={Link} to="/signup">
-          Sign Up
-        </Menu.Item>
+        <Menu.Menu position="right">
+          <Menu.Item name="login" as={Link} to="/login">
+            Login
+          </Menu.Item>
+          <Menu.Item name="signup" as={Link} to="/signup">
+            Sign Up
+          </Menu.Item>
+        </Menu.Menu>
       </Menu>
     )}
     <Divider />

@@ -3,7 +3,7 @@ import React from 'react';
 const Member = props => {
   const {member} = props;
 
-  return <h3>{member.name}</h3>;
+  return <p>{member.name}</p>;
 };
 
 export default Member;

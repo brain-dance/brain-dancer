@@ -1,17 +1,41 @@
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
+import {withRouter, Link} from 'react-router-dom';
 import {getSingleRoutine} from '../store';
+import {Button, Icon} from 'semantic-ui-react';
 
 const Choreo = props => {
-  const routineId = props.match.params.id;
+  const routineId = props.match.params.routineId;
+  const teamId = props.match.params.teamId;
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getSingleRoutine(routineId));
   }, []);
 
+  // need team to be pulled from state, to
+  // get role from singleRoutine
+  // role will determine if 'record a practice' button shows up
+
   return (
     <div id="choreo">
+      <p>
+        Choreo!{' '}
+        <Button
+          primary
+          // as={Link}
+          // to={`/team/${props.team.id}/routine/${routineId}/add`}
+          floated="right"
+        >
+          <Icon name="add" />
+          <Icon name="record" />
+        </Button>
+      </p>
+      <p>View previously recorded routine + submitted practices here</p>
+      <p>
+        Team ID: {teamId} Routine ID: {routineId}
+      </p>
+
       {/* <Video /> */}
       {/* <Submissions /> */}
       {/* <Assignments /> */}
@@ -19,4 +43,4 @@ const Choreo = props => {
   );
 };
 
-export default Choreo;
+export default withRouter(Choreo);
