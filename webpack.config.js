@@ -11,7 +11,10 @@ module.exports = {
     filename: './public/bundle.js'
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      videojs: 'video.js'
+    }
   },
   devtool: 'source-map',
   watchOptions: {
