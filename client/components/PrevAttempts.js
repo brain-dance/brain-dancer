@@ -20,27 +20,28 @@ import {Card, Icon, Image} from 'semantic-ui-react';
 // const ArrowLeft = Arrow({text: '<', className: 'arrow-prev'});
 // const ArrowRight = Arrow({text: '>', className: 'arrow-next'});
 //ACTUAL COMPONENT
-function makeRed(ctx) {
-  ctx.fillStyle = 'red';
-  ctx.fillRect(0, 0, 300, 150);
-  ctx.clearRect(20, 20, 100, 50);
-}
+// function makeRed(ctx) {
+//   ctx.fillStyle = 'red';
+//   ctx.fillRect(0, 0, 300, 150);
+//   ctx.clearRect(20, 20, 100, 50);
+// }
 
-class PrevAttempts extends React.Component {
-  constructor(props) {
-    super(props);
-    this.canvasNode = document.querySelector('#thumbnailCanvas');
-    this.src =
-      'https://media.licdn.com/dms/image/C5603AQEAC4lcid_Y5w/profile-displayphoto-shrink_200_200/0?e=1580342400&v=beta&t=CGjCXdSgtyZ9qBAcjgO1ctU-06-b6fXm9jw5eF4TpAE';
-  }
+const PrevAttempts = props => {
+  const {recording, recordedData} = props;
+  // class PrevAttempts extends React.Component {
+  //   constructor(props) {
+  //     super(props);
+  //     this.canvasNode = document.querySelector('#thumbnailCanvas');
+  //     this.src =
+  //       'https://media.licdn.com/dms/image/C5603AQEAC4lcid_Y5w/profile-displayphoto-shrink_200_200/0?e=1580342400&v=beta&t=CGjCXdSgtyZ9qBAcjgO1ctU-06-b6fXm9jw5eF4TpAE';
+  //   }
   // const {recording, recordedData} = props;
 
-  componentDidMount() {
-    const image = document.getElementById('source');
-    let ctx = this.canvasNode.getContext('2d').drawImage(image, 100, 100);
-    // drawImage(video, 0, 0);
-    console.log('TCL: PrevAttempts -> componentDidMount -> ctx', ctx);
-  }
+  // componentDidMount() {
+  //   //CHANGE THIS TO THUMBNAIL
+  //   const image = document.getElementById('source');
+  //   let ctx = this.canvasNode.getContext('2d').drawImage(image, 100, 100);
+  // }
 
   // const [selected, setSelected] = useState({});
 
@@ -54,46 +55,44 @@ class PrevAttempts extends React.Component {
   // };
 
   // makeCanvas();
-  render() {
-    const {recording} = this.props;
+  // render() {
+  //   const {recording} = this.props;
 
-    // return !recording.length ? (
-    //   <div>
-    //     <h3>Record a video! It is fun!</h3>
-    //   </div>
-    // ) : (
-    return (
-      <div>
-        <img id="source" src={this.src} />
-        <canvas
-          id="thumbnailCanvas"
-          width="100"
-          height="100"
-          ref={node => (this.canvasNode = node)}
-        ></canvas>
-      </div>
-    );
-    // // <Segment id="gallery">
-    // //   {evilVids.map(vid => vid.name)}
-    // //   {/* <ScrollMenu
-    // //     data={menuItems}
-    // //     arrowLeft={ArrowLeft}
-    // //     arrowRight={ArrowRight}
-    // //     selected={selected}
-    // //     onSelect={onSelect}
-    // //     // useButtonRole
-    // //     // ref={thumbnailCanvas}
-    // //   /> */}
-    // // </Segment>
-    /* <Card key={vid.name} color="teal" image={src} /> */
-    /* // </canvas> */
-    /* // <canvas */
-    /* //   zindex="-1"
+  // return !recording.length ? (
+  //   <div>
+  //     <h3>Record a video! It is fun!</h3>
+  //   </div>
+  // ) : (
+  return !recording.length ? (
+    <h3>No recording yet</h3>
+  ) : (
+    <div>
+      {recording.map(blob => {
+        let blobSrc = URL.createObjectURL(blob);
+        return <video key={blob.name} src={blobSrc} />;
+      })}
+    </div>
+  );
+  // // <Segment id="gallery">
+  // //   {evilVids.map(vid => vid.name)}
+  // //   {/* <ScrollMenu
+  // //     data={menuItems}
+  // //     arrowLeft={ArrowLeft}
+  // //     arrowRight={ArrowRight}
+  // //     selected={selected}
+  // //     onSelect={onSelect}
+  // //     // useButtonRole
+  // //     // ref={thumbnailCanvas}
+  // //   /> */}
+  // // </Segment>
+  /* <Card key={vid.name} color="teal" image={src} /> */
+  /* // </canvas> */
+  /* // <canvas */
+  /* //   zindex="-1"
           //   key={vid.name}
           //   id="canvas"
           //   ref={node => (canvas = node)}
           // > */
-  }
-}
+};
 
 export default PrevAttempts;
