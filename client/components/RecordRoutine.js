@@ -10,17 +10,20 @@ import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
+import PrevAttempts from './PrevAttempts';
 
 import {Button, Segment, Card, Form, Message} from 'semantic-ui-react';
 
-// import Calibrator from './Calibrator';
+import Calibrator from './Calibrator';
 
 const RecordRoutine = function(props) {
   const dispatch = useDispatch();
-
   const [title, setTitle] = useState('');
   const [visible, setVisibility] = useState(false);
   const [calibration, setCalibration] = useState({});
+  const [numRecordings, setNumRecordings] = useState(0);
+  // const [newVid, setNewVid] = useState([]);
+  const vidSet = new Set();
 
   // const teamId = useSelector(state=>state.teamId)
   const teamId = 1; // update with above ^ when teamId is queried in order to get to this page
@@ -30,6 +33,11 @@ const RecordRoutine = function(props) {
 
   let videoNode = document.querySelector('#video');
   let player;
+
+  const handleRecord = vidData => {
+    setNumRecordings(numRecordings + 1);
+    vidSet.add(vidData);
+  };
 
   useEffect(() => {
     setupCamera(videoNode);
@@ -79,9 +87,13 @@ const RecordRoutine = function(props) {
       // can be downloaded by the user, stored on server etc.
       console.log('finished recording: ', player.recordedData);
       recordedData = player.recordedData;
+      // handleRecord(recordedData);
+      // console.log('TCL: RecordRoutine -> vidSet', vidSet);
     });
     // return player.dispose();
-  }, [videoNode]);
+  }, [videoNode, vidSet.length]);
+
+  ////INSTEAD OF PUSHING TO ARRAY, USE SET || ON PREVATTEMPTS, FILTER OUT REPEATS SOMEHOW
 
   const upload = () => {
     dispatch(addRoutineThunk(recordedData, title, teamId, userId));
@@ -139,9 +151,15 @@ const RecordRoutine = function(props) {
           )}
         </Segment>
       </div>
-      <Segment id="gallery">
-        <p>Video list could be here, maybe as cards?</p>
-      </Segment>
+      {/* <Segment id="gallery" size="massive"> */}
+      <PrevAttempts
+        id="gallery"
+        vidSet={vidSet}
+        // handleRecord={handleRecord}
+        // recordedData={recordedData}
+        // addVid={addVid}
+      />
+      {/* </Segment> */}
     </div>
   );
 };

@@ -33,7 +33,7 @@ class RecordPerformance extends React.Component {
           video: true,
           maxLength: 10,
           timeSlice: 1000, //necessary for timestamp
-          convertEngine: 'ts-ebml', //trying to get metadata....
+          // convertEngine: 'ts-ebml', //trying to get metadata....
           debug: true
         }
       }
@@ -75,6 +75,8 @@ class RecordPerformance extends React.Component {
 
     // user clicked the record button and started recording
     this.player.on('startRecord', () => {
+      ///to data URI .... ?
+      console.log('PLAYER', this.player);
       console.log('started recording!');
     });
 
@@ -174,10 +176,12 @@ class RecordPerformance extends React.Component {
         <Button content="Upload" onClick={this.upload} />
         <Button content="Download" onClick={this.download} />
         <br />
-        <PrevAttempts
-          recording={this.state.recording}
-          recordedData={this.recordedData}
-        />
+        {/* <div id="output">
+          <PrevAttempts
+            recording={this.state.recording}
+            recordedData={this.recordedData}
+          />
+        </div> */}
       </div>
     );
   }
