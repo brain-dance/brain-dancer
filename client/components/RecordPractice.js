@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {connect} from 'react-redux';
 
-import {addRoutineThunk} from '../store';
+import {addPracticeThunk} from '../store';
 
 import setupCamera from '../../utils/setupCamera';
 import videoJsOptions from '../../utils/videoJsOptions';
@@ -11,29 +11,47 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Card, Form, Message} from 'semantic-ui-react';
+import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
-const RecordPractice = function(props) {
-  const dispatch = useDispatch();
+class RecordPractice extends React.Component {
+  constructor(props) {
+    super(props);
+    this.recordedData = {name: 'empty'};
+    this.videoNode = document.querySelector('#video');
+    this.playback = document.querySelector('#routine');
 
-  const [title, setTitle] = useState('');
-  const [visible, setVisibility] = useState(false);
-  const [calibration, setCalibration] = useState({});
+    this.player = '';
+    this.state = {
+      title: '',
+      visible: false,
+      calibration: {},
+      modalOpen: true
+    };
+    this.teamId = props.match.params.teamId;
+    this.routineId = props.match.params.routineId;
+    this.upload = this.upload.bind(this);
+    this.download = this.download.bind(this);
+    this.handleDismiss = this.handleDismiss.bind(this);
+    this.setCalibration = this.setCalibration.bind(this);
+  }
 
-  // const teamId = useSelector(state=>state.teamId)
-  const teamId = 1; // update with above ^ when teamId is queried in order to get to this page
-  const userId = useSelector(state => state.user.id);
-
-  let recordedData = {name: 'empty'};
-
-  let videoNode = document.querySelector('#video');
-  let player;
-
-  useEffect(() => {
-    setupCamera(videoNode);
-    player = videojs(videoNode, videoJsOptions, () => {
+  componentDidMount() {
+    setupCamera(this.videoNode);
+    this.playbackPlayer = videojs(
+      this.playback,
+      {
+        controls: true,
+        width: 320,
+        height: 240,
+        playbackRates: [0.5, 1, 1.5, 2]
+      },
+      () => {
+        videojs.log('playback screen is live!');
+      }
+    );
+    this.player = videojs(this.videoNode, videoJsOptions, () => {
       // print version information at startup
       var msg =
         'Using video.js ' +
@@ -46,108 +64,149 @@ const RecordPractice = function(props) {
     });
 
     // error handling
-    player.on('deviceError', function() {
-      console.warn('device error:', player.deviceErrorCode);
+    this.player.on('deviceError', function() {
+      console.warn('device error:', this.player.deviceErrorCode);
     });
 
-    player.on('error', (element, error) => {
+    this.player.on('error', (element, error) => {
       console.error(error);
     });
 
     // device is ready
-    player.on('deviceReady', () => {
+    this.player.on('deviceReady', () => {
       console.log('device is ready!');
     });
 
     // user clicked the record button and started recording
-    player.on('startRecord', () => {
+    this.player.on('startRecord', () => {
       console.log('started recording!');
     });
 
-    // player.on('progressRecord', function() {
-    //   console.log('currently recording', player.record().getDuration());
+    // this.player.on('progressRecord', function() {
+    //   console.log('currently recording', this.player.record().getDuration());
     // });
 
-    // player.on('timestamp', function() {
-    //   console.log('currently recording', player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
+    // this.player.on('timestamp', function() {
+    //   console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
     //   // sendFrame(video);
     // });
 
     // user completed recording and stream is available
-    player.on('finishRecord', () => {
+    this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
-      console.log('finished recording: ', player.recordedData);
-      recordedData = player.recordedData;
+      console.log('finished recording: ', this.player.recordedData);
+      this.recordedData = this.player.recordedData;
     });
     // return player.dispose();
-  }, [videoNode]);
+  }
 
-  const upload = () => {
-    dispatch(addRoutineThunk(recordedData, title, teamId, userId));
-    //after a few seconds, or like a loading screen
-    // submission received!
-    // please check back shortly!
-    //we will email you
-    //redirect to routine page
-    setVisibility(true);
-  };
+  upload() {
+    this.props.addPractice(
+      this.recordedData,
+      this.state.title,
+      this.routineId,
+      this.props.userId
+    );
 
-  const download = () => {
-    player.record().saveAs({video: 'video-name.webm'});
-  };
+    this.setState({...this.state, visible: true});
+  }
 
-  const handleDismiss = () => {
-    setVisibility(false);
-  };
-  return (
-    <div>
-      {Object.keys(calibration).length ? (
-        ''
-      ) : (
-        <Calibrator calibration={calibration} setCalibration={setCalibration} />
-      )}
-      <div id="recording">
-        <video
-          id="video"
-          ref={node => (videoNode = node)}
-          controls={true}
-          autoPlay
-          className="video-js vjs-default-skin"
-        ></video>
-        <Segment compact>
-          <Form>
-            <Form.Field>
-              <label>Title</label>
-              <input
-                value={title}
-                onChange={evt => setTitle(evt.target.value)}
+  download() {
+    this.player.record().saveAs({video: 'video-name.webm'});
+  }
+
+  handleDismiss() {
+    this.setState({...this.state, visible: false});
+  }
+
+  setCalibration(calibration) {
+    this.setState({...this.state, calibration, modalOpen: false});
+  }
+
+  render() {
+    return (
+      <div>
+        <div>
+          <Modal open={this.state.modalOpen}>
+            <Modal.Content>
+              <Calibrator
+                calibration={this.state.calibration}
+                setCalibration={this.setCalibration}
               />
-            </Form.Field>
-          </Form>
-          <p>When you are ready, submit your video for processing!</p>
-          <Button content="Submit" onClick={upload} />
-          <Button content="Download" onClick={download} />
-          {visible ? (
-            <Message
-              onDismiss={handleDismiss}
-              header="Video submitted!"
-              content="Video processing. Check back soon :)"
+            </Modal.Content>
+          </Modal>
+        </div>
+        <div id="recording">
+          <video
+            id="routine"
+            ref={node => (this.playback = node)}
+            controls={true}
+            className="video-js"
+          >
+            <source
+              src="https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mkv"
+              type="video/webm"
             />
-          ) : (
-            ''
-          )}
+          </video>
+          <video
+            id="video"
+            ref={node => (this.videoNode = node)}
+            controls={true}
+            autoPlay
+            className="video-js vjs-default-skin"
+          ></video>
+        </div>
+        <div id="skelliesAndForm">
+          <canvas id="output">this is a canvas</canvas>
+          <Segment compact>
+            <Form>
+              <Form.Field>
+                <label>Title</label>
+                <input
+                  value={this.state.title}
+                  onChange={evt => {
+                    this.setState({...this.state, title: evt.target.value});
+                  }}
+                />
+              </Form.Field>
+            </Form>
+            <p>When you are ready, submit your video for processing!</p>
+            <Button content="Submit" onClick={this.upload} />
+            <Button content="Download" onClick={this.download} />
+            {this.state.visible ? (
+              <Message
+                onDismiss={this.handleDismiss}
+                header="Video submitted!"
+                content="Video processing. Check back soon :)"
+              />
+            ) : (
+              ''
+            )}
+          </Segment>
+        </div>
+        <Segment id="gallery">
+          <p>Video list could be here, maybe as cards?</p>
         </Segment>
       </div>
-      <Segment id="gallery">
-        <p>Video list could be here, maybe as cards?</p>
-      </Segment>
-    </div>
-  );
-};
+    );
+  }
+}
 
 if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
   videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
 }
 
-export default RecordPractice;
+const mapStateToProps = state => {
+  return {
+    userId: state.user.id
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    addPractice(recordedData, title, teamId, userId) {
+      dispatch(addPracticeThunk(recordedData, title, teamId, userId));
+    }
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(RecordPractice);
