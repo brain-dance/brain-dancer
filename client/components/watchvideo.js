@@ -34,7 +34,7 @@ const mapState=state=>({
 })
 const mapDispatch=dispatch=>({fetchVideo: (id)=>dispatch(getSingleRoutine(id))})
 
-export default withRouter(connect(mapState, mapDispatch)(WatchVideo));
+export const WatchRoutine=withRouter(connect(mapState, mapDispatch)(WatchVideo));
 
 
 //Thought - do we want users to be able to define video resolution?

@@ -11,7 +11,7 @@ import {
   RecordRoutine,
   RecordPractice
 } from './components';
-import WatchVideo from './components/watchvideo'
+import {WatchRoutine} from './components/watchvideo'
 import {me} from './store';
 
 /**
@@ -36,7 +36,7 @@ class Routes extends Component {
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
-            <Route path="/watch/routines/:id" component={WatchVideo}/>
+            <Route path="/watch/routines/:id" component={WatchRoutine}/>
             <Route exact path="/home" component={Dashboard} />
             <Route path="/team/:teamId/add" component={RecordRoutine} />
             <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
