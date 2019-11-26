@@ -20,6 +20,8 @@ class RecordPractice extends React.Component {
     super(props);
     this.recordedData = {name: 'empty'};
     this.videoNode = document.querySelector('#video');
+    this.playback = document.querySelector('#routine');
+
     this.player = '';
     this.state = {
       title: '',
@@ -37,6 +39,18 @@ class RecordPractice extends React.Component {
 
   componentDidMount() {
     setupCamera(this.videoNode);
+    this.playbackPlayer = videojs(
+      this.playback,
+      {
+        controls: true,
+        width: 320,
+        height: 240,
+        playbackRates: [0.5, 1, 1.5, 2]
+      },
+      () => {
+        videojs.log('playback screen is live!');
+      }
+    );
     this.player = videojs(this.videoNode, videoJsOptions, () => {
       // print version information at startup
       var msg =
@@ -125,12 +139,26 @@ class RecordPractice extends React.Component {
         </div>
         <div id="recording">
           <video
+            id="routine"
+            ref={node => (this.playback = node)}
+            controls={true}
+            className="video-js"
+          >
+            <source
+              src="https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mkv"
+              type="video/webm"
+            />
+          </video>
+          <video
             id="video"
             ref={node => (this.videoNode = node)}
             controls={true}
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
+        </div>
+        <div id="skelliesAndForm">
+          <canvas id="output">this is a canvas</canvas>
           <Segment compact>
             <Form>
               <Form.Field>
