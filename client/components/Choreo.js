@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import {withRouter, Link} from 'react-router-dom';
 import {getSingleRoutine} from '../store';
-import {Button} from 'semantic-ui-react';
+import {Button, Icon} from 'semantic-ui-react';
 
 const Choreo = props => {
   const routineId = props.match.params.routineId;
@@ -19,20 +19,23 @@ const Choreo = props => {
 
   return (
     <div id="choreo">
-      <p>Choreo!</p>
+      <p>
+        Choreo!{' '}
+        <Button
+          primary
+          // as={Link}
+          // to={`/team/${props.team.id}/routine/${routineId}/add`}
+          floated="right"
+        >
+          <Icon name="add" />
+          <Icon name="record" />
+        </Button>
+      </p>
       <p>View previously recorded routine + submitted practices here</p>
       <p>
         Team ID: {teamId} Routine ID: {routineId}
       </p>
-      <Button
-        primary
-        as={Link}
-        to={`/team/${props.team.id}/routine/${routineId}/add`}
-        floated="right"
-      >
-        <Icon name="add" />
-        <Icon name="record" />
-      </Button>
+
       {/* <Video /> */}
       {/* <Submissions /> */}
       {/* <Assignments /> */}
