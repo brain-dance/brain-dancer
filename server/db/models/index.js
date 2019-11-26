@@ -22,6 +22,7 @@ Routine.belongsTo(Team);
 Routine.hasMany(VideoFrame);
 Routine.hasOne(CalibrationFrame);
 CalibrationFrame.belongsTo(Routine);
+Routine.hasMany(Assignment)
 
 //Practice
 Practice.belongsTo(User); //dancer
@@ -37,5 +38,6 @@ module.exports = {
   UserTeam,
   Team,
   CalibrationFrame,
-  User
+  User,
+  Assignment
 };
