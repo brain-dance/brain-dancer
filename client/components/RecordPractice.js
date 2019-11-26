@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 
-import {addRoutineThunk} from '../store';
+import {addPracticeThunk} from '../store';
 
 import setupCamera from '../../utils/setupCamera';
 import videoJsOptions from '../../utils/videoJsOptions';
@@ -15,7 +15,7 @@ import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
-class RecordRoutine extends React.Component {
+class RecordPractice extends React.Component {
   constructor(props) {
     super(props);
     this.recordedData = {name: 'empty'};
@@ -28,6 +28,7 @@ class RecordRoutine extends React.Component {
       modalOpen: true
     };
     this.teamId = props.match.params.teamId;
+    this.routineId = props.match.params.routineId;
     this.upload = this.upload.bind(this);
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
@@ -87,10 +88,10 @@ class RecordRoutine extends React.Component {
   }
 
   upload() {
-    this.props.addRoutine(
+    this.props.addPractice(
       this.recordedData,
       this.state.title,
-      this.teamId,
+      this.routineId,
       this.props.userId
     );
 
@@ -180,4 +181,4 @@ const mapDispatchToProps = dispatch => {
     }
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(RecordRoutine);
+export default connect(mapStateToProps, mapDispatchToProps)(RecordPractice);

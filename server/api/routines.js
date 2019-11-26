@@ -24,7 +24,9 @@ router.get('/:id', async (req, res, next) => {
    *  practices
    */
   try {
-    console.log(`In GET route, included entities are User: ${typeof User}; Routine: ${typeof Routine}, Assignment: ${typeof Assignment}; Team: ${typeof Team}, vd: ${typeof VideoFrame}`);
+    console.log(
+      `In GET route, included entities are User: ${typeof User}; Routine: ${typeof Routine}, Assignment: ${typeof Assignment}; Team: ${typeof Team}, vd: ${typeof VideoFrame}`
+    );
     const routine = await Routine.findByPk(req.params.id, {
       include: [
         {
@@ -54,20 +56,24 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-  // add row in Routines table
-  const newRoutine = await Routine.create(req.body);
-  // ^ not super secure - any way to make this secure while staying dry?
+  try {
+    // add row in Routines table
+    const newRoutine = await Routine.create(req.body);
+    // ^ not super secure - any way to make this secure while staying dry?
 
-  // initiate server side skelly processor
-  const generatedSkellies = generateWireframes(req.body.url);
+    // initiate server side skelly processor
+    const generatedSkellies = generateWireframes(req.body.url);
 
-  await Promise.all(
-    generatedSkellies.forEach(skelly => {
-      Videoframe.create(skelly);
-    })
-  );
+    await Promise.all(
+      generatedSkellies.forEach(skelly => {
+        VideoFrame.create(skelly);
+      })
+    );
 
-  res.json(newRoutine);
+    res.json(newRoutine);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.put('/', async (req, res, next) => {
