@@ -158,7 +158,7 @@ class RecordPractice extends React.Component {
           ></video>
         </div>
         <div id="skelliesAndForm">
-          <canvas id="output">this is a canvas</canvas>
+          <canvas id="skeleton">this is a canvas</canvas>
           <Segment compact>
             <Form>
               <Form.Field>
