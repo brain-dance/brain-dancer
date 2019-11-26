@@ -62,12 +62,13 @@
     "semantic-ui-react": "^0.88.1",
     "sequelize": "^5.21.2",
     "style-loader": "^1.0.0",
+    "uglify-js": ">=2.6.0",
     "video-js": "^0.7.0",
     "video-react": "^0.14.1",
     "videojs": "^1.0.0",
+    "videojs-record": "^3.8.0",
     "webrtc": "^1.14.1",
-    "webrtc-adapter": "^7.3.0",
-    "uglify-js": ">=2.6.0"
+    "webrtc-adapter": "^7.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
@@ -79,8 +80,8 @@
     "parcel-bundler": "^1.12.4",
     "react-app-rewired": "^2.1.5",
     "video.js": "^7.6.6",
-    "videojs-record": "^3.8.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "worker-loader": "^2.0.0"
   }
 }
