@@ -26,7 +26,7 @@ class RecordRoutine extends React.Component {
       title: '',
       visible: false,
       calibration: {},
-      recording: []
+      recording: [],
       modalOpen: true
     };
     this.teamId = props.match.params.teamId;
