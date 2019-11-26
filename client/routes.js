@@ -30,12 +30,13 @@ class Routes extends Component {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
-        <Route path="/routines/:id" component={Choreo} />
+        {/* <Route path="/routines/:id" component={Choreo} /> */}
 
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route exact path="/home" component={Dashboard} />
+            <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
             <Route path="/team/:teamId" component={Dashboard} />
             <Route exact path="/new-routine" component={RecordRoutine} />
             <Route exact path="/new-practice" component={RecordPractice} />
