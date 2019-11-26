@@ -22,7 +22,8 @@ Routine.belongsTo(Team);
 Routine.hasMany(VideoFrame);
 Routine.hasOne(CalibrationFrame);
 CalibrationFrame.belongsTo(Routine);
-Routine.hasMany(Assignment)
+Routine.hasMany(Assignment);
+Routine.hasMany(Practice);
 
 //Practice
 Practice.belongsTo(User); //dancer
