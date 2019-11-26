@@ -36,6 +36,7 @@ class Routes extends Component {
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route exact path="/home" component={Dashboard} />
+            <Route path="/team/:teamId/add" component={RecordRoutine} />
             <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
             <Route path="/team/:teamId" component={Dashboard} />
             <Route exact path="/new-routine" component={RecordRoutine} />

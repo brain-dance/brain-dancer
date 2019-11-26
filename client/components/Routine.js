@@ -5,7 +5,6 @@ import {Link} from 'react-router-dom';
 
 const Routine = props => {
   const {routine} = props;
-  console.log('routine', props);
   const teamId = props.match.params.teamId || routine.teamId;
 
   // const handleClick = id => {
