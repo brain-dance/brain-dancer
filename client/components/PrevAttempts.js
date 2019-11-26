@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 // import ScrollMenu from 'react-horizontal-scrolling-menu';
-import {Card, Icon, Image} from 'semantic-ui-react';
+import {Card, Icon, Grid, Segment} from 'semantic-ui-react';
 // import VideoAttemptViewer from './VideoPlayer';
 
 // const MenuItem = ({text, selected}) => {
@@ -28,6 +28,7 @@ import {Card, Icon, Image} from 'semantic-ui-react';
 
 const PrevAttempts = props => {
   const {recording, recordedData} = props;
+  let attempt = 0;
   // class PrevAttempts extends React.Component {
   //   constructor(props) {
   //     super(props);
@@ -66,12 +67,23 @@ const PrevAttempts = props => {
   return !recording.length ? (
     <h3>No recording yet</h3>
   ) : (
-    <div>
+    <Grid columns={2}>
       {recording.map(blob => {
         let blobSrc = URL.createObjectURL(blob);
-        return <video key={blob.name} src={blobSrc} />;
+        attempt++;
+        return (
+          <Grid.Column key={blob.name}>
+            <Card>
+              <Card.Content>
+                <Card.Header>Recording {attempt}</Card.Header>
+                <video width="100" src={blobSrc} />
+                <Icon name="play" />
+              </Card.Content>
+            </Card>
+          </Grid.Column>
+        );
       })}
-    </div>
+    </Grid>
   );
   // // <Segment id="gallery">
   // //   {evilVids.map(vid => vid.name)}
