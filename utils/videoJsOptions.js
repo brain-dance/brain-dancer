@@ -13,6 +13,8 @@ const videoJsOptions = {
       maxLength: 10,
       timeSlice: 1000, //necessary for timestamp
       debug: true
+      // convertEngine: 'ffmpeg.js',
+      // convertOptions: []
     }
   }
 };

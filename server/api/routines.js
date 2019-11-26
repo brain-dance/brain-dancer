@@ -65,8 +65,8 @@ router.post('/', async (req, res, next) => {
     const generatedSkellies = await generateWireframes(req.body.url);
 
     await Promise.all(
-      generatedSkellies.forEach((skelly, i) => {
-        VideoFrame.create({
+      generatedSkellies.map((skelly, i) => {
+        return VideoFrame.create({
           framejson: skelly,
           routineId: newRoutine.id,
           frameNumber: i
