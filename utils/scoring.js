@@ -5,7 +5,7 @@ const errCost=(wfOne, wfTwo)=>{
     let errs=angleDifferences(wfOne.pose, wfTwo.pose);
     let temp=Object.keys(errs);
     //let count = 0;
-    return ((temp.reduce((acc, curr)=>acc+(curr**2), 0))**0.5)/temp.length;
+    return ((temp.reduce((acc, curr)=>acc+(errs[curr]**2), 0))**0.5)/temp.length;
 
 
 }
@@ -26,7 +26,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
             costarr[playerind][choreoind]=currcost;
             return currcost;
         }
-        minCostDynamic(playerwfs, choreowfs);
+        const cost=minCostDynamic(playerwfs, choreowfs);
         let pairs=[];
         let currj=0;
         
@@ -40,14 +40,14 @@ const minCostPairings=(playerwfs, choreowfs)=>{
             }
             pairs.push([playerwfs[i], choreowfs[j]]);
         }
-        return pairs;
+        return {pairs, cost};
     }
 
     const rendermistakes=(playerwf, choreowf, errbound)=>{
         let temp=angleDifferences(playerwf.pose, choreowf.pose);
 
         let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound).join('').toLowerCase();
-        let toReturn=translate(choreowf.pose, centroid(playerwf.pose))
+        let toReturn=translate(choreowf.pose.keypoints, centroid(playerwf.pose.keypoints))
         return toReturn.filter(el=>toDisplay.includes(el.part.toLowerCase()));
         //Path needs to be written.
         //Takes the list of displayable angles, maps them to the relevant points.
@@ -66,7 +66,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //Center in the canvas
         //Transform into the lookup map
         //Return the new arr, which then gets interacted with by an event handler
-        let globalTranslate={x: centroid(pwfs[0].pose).x-center.x, y: centroid(pwfs[0].pose).y-center.y};
+        let globalTranslate={x: centroid(pwfs[0].pose.keypoints).x-center.x, y: centroid(pwfs[0].pose.keypoints).y-center.y};
         const translator=wireframe=>wireframe.map(
             coord=>({x: coord.x-globalTranslate.x, y: coord.y-globalTranslate.y})
         );
@@ -75,7 +75,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //May be worth changing if we run into performance issues
         return new Map(minCostPairings(pwfs, cws).map(
             pair=>{
-                return [{...pair[0], pose: translator(pair[0].pose)}, {...pair[1], pose: translator(pair[1].pose)}]
+                return [{...pair[0], pose: {...pair[0].pose, keypoints: translator(pair[0].pose.keypoints)}}, {...pair[1], pose: {...pair[1].pose, keypoints: translator(pair[1].pose.keypoints)}}]
             }
         ).map(pair=>{
             [pair[0], rendermistakes(pair[0], pair[1], errbound)]
@@ -86,8 +86,8 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         let newDraws=map.get(temp);
         if(temp!==lastupdate&&newDraws){
             ctx.clearRect(0, 0, width, height);
-            drawSkeleton(newDraws[0].pose, 0, ctx);
-            drawSkeleton(newDraws[1].pose, 0, ctx);
+            drawSkeleton(newDraws[0].pose.keypoints, 0, ctx);
+            drawSkeleton(newDraws[1], 0, ctx);
             //newDraws[1] contains the error path, which should also be drawn.
 
         }
