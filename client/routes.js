@@ -8,11 +8,10 @@ import {
   Dashboard,
   AddTeamForm,
   Choreo,
-  RecordPerformance
+  RecordRoutine,
+  RecordPractice
 } from './components';
 import {me} from './store';
-import RecordRoutine from './components/RecordRoutine';
-import RecordPractice from './components/RecordPractice';
 
 /**
  * COMPONENT
@@ -31,17 +30,15 @@ class Routes extends Component {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
-        <Route path="/routines/:id" component={Choreo} />
+        {/* <Route path="/routines/:id" component={Choreo} /> */}
 
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route exact path="/home" component={Dashboard} />
-            <Route
-              exact
-              path="/recordPerformance"
-              component={RecordPerformance}
-            />
+            <Route path="/team/:teamId/add" component={RecordRoutine} />
+            <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
+            <Route path="/team/:teamId" component={Dashboard} />
             <Route exact path="/new-routine" component={RecordRoutine} />
             <Route exact path="/new-practice" component={RecordPractice} />
           </Switch>

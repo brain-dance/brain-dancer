@@ -38,35 +38,35 @@ const labelPose = pose => {
 
   return labeled;
 };
-
+//Note - functions in scoring.js depend on these label names.  If label names change, be sure to update scoring as well.
 const ANGLES = {
-  leftKnee: {left: 'leftAnkle', right: 'leftHip', label: 'LAnkleLKneeLHip'},
+  leftKnee: {left: 'leftAnkle', right: 'leftHip', label: 'LeftAnkleLeftKneeLeftHip'},
   leftHip: [
-    {left: 'leftKnee', right: 'rightHip', label: 'LKneeLHipRHip'},
-    {left: 'leftShoulder', right: 'rightHip', label: 'LShoulderLHipRHip'}
+    {left: 'leftKnee', right: 'rightHip', label: 'LeftKneeLeftHipRightHip'},
+    {left: 'leftShoulder', right: 'rightHip', label: 'LeftShoulderLeftHipRightHip'}
   ],
   leftShoulder: [
-    {left: 'leftHip', right: 'leftElbow', label: 'LHipLShoulderLElbow'},
-    {left: 'leftHip', right: 'rightShoulder', label: 'LHipLShoulderRShoulder'}
+    {left: 'leftHip', right: 'leftElbow', label: 'LeftHipLeftShoulderLeftElbow'},
+    {left: 'leftHip', right: 'rightShoulder', label: 'LeftHipLeftShoulderRightShoulder'}
   ],
   leftElbow: {
     left: 'leftShoulder',
     right: 'leftWrist',
-    label: 'LShoulderLElbowLWrist'
+    label: 'LeftShoulderLeftElbowLeftWrist'
   },
-  rightKnee: {left: 'rightAnkle', right: 'rightHip', label: 'RAnkleRKneeRHip'},
+  rightKnee: {left: 'rightAnkle', right: 'rightHip', label: 'RightAnkleRightKneeRightHip'},
   rightHip: [
-    {left: 'rightKnee', right: 'leftHip', label: 'RKneeRHipLHip'},
-    {left: 'rightShoulder', right: 'leftHip', label: 'RShoulderRHipLHip'}
+    {left: 'rightKnee', right: 'leftHip', label: 'RightKneeRightHipLeftHip'},
+    {left: 'rightShoulder', right: 'leftHip', label: 'RightShoulderRightHipLeftHip'}
   ],
   rightShoulder: [
-    {left: 'rightHip', right: 'rightElbow', label: 'RHipRShoulderRElbow'},
-    {left: 'rightHip', right: 'leftShoulder', label: 'RHipRShoulderLShoulder'}
+    {left: 'rightHip', right: 'rightElbow', label: 'RightHipRightShoulderRightElbow'},
+    {left: 'rightHip', right: 'leftShoulder', label: 'RightHipRightShoulderLeftShoulder'}
   ],
   rightElbow: {
     left: 'rightShoulder',
     right: 'rightWrist',
-    label: 'RShoulderRElbowRWrist'
+    label: 'RightShoulderRightElbowRightWrist'
   }
 };
 
@@ -125,12 +125,17 @@ const angleDifferences = (pose, targetPose) => {
   const targetAngles = getAngles(targetPose);
 
   const differences = {};
-
+//  differences.cost=0;
+  //let count=0;
   for (const angleName in poseAngles) {
     if (Object.prototype.hasOwnProperty.call(poseAngles, angleName)) {
+      count++;
       differences[angleName] = poseAngles[angleName] - targetAngles[angleName];
+      differences.cost+=differences[angleName]**2;
     }
   }
+  //differences.cost=differences.cost**0.5;
+  //differences.cost/=count;
 
   return differences;
 };
@@ -140,5 +145,6 @@ module.exports = {
   canvasify,
   labelPose,
   getAngles,
-  angleDifferences
+  angleDifferences,
+  ANGLES
 };
