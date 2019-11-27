@@ -30,6 +30,8 @@ class RecordRoutine extends React.Component {
       modalOpen: true
     };
     this.teamId = props.match.params.teamId;
+    this.handleDelete = this.handleDelete.bind(this);
+    // this.handleRewatch = this.handleRewatch.bind(this);
     this.upload = this.upload.bind(this);
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
@@ -89,6 +91,13 @@ class RecordRoutine extends React.Component {
       });
     });
     // return player.dispose();
+  }
+
+  handleDelete(e, {name}) {
+    this.setState(state => {
+      return {recording: state.recording.filter(blob => blob.name !== name)};
+    });
+    console.log('TCL: handleDelete -> recording', this.state.recording);
   }
 
   upload() {
@@ -164,7 +173,7 @@ class RecordRoutine extends React.Component {
         <Segment id="gallery">
           <PrevAttempts
             recording={this.state.recording}
-            recordedData={this.recordedData}
+            handleDelete={this.handleDelete}
           />
         </Segment>
       </div>

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 // import ScrollMenu from 'react-horizontal-scrolling-menu';
-import {Card, Icon, Grid, Segment} from 'semantic-ui-react';
+import {Button, Card, Grid, Icon} from 'semantic-ui-react';
 // import VideoAttemptViewer from './VideoPlayer';
 
 // const MenuItem = ({text, selected}) => {
@@ -27,45 +27,16 @@ import {Card, Icon, Grid, Segment} from 'semantic-ui-react';
 // }
 
 const PrevAttempts = props => {
-  const {recording, recordedData} = props;
+  let {recording, handleDelete} = props;
   let attempt = 0;
-  // class PrevAttempts extends React.Component {
-  //   constructor(props) {
-  //     super(props);
-  //     this.canvasNode = document.querySelector('#thumbnailCanvas');
-  //     this.src =
-  //       'https://media.licdn.com/dms/image/C5603AQEAC4lcid_Y5w/profile-displayphoto-shrink_200_200/0?e=1580342400&v=beta&t=CGjCXdSgtyZ9qBAcjgO1ctU-06-b6fXm9jw5eF4TpAE';
-  //   }
-  // const {recording, recordedData} = props;
 
-  // componentDidMount() {
-  //   //CHANGE THIS TO THUMBNAIL
-  //   const image = document.getElementById('source');
-  //   let ctx = this.canvasNode.getContext('2d').drawImage(image, 100, 100);
-  // }
+  const handleRewatch = (e, {name}) => {
+    let video = document.getElementById(name);
+    video.play();
+  };
 
-  // const [selected, setSelected] = useState({});
-
-  ////COME BACK TO THIS: SHOULD PASS IN CANVAS(ES) WITH IMAGE
-  //{works when passing in recording ... }
-  // const menuItems = Menu(thumbnails, selected);
-  // console.log('TCL: menuItems', menuItems);
-
-  // const onSelect = key => {
-  //   setSelected(key);
-  // };
-
-  // makeCanvas();
-  // render() {
-  //   const {recording} = this.props;
-
-  // return !recording.length ? (
-  //   <div>
-  //     <h3>Record a video! It is fun!</h3>
-  //   </div>
-  // ) : (
   return !recording.length ? (
-    <h3>No recording yet</h3>
+    <h3>You have not recorded any videos yet!</h3>
   ) : (
     <Grid columns={2}>
       {recording.map(blob => {
@@ -76,8 +47,30 @@ const PrevAttempts = props => {
             <Card>
               <Card.Content>
                 <Card.Header>Recording {attempt}</Card.Header>
-                <video width="100" src={blobSrc} />
+                <video id={blob.name} width="100" src={blobSrc} />
                 <Icon name="play" />
+              </Card.Content>
+              <Card.Content extra>
+                {/* <div className="ui two buttons"> */}
+                <Button
+                  basic
+                  color="green"
+                  type="button"
+                  name={blob.name}
+                  onClick={handleRewatch}
+                >
+                  Rewatch
+                </Button>
+                <Button
+                  name={blob.name}
+                  type="button"
+                  onClick={handleDelete}
+                  basic
+                  color="red"
+                >
+                  Delete
+                </Button>
+                {/* </div> */}
               </Card.Content>
             </Card>
           </Grid.Column>
