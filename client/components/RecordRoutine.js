@@ -178,6 +178,7 @@ class RecordRoutine extends React.Component {
         <div id="gallery">
           <PrevAttempts
             recording={this.state.recording}
+            recordedData={this.state.recordedData}
             handleDelete={this.handleDelete}
           />
         </div>
