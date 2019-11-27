@@ -35,6 +35,7 @@ const Choreo = props => {
         videojs.log('playback screen is live!');
       }
     );
+    playbackPlayer.addClass('vjs-waiting');
     dispatch(getSingleRoutine(routineId));
   }, []);
 
