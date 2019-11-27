@@ -10,6 +10,7 @@ import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
+import PrevAttempts from './PrevAttempts';
 
 import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
 
@@ -22,15 +23,17 @@ class RecordRoutine extends React.Component {
     this.videoNode = document.querySelector('#video');
     this.player = '';
     this.state = {
-      title: '',
-      visible: false,
+      // title: '',
+      // visible: false,
       calibration: {},
+      recording: [],
       modalOpen: true
     };
     this.teamId = props.match.params.teamId;
-    this.upload = this.upload.bind(this);
-    this.download = this.download.bind(this);
-    this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    // this.upload = this.upload.bind(this);
+    // this.download = this.download.bind(this);
+    // this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
   }
 
@@ -82,6 +85,9 @@ class RecordRoutine extends React.Component {
       // can be downloaded by the user, stored on server etc.
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
+      this.setState(state => {
+        return {recording: [...state.recording, this.recordedData]};
+      });
     });
 
     // this.player.on('startConvert', () => {});
@@ -91,24 +97,30 @@ class RecordRoutine extends React.Component {
     // return player.dispose();
   }
 
-  upload() {
-    this.props.addRoutine(
-      this.recordedData,
-      this.state.title,
-      this.teamId,
-      this.props.userId
-    );
-
-    this.setState({...this.state, visible: true});
+  handleDelete(e, {name}) {
+    this.setState(state => {
+      return {recording: state.recording.filter(blob => blob.name !== name)};
+    });
   }
 
-  download() {
-    this.player.record().saveAs({video: 'video-name.webm'});
-  }
+  // upload(recordedData) {
+  //   this.props.addRoutine(
+  //     this.recordedData,
+  //     this.state.title,
+  //     this.teamId,
+  //     this.props.userId
+  //   );
 
-  handleDismiss() {
-    this.setState({...this.state, visible: false});
-  }
+  //   this.setState({...this.state, visible: true});
+  // }
+
+  // download() {
+  //   this.player.record().saveAs({video: 'video-name.webm'});
+  // }
+
+  // handleDismiss() {
+  //   this.setState({...this.state, visible: false});
+  // }
 
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
@@ -135,35 +147,17 @@ class RecordRoutine extends React.Component {
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
-          <Segment compact>
-            <Form>
-              <Form.Field>
-                <label>Title</label>
-                <input
-                  value={this.state.title}
-                  onChange={evt => {
-                    this.setState({...this.state, title: evt.target.value});
-                  }}
-                />
-              </Form.Field>
-            </Form>
-            <p>When you are ready, submit your video for processing!</p>
-            <Button content="Submit" onClick={this.upload} />
-            <Button content="Download" onClick={this.download} />
-            {this.state.visible ? (
-              <Message
-                onDismiss={this.handleDismiss}
-                header="Video submitted!"
-                content="Video processing. Check back soon :)"
-              />
-            ) : (
-              ''
-            )}
-          </Segment>
         </div>
-        <Segment id="gallery">
-          <p>Video list could be here, maybe as cards?</p>
-        </Segment>
+        <br />
+        <div id="gallery">
+          <PrevAttempts
+            recording={this.state.recording}
+            recordedData={this.state.recordedData}
+            handleDelete={this.handleDelete}
+            teamId={this.teamId}
+            userId={this.props.userId}
+          />
+        </div>
       </div>
     );
   }
