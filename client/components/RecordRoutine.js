@@ -101,7 +101,6 @@ class RecordRoutine extends React.Component {
     this.setState(state => {
       return {recording: state.recording.filter(blob => blob.name !== name)};
     });
-    console.log('TCL: handleDelete -> recording', this.state.recording);
   }
 
   // upload(recordedData) {
@@ -148,31 +147,6 @@ class RecordRoutine extends React.Component {
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
-          {/* <Segment compact>
-            <Form>
-              <Form.Field>
-                <label>Title</label>
-                <input
-                  value={this.state.title}
-                  onChange={evt => {
-                    this.setState({...this.state, title: evt.target.value});
-                  }}
-                />
-              </Form.Field>
-            </Form>
-            <p>When you are ready, submit your video for processing!</p>
-            <Button content="Submit" onClick={this.upload} />
-            <Button content="Download" onClick={this.download} />
-            {this.state.visible ? (
-              <Message
-                onDismiss={this.handleDismiss}
-                header="Video submitted!"
-                content="Video processing. Check back soon :)"
-              />
-            ) : (
-              ''
-            )}
-          </Segment> */}
         </div>
         <br />
         <div id="gallery">
@@ -180,11 +154,8 @@ class RecordRoutine extends React.Component {
             recording={this.state.recording}
             recordedData={this.state.recordedData}
             handleDelete={this.handleDelete}
-            teamId={this.state.teamId}
+            teamId={this.teamId}
             userId={this.props.userId}
-            // upload={this.upload}
-            // download={this.download}
-            // title={this.state.title}
           />
         </div>
       </div>

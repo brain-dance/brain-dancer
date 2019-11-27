@@ -10,22 +10,21 @@ import {
   Segment
 } from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
-import SubmissionMessage from './SubmissionMessage';
 
 const UploadVideoForm = props => {
-  const {blob, blobSrc, teamId, userId} = props;
-  const [title, setTitle] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
-  const [isClickedClose, setIsClickedClose] = useState(false);
+  const {blob, teamId, userId} = props;
   const [open, setOpen] = useState(false);
   const [dimmer, setDimmer] = useState(true);
+  const [title, setTitle] = useState('');
+  const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
+  const [isClickedClose, setIsClickedClose] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const dispatch = useDispatch();
 
-  const handleClickClose = () => {
+  const handleSelectVid = () => {
+    setDimmer(true);
     setOpen(!open);
-    setIsClickedClose(!isClickedClose);
+    setIsClickedSelectVid(!isClickedSelectVid);
   };
 
   const addRoutine = () => {
@@ -34,33 +33,27 @@ const UploadVideoForm = props => {
 
   const upload = () => {
     addRoutine(blob, title, teamId, userId);
-    console.log('TCL: upload -> blob', blob);
-    console.log('Added routine');
-    setVisible(true);
+  };
+
+  const handleUpload = () => {
+    upload();
+    setIsUploaded(true);
   };
 
   // const download = () => {
   //   this.player.record().saveAs({video: 'video-name.webm'});
   // };
 
-  const handleUpload = e => {
-    // let blobForUpload = recording.find(vid => vid.name === name);
-    // console.log('TCL: handleUpload -> blobForUpload', blobForUpload.name);
-    upload();
-    setIsUploaded(true);
-    console.log('handled upload .... and maybe even uploaded video!');
-  };
-
-  const handleSelectVid = () => {
-    setDimmer(true);
-    setOpen(!open);
-    setIsClickedSelectVid(!isClickedSelectVid);
-  };
   // const handleDownload = (e, {name}) => {
   //   let blobForDownload = recording.find(vid => vid.name === name); //video = blob
   //   download(blobForDownload);
   //   console.log('Handled Download ... Maybe even worked!');
   // };
+
+  const handleClickClose = () => {
+    setOpen(!open);
+    setIsClickedClose(!isClickedClose);
+  };
 
   return (
     <Modal
@@ -95,7 +88,11 @@ const UploadVideoForm = props => {
             </Form.Field>
           </Form>
           <p>When you are ready, submit your video for processing!</p>
-          <Button content="Submit" onClick={handleUpload} />{' '}
+          <Button
+            name={blob.name}
+            content="Submit"
+            onClick={handleUpload}
+          />{' '}
         </div>
       ) : (
         <div>

@@ -4,41 +4,24 @@ import UploadVideoForm from './UploadVideoForm';
 
 const PrevAttempts = props => {
   let {recording, handleDelete, teamId, userId} = props;
+
   const [isSelected, setIsSelected] = useState({});
   let attempt = 0;
 
   const handleRewatch = (e, {name}) => {
     let video = document.getElementById(name);
     video.play();
-    console.log(video);
   };
 
   const handlePause = (e, {name}) => {
     let video = document.getElementById(name);
     video.pause();
-    console.log(video);
   };
-
-  // handleClickUpload = () => {};
 
   const handleSelect = (e, {name}) => {
     let selectedBlob = recording.find(blob => blob.name === name); //video = blob
     setIsSelected(selectedBlob);
-    console.log('blob I selected: ', selectedBlob.name);
   };
-
-  // const handleUpload = (e, {name}) => {
-  //   let blobForUpload = recording.find(blob => blob.name === name); //video = blob
-  //   console.log('TCL: handleUpload -> blobForUpload', blobForUpload.name);
-  //   upload(blobForUpload);
-  //   console.log('Handled Upload ... Maybe, yo');
-  // };
-
-  // const handleDownload = (e, {name}) => {
-  //   let blobForDownload = recording.find(blob => blob.name === name); //video = blob
-  //   download(blobForDownload);
-  //   console.log('Handled Download ... Maybe even worked!');
-  // };
 
   return !recording.length ? (
     <Header as="h3">Ready to get started? Record a video!</Header>
@@ -75,12 +58,7 @@ const PrevAttempts = props => {
                 <Icon name="delete" />
               </Button>
             </Button.Group>
-            <UploadVideoForm
-              blob={blob}
-              blobSrc={blobSrc}
-              teamId={teamId}
-              userId={userId}
-            />
+            <UploadVideoForm blob={blob} teamId={teamId} userId={userId} />
           </Card>
         );
       })}
