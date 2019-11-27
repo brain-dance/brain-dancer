@@ -10,21 +10,18 @@ import {
   Segment
 } from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
+import SubmissionMessage from './SubmissionMessage';
 
 const UploadVideoForm = props => {
   const {blob, blobSrc, teamId, userId} = props;
   const [title, setTitle] = useState('');
   const [visible, setVisible] = useState(false);
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
-
   const [isClickedClose, setIsClickedClose] = useState(false);
   const [open, setOpen] = useState(false);
   const [dimmer, setDimmer] = useState(true);
+  const [isUploaded, setIsUploaded] = useState(false);
   const dispatch = useDispatch();
-
-  const handleDismiss = () => {
-    setVisible(false);
-  };
 
   const handleClickClose = () => {
     setOpen(!open);
@@ -50,6 +47,7 @@ const UploadVideoForm = props => {
     // let blobForUpload = recording.find(vid => vid.name === name);
     // console.log('TCL: handleUpload -> blobForUpload', blobForUpload.name);
     upload();
+    setIsUploaded(true);
     console.log('handled upload .... and maybe even uploaded video!');
   };
 
@@ -70,12 +68,10 @@ const UploadVideoForm = props => {
         <Button
           labelPosition="right"
           icon="right chevron"
-          content="Select Video"
+          content="Select Video for Upload"
           name={blob.name}
           onClick={handleSelectVid}
-        >
-          {/* <Icon name="upload" /> */}
-        </Button>
+        />
       }
       dimmer={dimmer}
       open={open}
@@ -84,32 +80,31 @@ const UploadVideoForm = props => {
       <Button floated="right" type="icon" onClick={handleClickClose}>
         <Icon name="window close" />
       </Button>
-      <Modal.Header>Submit your video</Modal.Header>
-      {/* <Segment compact> */}
-      <Form>
-        <Form.Field>
-          <label>Give your routine a title!</label>
-          <input
-            value={title}
-            onChange={evt => {
-              setTitle(evt.target.value);
-            }}
-          />
-        </Form.Field>
-      </Form>
-      <p>When you are ready, submit your video for processing!</p>
-      <Button content="Submit" onClick={handleUpload} />
-      {/* <Button content="Download" onClick={this.download} /> */}
-      {visible ? (
-        <Message
-          onDismiss={handleDismiss}
-          header="Video submitted!"
-          content="Video processing. Check back soon :)"
-        />
+      <Modal.Header>Submit Your Routine</Modal.Header>
+      {!isUploaded ? (
+        <div>
+          <Form>
+            <Form.Field>
+              <label> Give your routine a title.</label>
+              <input
+                value={title}
+                onChange={evt => {
+                  setTitle(evt.target.value);
+                }}
+              />
+            </Form.Field>
+          </Form>
+          <p>When you are ready, submit your video for processing!</p>
+          <Button content="Submit" onClick={handleUpload} />{' '}
+        </div>
       ) : (
-        ''
+        <div>
+          <Message
+            header="Video submitted!"
+            content="Video processing. Check back soon :)"
+          />
+        </div>
       )}
-      {/* </Segment> */}
     </Modal>
   );
 };

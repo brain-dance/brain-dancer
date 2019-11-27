@@ -74,13 +74,6 @@ const PrevAttempts = props => {
               <Button name={blob.name} onClick={handleDelete}>
                 <Icon name="delete" />
               </Button>
-
-              {/* <Button name={blob.name} onClick={handleUpload}>
-                <Icon name="upload" />
-              </Button>
-              <Button name={blob.name} onClick={handleDownload}>
-                <Icon name="download" />
-              </Button> */}
             </Button.Group>
             <UploadVideoForm
               blob={blob}
