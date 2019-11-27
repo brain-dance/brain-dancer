@@ -68,3 +68,11 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+#team {
+  height: 100vh;
+}
+
+#sidebar {
+  height: 100vh;
+}

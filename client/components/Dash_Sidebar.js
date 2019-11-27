@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 // import {useDispatch, useSelector} from 'react-redux';
-import {Header, Segment, Grid} from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
+import {Header, Button, Icon, Segment, Grid, Menu} from 'semantic-ui-react';
 import TeamList from './TeamList';
 
 // import {getUser} from '../store/user';
@@ -9,32 +10,33 @@ export const DashSidebar = props => {
   const {teams, selectedTeam, handleSelectTeam} = props;
   // const {teams} = user;
 
-  // const [isClickedAddTeam, setIsClickedAddTeam] = useState(false);
+  const [isClickedAddTeam, setIsClickedAddTeam] = useState(false);
 
-  // const handleClickAddTeam = () => {
-  //   setIsClickedAddTeam(true);
-  // };
+  const handleClickAddTeam = () => {
+    setIsClickedAddTeam(true);
+  };
 
   return teams.length ? (
-    <div>
-      <Header as="h3">Assignments</Header>
-      <Grid>
-        <Grid.Column width={3}>
-          <Header as="h3">Teams</Header>
-        </Grid.Column>
-        <Grid.Column width={1}>
-          {/* BUTTON MIGHT MOVE TO ADD TEAM MODAL */}
-          {/* <Button size="mini" color="olive" icon onClick={handleClickAddTeam}>
-            <Icon name="add square" />
-          </Button> */}
-        </Grid.Column>
-      </Grid>
-      <TeamList
-        teams={teams}
-        selectedTeam={selectedTeam}
-        handleSelectTeam={handleSelectTeam}
-      />
-    </div>
+    <Menu vertical id="sidebar">
+      <Menu.Item>
+        <Menu.Header as={Link} to="/assignments">
+          Assignments
+        </Menu.Header>
+      </Menu.Item>
+      <Menu.Item>
+        <Menu.Header>Teams</Menu.Header>
+      </Menu.Item>
+      <Menu.Menu>
+        <TeamList
+          teams={teams}
+          selectedTeam={selectedTeam}
+          handleSelectTeam={handleSelectTeam}
+        />
+        <Menu.Item onClick={handleClickAddTeam}>
+          <Icon name="add" /> Add a Team
+        </Menu.Item>
+      </Menu.Menu>
+    </Menu>
   ) : (
     <h3>Error!</h3>
   );
