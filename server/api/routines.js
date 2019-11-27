@@ -62,11 +62,15 @@ router.post('/', async (req, res, next) => {
     // ^ not super secure - any way to make this secure while staying dry?
 
     // initiate server side skelly processor
-    const generatedSkellies = generateWireframes(req.body.url);
+    const generatedSkellies = await generateWireframes(req.body.url);
 
     await Promise.all(
-      generatedSkellies.forEach(skelly => {
-        VideoFrame.create(skelly);
+      generatedSkellies.map((skelly, i) => {
+        return VideoFrame.create({
+          framejson: skelly,
+          routineId: newRoutine.id,
+          frameNumber: i
+        });
       })
     );
 

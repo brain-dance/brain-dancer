@@ -35,3 +35,9 @@
   justify-content: space-around;
   justify-items: space-around;
 }
+
+#skeleton {
+  width: 360px;
+  height: 240px;
+  outline: solid red 1px;
+}

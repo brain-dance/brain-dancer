@@ -64,24 +64,24 @@ const routineVideo = {
 };
 
 //TEST ACCOUNTS - Video frames
-const testVideoFrames = [
-  {
-    framejson: 'JSON string of videoframe 1 for performance',
-    frameNumber: 10
-  },
-  {
-    framejson: 'JSON string of videoframe 2 for performance',
-    frameNumber: 100
-  },
-  {
-    framejson: 'JSON string of videoframe 1 for practice',
-    frameNumber: 89
-  },
-  {
-    framejson: 'JSON string of videoframe 2 for practice',
-    frameNumber: 1489
-  }
-];
+// const testVideoFrames = [
+//   {
+//     framejson: 'JSON string of videoframe 1 for performance',
+//     frameNumber: 10
+//   },
+//   {
+//     framejson: 'JSON string of videoframe 2 for performance',
+//     frameNumber: 100
+//   },
+//   {
+//     framejson: 'JSON string of videoframe 1 for practice',
+//     frameNumber: 89
+//   },
+//   {
+//     framejson: 'JSON string of videoframe 2 for practice',
+//     frameNumber: 1489
+//   }
+// ];
 
 //TEST ACCOUNTS - Calibration frame
 const testCalibrations = [
@@ -116,11 +116,11 @@ async function createTestUsers() {
   // practice belongsto routine
   await seededPractice.setRoutine(1);
 
-  const seededVideoFrames = await Promise.all(
-    testVideoFrames.map(videoFrame => {
-      return VideoFrame.create(videoFrame);
-    })
-  );
+  // const seededVideoFrames = await Promise.all(
+  //   testVideoFrames.map(videoFrame => {
+  //     return VideoFrame.create(videoFrame);
+  //   })
+  // );
 
   //Associations
   //Team belongsToMany User
@@ -155,16 +155,16 @@ async function createTestUsers() {
   await seededPractice.setUser(dancer);
 
   //Routine / Practice hasMany VideoFrames
-  let [
-    performanceFrame1,
-    performanceFrame2,
-    practiceFrame1,
-    practiceFrame2
-  ] = seededVideoFrames;
+  // let [
+  //   performanceFrame1,
+  //   performanceFrame2,
+  //   practiceFrame1,
+  //   practiceFrame2
+  // ] = seededVideoFrames;
 
-  await seededRoutine.setVideoframes([performanceFrame1, performanceFrame2]);
+  // await seededRoutine.setVideoframes([performanceFrame1, performanceFrame2]);
 
-  await seededPractice.setVideoframes([practiceFrame1, practiceFrame2]);
+  // await seededPractice.setVideoframes([practiceFrame1, practiceFrame2]);
 
   //Video hasOne CalibrationFrame
   let [routineCalibration, practiceCalibration] = seededCalibrationFrame;
@@ -207,10 +207,10 @@ async function createFakeUsers() {
       title: faker.lorem.word()
     };
 
-    const videoFrame = {
-      framejson: faker.lorem.sentence(),
-      frameNumber: Math.round(Math.random() * 10000)
-    };
+    // const videoFrame = {
+    //   framejson: faker.lorem.sentence(),
+    //   frameNumber: Math.round(Math.random() * 10000)
+    // };
 
     const calibration = {
       framejson: faker.lorem.sentence()
@@ -221,7 +221,7 @@ async function createFakeUsers() {
       Team.create(team),
       Routine.create(routine),
       Practice.create(practice),
-      VideoFrame.create(videoFrame),
+      // VideoFrame.create(videoFrame),
       CalibrationFrame.create(calibration)
     ]);
   }
@@ -239,13 +239,13 @@ const seedDB = async () => {
 
     let totalVideos = totalSeeds + 2;
 
-    let totalVideoFrames = totalSeeds + testVideoFrames.length;
+    // let totalVideoFrames = totalSeeds + testVideoFrames.length;
 
     let totalCalibrations = totalSeeds + testCalibrations.length;
 
     console.log(
       green(
-        `...5, 6, 7, 8! Database seeded with ${totalUsers} users, ${totalTeams} teams, ${totalVideos} videos, ${totalVideoFrames} video frames and ${totalCalibrations} calibrations.`
+        `...5, 6, 7, 8! Database seeded with ${totalUsers} users, ${totalTeams} teams, ${totalVideos} videos, ${'totalVideoFrames'} video frames and ${totalCalibrations} calibrations.`
       )
     );
   } catch (err) {
