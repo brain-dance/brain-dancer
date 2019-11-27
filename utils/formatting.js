@@ -1,14 +1,14 @@
 const {angle} =require('./scaling');
 const {createCanvas, loadImage} =require('canvas');
-const {singlePoseNet} =require('./posenet');
+//const {singlePoseNet} =require('./posenet');
 const sizeOf =require('image-size');
 
-const getPose = async input => {
+/*const getPose = async input => {
   const net = await singlePoseNet();
   return net.estimateSinglePose(input, {
     flipHorizontal: true
   });
-};
+};*/
 
 const canvasify = async imagePath => {
   console.log('canvasing');
@@ -140,7 +140,7 @@ const angleDifferences = (pose, targetPose) => {
   return differences;
 };
 
-module.exports.getPose=getPose;
+//module.exports.getPose=getPose;
 module.exports.canvasify=canvasify;
 module.exports.labelPose=labelPose;
 module.exports.getAngles=getAngles;

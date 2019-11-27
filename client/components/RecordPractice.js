@@ -39,7 +39,7 @@ const workerCanv = document.createElement('canvas');
 workerCanv.width = 320 * 2;
 workerCanv.height = 240 * 2;
 const wcContext = workerCanv.getContext('2d');
-sendFrame = (video, timestamp) => {
+/*sendFrame = (video, timestamp) => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
   console.log(workerCanv.toDataURL());
@@ -47,7 +47,7 @@ sendFrame = (video, timestamp) => {
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
      timestamp: timestamp
   });
-};
+};*/
 
 class RecordPractice extends React.Component {
   constructor(props) {
