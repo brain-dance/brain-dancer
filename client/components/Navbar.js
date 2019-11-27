@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {logout} from '../store';
-import {Menu, Header, Icon, Divider} from 'semantic-ui-react';
+import {Menu, Header, Icon, Image} from 'semantic-ui-react';
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div>
@@ -11,7 +11,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
       <Menu secondary>
         {/* The Menubar will show these links after you log in */}
         <Menu.Item name="home" as={Link} to="/home">
-          <Header as="h1">BrainDancer</Header>
+          <Image src="coreo.png" size="small" />
         </Menu.Item>
         <Menu.Item name="recordRoutine" as={Link} to="/new-routine">
           <Icon name="record" /> Routine
@@ -27,7 +27,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
       <Menu secondary>
         {/* The navbar will show these links before you log in */}
         <Menu.Item name="login" as={Link} to="/login">
-          <Header as="h1">BrainDancer</Header>
+          <Image src="coreo.png" size="small" />
         </Menu.Item>
         <Menu.Menu position="right">
           <Menu.Item name="login" as={Link} to="/login">
@@ -39,7 +39,6 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         </Menu.Menu>
       </Menu>
     )}
-    <Divider />
   </div>
 );
 
