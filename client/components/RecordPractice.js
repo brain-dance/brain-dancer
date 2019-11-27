@@ -191,8 +191,6 @@ class RecordPractice extends React.Component {
 
   playboth() {
     console.log('hi');
-    this.player.reset();
-    this.playbackPlayer.reset();
     this.player.play();
     this.playbackPlayer.play();
   }
@@ -201,8 +199,8 @@ class RecordPractice extends React.Component {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 360, 240);
-    const scored = []; // get this from local state somewhere?!?!
-
+    console.log('draw!');
+    // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
     // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
     // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
