@@ -63,8 +63,10 @@ class RecordPractice extends React.Component {
       cameraCanvas: '',
       context: ''
     };
+
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
+
     this.upload = this.upload.bind(this);
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
@@ -200,7 +202,7 @@ class RecordPractice extends React.Component {
             className="video-js"
           >
             <source
-              src="https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mp4"
+              src={this.props.routine.url}
               type="video/mp4"
             />
           </video>
@@ -255,7 +257,8 @@ if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
 
 const mapStateToProps = state => {
   return {
-    userId: state.user.id
+    userId: state.user.id,
+    routine: state.singleRoutine
   };
 };
 const mapDispatchToProps = dispatch => {
