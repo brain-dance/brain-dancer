@@ -125,17 +125,17 @@ const simpleScale = (wireframe, ratio) => {
 // };
 
 const SEGMENTS = {
-  LeftShin: ['LeftAnkle', 'LeftKnee'],
-  RightShin: ['RightAnkle', 'RightKnee'],
-  LeftThigh: ['LeftKnee', 'LeftHip'],
-  RightThigh: ['RightKnee', 'RightHip'],
-  Waist: ['LeftHip', 'RightHip'],
-  LeftTorso: ['LeftHip', 'LeftShoulder'],
-  RightTorso: ['RightHip', 'RightShoulder'],
-  LeftUpperArm: ['LeftShoulder', 'LeftElbow'],
-  RightUpperArm: ['RightShoulder', 'RightElbow'],
-  LeftForeArm: ['LeftWrist', 'LeftElbow'],
-  RightForeArm: ['RightWrist', 'RightElbow']
+  leftShin: ['LeftAnkle', 'LeftKnee'],
+  rightShin: ['RightAnkle', 'RightKnee'],
+  leftThigh: ['LeftKnee', 'LeftHip'],
+  rightThigh: ['RightKnee', 'RightHip'],
+  waist: ['LeftHip', 'RightHip'],
+  leftTorso: ['LeftHip', 'LeftShoulder'],
+  rightTorso: ['RightHip', 'RightShoulder'],
+  leftUpperArm: ['LeftShoulder', 'LeftElbow'],
+  rightUpperArm: ['RightShoulder', 'RightElbow'],
+  leftForeArm: ['LeftWrist', 'LeftElbow'],
+  rightForeArm: ['RightWrist', 'RightElbow']
 };
 
 const getLengths = pose => {
@@ -170,9 +170,9 @@ const scaler = (source, target, calibration) => {
   const calibLengths = calibrate(source, calibration);
 
   //find waist midpoint
-  const midpoint = {
-    x: target.leftHip.x + target.target.rightHip.x,
-    y: target.leftHip.y + target.rightHip.y
+  const waistMid = {
+    x: (target.leftHip.x + target.rightHip.x) / 2,
+    y: (target.leftHip.y + target.rightHip.y) / 2
   };
 
   //find angle waist makes with ground
@@ -181,22 +181,58 @@ const scaler = (source, target, calibration) => {
       (source.leftHip.x + source.rightHip.x)
   );
 
+  //find angle shoulders make with ground
+  const shouldersAngle = Math.atan(
+    (source.rightShoulder.y + source.rightShoulder.y) /
+      (source.leftShoulder.x + source.rightShoulder.x)
+  );
+
   //create new wireframe
   const scaled = {};
+  let theta;
 
   //find new waist points
   scaled.rightHip = {
-    x: midpoint.x + (Math.cos(waistAngle) * calibLengths.Waist) / 2,
-    y: midpoint.y + (Math.sin(waistAngle) * calibLengths.Waist) / 2
+    x: waistMid.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: waistMid.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
   scaled.leftHip = {
-    x: midpoint.x - (Math.cos(waistAngle) * calibLengths.Waist) / 2,
-    y: midpoint.y - (Math.sin(waistAngle) * calibLengths.Waist) / 2
+    x: waistMid.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: waistMid.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
-  //use scaled leg lengths and angles to create new wireframe angles
-  //do that for the rest of the line segments
+  //find left leg points
+  theta = sourceAngles.LeftKneeLeftHipRightHip - waistAngle - Math.PI;
+  scaled.leftKnee = {
+    x: scaled.leftHip.x - calibLengths.leftThigh.x * Math.cos(theta),
+    y: scaled.leftHip.y - calibLengths.leftThigh.y * Math.sin(theta)
+  };
+
+  theta = sourceAngles.LeftAnkleLeftKneeLeftHip - theta - Math.PI;
+  scaled.leftThigh = {
+    x: scaled.leftKnee.x - calibLengths.leftShin.x * Math.cos(theta),
+    y: scaled.leftKnee.y - calibLengths.leftShin.y * Math.sin(theta)
+  };
+
+  //find right leg points
+  theta = Math.PI - waistAngle - sourceAngles.RightKneeRightHipLeftHip;
+  scaled.rightKnee = {
+    x: scaled.rightHip.x + calibLengths.rightThigh.x * Math.cos(theta),
+    y: scaled.rightHip.y - calibLengths.rightThigh.y * Math.cos(theta)
+  };
+
+  theta = Math.PI - theta - sourceAngles.RightKneeRightHipLeftHip;
+  scaled.rightKnee = {
+    x: scaled.rightKnee.x + calibLengths.rightShin.x * Math.cos(theta),
+    y: scaled.rightKnee.y - calibLengths.rightShin.y * Math.cos(theta)
+  };
+
+  //find spine
+
+  // find left arm points
+
+  //find right arm points
 };
 
 module.exports = {
