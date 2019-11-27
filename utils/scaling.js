@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 const {getAngles} = require('./formatting');
 
 //Notes - current scaling approach just straightforwardly squeezes or stretches the wireframe
@@ -135,24 +136,60 @@ const SEGMENTS = {
   leftUpperArm: ['LeftShoulder', 'LeftElbow'],
   rightUpperArm: ['RightShoulder', 'RightElbow'],
   leftForeArm: ['LeftWrist', 'LeftElbow'],
-  rightForeArm: ['RightWrist', 'RightElbow']
+  rightForeArm: ['RightWrist', 'RightElbow'],
+  collar: ['LeftShoulder, RightShoulder']
 };
 
 const getLengths = pose => {
   return Object.keys(SEGMENTS).reduce((lengths, segment) => {
     const [start, end] = SEGMENTS[segment];
-    lengths[segment] = distance(...pose[start], ...pose[end]);
+    lengths[segment] = distance(
+      pose[start].x,
+      pose[start].y,
+      pose[end].x,
+      pose[end].y
+    );
     return lengths;
   }, {});
+};
+
+const getMidpoint = (x1, y1, x2, y2) => {
+  return {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
+};
+
+const getSpineLength = pose => {
+  const neck = getMidpoint(
+    pose.leftShoulder.x,
+    pose.leftShoulder.y,
+    pose.rightShoulder.x,
+    pose.rightShoulder.y
+  );
+
+  const pelvis = getMidpoint(
+    pose.leftHip.x,
+    pose.leftHip.y,
+    pose.rightHip.x,
+    pose.rightHip.y
+  );
+
+  return distance(pelvis.x, pelvis.y, neck.x, neck.y);
+};
+
+const calibrateSpine = (source, target) => {
+  return getSpineLength(target) / getSpineLength(source);
 };
 
 const getCalibration = (source, target) => {
   const sourceLens = getLengths(source);
   const targetLens = getLengths(target);
 
+  const initial = {
+    spine: calibrateSpine(source, target)
+  };
+
   return Object.keys(sourceLens).reduce((calibration, segment) => {
     calibration[segment] = targetLens[segment] / sourceLens[segment];
-  }, {});
+  }, initial);
 };
 
 const calibrate = (source, calibration) => {
@@ -170,10 +207,26 @@ const scaler = (source, target, calibration) => {
   const calibLengths = calibrate(source, calibration);
 
   //find waist midpoint
-  const waistMid = {
-    x: (target.leftHip.x + target.rightHip.x) / 2,
-    y: (target.leftHip.y + target.rightHip.y) / 2
-  };
+  const sourcePelvis = getMidpoint(
+    source.leftHip.x,
+    source.leftHip.y,
+    source.rightHip.x,
+    source.rightHip.y
+  );
+
+  const sourceNeck = getMidpoint(
+    source.leftShoulder.x,
+    source.leftShoulder.y,
+    source.rightShoulder.x,
+    source.rightShoulder.y
+  );
+
+  const targetPelvis = getMidpoint(
+    target.leftHip.x,
+    target.leftHip.y,
+    target.rightHip.x,
+    target.rightHip.y
+  );
 
   //find angle waist makes with ground
   const waistAngle = Math.atan(
@@ -193,46 +246,98 @@ const scaler = (source, target, calibration) => {
 
   //find new waist points
   scaled.rightHip = {
-    x: waistMid.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
-    y: waistMid.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
+    x: targetPelvis.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: targetPelvis.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
   scaled.leftHip = {
-    x: waistMid.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
-    y: waistMid.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
+    x: targetPelvis.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: targetPelvis.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
   //find left leg points
   theta = sourceAngles.LeftKneeLeftHipRightHip - waistAngle - Math.PI;
   scaled.leftKnee = {
-    x: scaled.leftHip.x - calibLengths.leftThigh.x * Math.cos(theta),
-    y: scaled.leftHip.y - calibLengths.leftThigh.y * Math.sin(theta)
+    x: scaled.leftHip.x - calibLengths.leftThigh * Math.cos(theta),
+    y: scaled.leftHip.y - calibLengths.leftThigh * Math.sin(theta)
   };
 
   theta = sourceAngles.LeftAnkleLeftKneeLeftHip - theta - Math.PI;
   scaled.leftThigh = {
-    x: scaled.leftKnee.x - calibLengths.leftShin.x * Math.cos(theta),
-    y: scaled.leftKnee.y - calibLengths.leftShin.y * Math.sin(theta)
+    x: scaled.leftKnee.x - calibLengths.leftShin * Math.cos(theta),
+    y: scaled.leftKnee.y - calibLengths.leftShin * Math.sin(theta)
   };
 
   //find right leg points
   theta = Math.PI - waistAngle - sourceAngles.RightKneeRightHipLeftHip;
   scaled.rightKnee = {
-    x: scaled.rightHip.x + calibLengths.rightThigh.x * Math.cos(theta),
-    y: scaled.rightHip.y - calibLengths.rightThigh.y * Math.cos(theta)
+    x: scaled.rightHip.x + calibLengths.rightThigh * Math.cos(theta),
+    y: scaled.rightHip.y - calibLengths.rightThigh * Math.sin(theta)
   };
 
   theta = Math.PI - theta - sourceAngles.RightKneeRightHipLeftHip;
   scaled.rightKnee = {
-    x: scaled.rightKnee.x + calibLengths.rightShin.x * Math.cos(theta),
-    y: scaled.rightKnee.y - calibLengths.rightShin.y * Math.cos(theta)
+    x: scaled.rightKnee.x + calibLengths.rightShin * Math.cos(theta),
+    y: scaled.rightKnee.y - calibLengths.rightShin * Math.sin(theta)
   };
 
   //find spine
+  const spineAngle = angle(
+    sourcePelvis.x,
+    sourcePelvis.y,
+    source.rightHip.x,
+    source.rightHip.y,
+    sourceNeck.x,
+    sourceNeck.y
+  );
+
+  const spineLength = getSpineLength(source) * calibLengths.spine;
+
+  //find scaled neck
+  theta = Math.PI + waistAngle + spineAngle;
+  const scaledNeck = {
+    x: sourcePelvis.x + spineLength * Math.cos(theta),
+    y: sourcePelvis.y + spineLength * Math.sin(theta)
+  };
+
+  //find shoulders
+  scaled.leftShoulder = {
+    x: scaledNeck.x - (calibLengths.collar * Math.cos(shouldersAngle)) / 2,
+    y: scaledNeck.y - (calibLengths.collar * Math.sin(shouldersAngle)) / 2
+  };
+
+  scaled.rightShoulder = {
+    x: scaledNeck.x + (calibLengths.collar * Math.cos(shouldersAngle)) / 2,
+    y: scaledNeck.y + (calibLengths.collar * Math.sin(shouldersAngle)) / 2
+  };
 
   // find left arm points
+  theta =
+    sourceAngles.LeftElbowLeftShoulderRightShoulder - shouldersAngle - Math.PI;
+  scaled.leftElbow = {
+    x: scaled.leftShoulder.x - calibLengths.leftUpperArm * Math.cos(theta),
+    y: scaled.leftShoulder.y - calibLengths.leftUpperArm * Math.sin(theta)
+  };
+
+  theta = sourceAngles.LeftWristLeftElbowLeftShoulder - theta - Math.PI;
+  scaled.leftWrist = {
+    x: scaled.leftElbow.x - calibLengths.leftForeArm * Math.cos(theta),
+    y: scaled.leftElbow.y - calibLengths.leftForeArm * Math.sin(theta)
+  };
 
   //find right arm points
+  theta =
+    Math.PI - shouldersAngle - sourceAngles.RightElbowRightShoulderLeftShoulder;
+  scaled.rightElbow = {
+    x: scaled.rightShoulder.x + calibLengths.rightUpperArm * Math.cos(theta),
+    y: scaled.rightShoulder.y - calibLengths.rightUpperArm * Math.sin(theta)
+  };
+
+  theta = Math.PI - theta - sourceAngles.RightWristRightElbowRightShoulder;
+  scaled.rightWrist = {
+    x: scaled.rightElbow.x + calibLengths.rightForeArm * Math.cos(theta),
+    y: scaled.rightElbow.y - calibLengths.rightForeArm * Math.sin(theta)
+  };
 };
 
 module.exports = {
@@ -242,7 +347,8 @@ module.exports = {
   simpleScale,
   translate,
   distance,
-  deepCopy
+  deepCopy,
+  getCalibration
 };
 /*
     All below is irrelevant.  Keeping mostly as a reminder I want to learn the algorithm later.
