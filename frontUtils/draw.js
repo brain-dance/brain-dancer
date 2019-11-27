@@ -26,7 +26,13 @@ function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
   ctx.stroke();
 }
 
-export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+export function drawSkeleton(
+  keypoints,
+  minConfidence,
+  ctx,
+  scale = 1,
+  color = 'aqua'
+) {
   const adjacentKeypoints = getAdjacentKeyPoints(keypoints, minConfidence);
 
   adjacentKeypoints.forEach(keypoints => {
@@ -40,7 +46,13 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
   });
 }
 
-export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
+export function drawKeypoints(
+  keypoints,
+  minConfidence,
+  ctx,
+  scale = 1,
+  color = 'aqua'
+) {
   for (let i = 0; i < keypoints.length; i++) {
     const keypoint = keypoints[i];
     if (keypoint.score < minConfidence) {

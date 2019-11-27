@@ -11,7 +11,16 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
+import {
+  Button,
+  Segment,
+  Card,
+  Form,
+  Message,
+  Modal,
+  Item,
+  Grid
+} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
@@ -24,7 +33,7 @@ worker.postMessage({resolution: {width: 320, height: 240}});
 worker.onmessage = event => {
   const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
-  console.log('got message', event.data);
+  // console.log('got message', event.data);
   ctx.clearRect(0, 0, 360, 240);
   drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
   drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
@@ -40,7 +49,7 @@ const wcContext = workerCanv.getContext('2d');
 export const sendFrame = video => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
-  console.log(workerCanv.toDataURL());
+  // console.log(workerCanv.toDataURL());
   worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height)
     // timestamp: timestamp
@@ -71,6 +80,8 @@ class RecordPractice extends React.Component {
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
+    this.playboth = this.playboth.bind(this);
+    this.drawBoth = this.drawBoth.bind(this);
     // this.cameraCanvas;
     // this.context;
   }
@@ -135,10 +146,7 @@ class RecordPractice extends React.Component {
 
     this.player.on('timestamp', function() {
       // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
-      console.log(
-        'timestamp! here...',
-        document.querySelector('.vjs-record-canvas canvas').getContext('2d')
-      );
+      console.log('timestamp!');
       sendFrame(document.querySelector('#video_html5_api'));
       // worker.postMessage({
       //   image: document
@@ -181,11 +189,29 @@ class RecordPractice extends React.Component {
     this.setState({...this.state, calibration, modalOpen: false});
   }
 
+  playboth() {
+    console.log('hi');
+    this.player.play();
+    this.playbackPlayer.play();
+  }
+
+  drawBoth() {
+    const canvas = document.querySelector('#skeleton');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 360, 240);
+    console.log('draw!');
+    // not sure how to go about this specifically per frame
+    // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
+    // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
+    // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
+    // drawKeypoints(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
+  }
+
   render() {
     return (
       <div>
         <div>
-          <Modal open={this.state.modalOpen}>
+          <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
               <Calibrator
                 calibration={this.state.calibration}
@@ -200,11 +226,9 @@ class RecordPractice extends React.Component {
             ref={node => (this.playback = node)}
             controls={true}
             className="video-js"
+            onTimeUpdate={this.drawBoth}
           >
-            <source
-              src={this.props.routine.url}
-              type="video/mp4"
-            />
+            <source src={this.props.routine.url} type="video/mp4" />
           </video>
           <video
             id="video"
@@ -213,36 +237,25 @@ class RecordPractice extends React.Component {
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
-          <canvas id="overlay"></canvas>
         </div>
-        <div id="skelliesAndForm">
-          <canvas id="skeleton">this is a canvas</canvas>
-          <Segment compact>
-            <Form>
-              <Form.Field>
-                <label>Title</label>
-                <input
-                  value={this.state.title}
-                  onChange={evt => {
-                    this.setState({...this.state, title: evt.target.value});
-                  }}
-                />
-              </Form.Field>
-            </Form>
-            <p>When you are ready, submit your video for processing!</p>
-            <Button content="Submit" onClick={this.upload} />
-            <Button content="Download" onClick={this.download} />
-            {this.state.visible ? (
-              <Message
-                onDismiss={this.handleDismiss}
-                header="Video submitted!"
-                content="Video processing. Check back soon :)"
-              />
-            ) : (
-              ''
-            )}
+        <Grid column={1} centered>
+          <Segment basic compact padded="very">
+            <Item>
+              <Item.Content>
+                <canvas id="skeleton"></canvas>
+              </Item.Content>
+              <Item.Content verticalAlign="top">
+                <Item.Header>
+                  <Button
+                    content="Play back"
+                    onClick={this.playboth}
+                    color="blue"
+                  />
+                </Item.Header>
+              </Item.Content>
+            </Item>
           </Segment>
-        </div>
+        </Grid>
         <Segment id="gallery">
           <p>Video list could be here, maybe as cards?</p>
         </Segment>
@@ -258,7 +271,8 @@ if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
 const mapStateToProps = state => {
   return {
     userId: state.user.id,
-    routine: state.singleRoutine
+    routine: state.singleRoutine,
+    routineFrames: state.singleRoutine.videoframes
   };
 };
 const mapDispatchToProps = dispatch => {
