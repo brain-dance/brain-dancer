@@ -35,6 +35,11 @@ const PrevAttempts = props => {
     video.play();
   };
 
+  const handlePause = (e, {name}) => {
+    let video = document.getElementById(name);
+    video.pause();
+  };
+
   return !recording.length ? (
     <h3>You have not recorded any videos yet!</h3>
   ) : (
@@ -48,29 +53,19 @@ const PrevAttempts = props => {
               <Card.Content>
                 <Card.Header>Recording {attempt}</Card.Header>
                 <video id={blob.name} width="100" src={blobSrc} />
-                <Icon name="play" />
               </Card.Content>
               <Card.Content extra>
-                {/* <div className="ui two buttons"> */}
-                <Button
-                  basic
-                  color="green"
-                  type="button"
-                  name={blob.name}
-                  onClick={handleRewatch}
-                >
-                  Rewatch
-                </Button>
-                <Button
-                  name={blob.name}
-                  type="button"
-                  onClick={handleDelete}
-                  basic
-                  color="red"
-                >
-                  Delete
-                </Button>
-                {/* </div> */}
+                <Button.Group>
+                  <Button icon name={blob.name} onClick={handleRewatch}>
+                    <Icon name="play" />
+                  </Button>
+                  <Button icon name={blob.name} onClick={handlePause}>
+                    <Icon name="pause" />
+                  </Button>
+                  <Button icon name={blob.name} onClick={handleDelete}>
+                    <Icon name="delete" />
+                  </Button>
+                </Button.Group>
               </Card.Content>
             </Card>
           </Grid.Column>

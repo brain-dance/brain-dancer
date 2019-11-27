@@ -31,7 +31,6 @@ class RecordRoutine extends React.Component {
     };
     this.teamId = props.match.params.teamId;
     this.handleDelete = this.handleDelete.bind(this);
-    // this.handleRewatch = this.handleRewatch.bind(this);
     this.upload = this.upload.bind(this);
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
