@@ -46,7 +46,8 @@ router.get('/:id', async (req, res, next) => {
         //     }
         //   ]
         // }
-      ]
+      ],
+      order: [[{model: VideoFrame}, 'frameNumber']]
     });
 
     res.json(routine);

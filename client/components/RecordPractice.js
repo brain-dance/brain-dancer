@@ -201,10 +201,7 @@ class RecordPractice extends React.Component {
             controls={true}
             className="video-js"
           >
-            <source
-              src={this.props.routine.url}
-              type="video/mp4"
-            />
+            <source src={this.props.routine.url} type="video/mp4" />
           </video>
           <video
             id="video"
@@ -258,7 +255,8 @@ if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
 const mapStateToProps = state => {
   return {
     userId: state.user.id,
-    routine: state.singleRoutine
+    routine: state.singleRoutine,
+    routineFrames: state.singleRoutine.videoframes
   };
 };
 const mapDispatchToProps = dispatch => {
