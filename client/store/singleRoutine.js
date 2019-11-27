@@ -4,7 +4,10 @@ import axios from 'axios';
 const SET_SINGLE_ROUTINE = 'SET_SINGLE_ROUTINE';
 
 // action creators
-const setSingleRoutine = routine => ({type: SET_SINGLE_ROUTINE, routine});
+export const setSingleRoutine = routine => ({
+  type: SET_SINGLE_ROUTINE,
+  routine
+});
 
 // thunks
 export const getSingleRoutine = routineId => async dispatch => {
