@@ -1,19 +1,25 @@
 import React, {useState} from 'react';
 import {Button, Card, Header, Icon} from 'semantic-ui-react';
+import UploadVideoForm from './UploadVideoForm';
 
 const PrevAttempts = props => {
-  let {recording, handleDelete, upload} = props;
+  let {recording, handleDelete, teamId, userId} = props;
   const [isSelected, setIsSelected] = useState({});
+  let attempt = 0;
 
   const handleRewatch = (e, {name}) => {
     let video = document.getElementById(name);
     video.play();
+    console.log(video);
   };
 
   const handlePause = (e, {name}) => {
     let video = document.getElementById(name);
     video.pause();
+    console.log(video);
   };
+
+  // handleClickUpload = () => {};
 
   const handleSelect = (e, {name}) => {
     let selectedBlob = recording.find(blob => blob.name === name); //video = blob
@@ -21,12 +27,18 @@ const PrevAttempts = props => {
     console.log('blob I selected: ', selectedBlob.name);
   };
 
-  const handleUpload = (e, {name}) => {
-    let blobForUpload = recording.find(blob => blob.name === name); //video = blob
-    console.log('TCL: handleUpload -> blobForUpload', blobForUpload.name);
-    upload(blobForUpload);
-    console.log('Handled Upload ... Maybe, yo');
-  };
+  // const handleUpload = (e, {name}) => {
+  //   let blobForUpload = recording.find(blob => blob.name === name); //video = blob
+  //   console.log('TCL: handleUpload -> blobForUpload', blobForUpload.name);
+  //   upload(blobForUpload);
+  //   console.log('Handled Upload ... Maybe, yo');
+  // };
+
+  // const handleDownload = (e, {name}) => {
+  //   let blobForDownload = recording.find(blob => blob.name === name); //video = blob
+  //   download(blobForDownload);
+  //   console.log('Handled Download ... Maybe even worked!');
+  // };
 
   return !recording.length ? (
     <Header as="h3">Ready to get started? Record a video!</Header>
@@ -36,6 +48,7 @@ const PrevAttempts = props => {
       {recording.map(blob => {
         let blobSrc = URL.createObjectURL(blob);
         let selected = isSelected.name === blob.name;
+        attempt++;
 
         return (
           <Card fluid key={blob.name}>
@@ -61,10 +74,20 @@ const PrevAttempts = props => {
               <Button name={blob.name} onClick={handleDelete}>
                 <Icon name="delete" />
               </Button>
-              <Button name={blob.name} onClick={handleUpload}>
+
+              {/* <Button name={blob.name} onClick={handleUpload}>
                 <Icon name="upload" />
               </Button>
+              <Button name={blob.name} onClick={handleDownload}>
+                <Icon name="download" />
+              </Button> */}
             </Button.Group>
+            <UploadVideoForm
+              blob={blob}
+              blobSrc={blobSrc}
+              teamId={teamId}
+              userId={userId}
+            />
           </Card>
         );
       })}

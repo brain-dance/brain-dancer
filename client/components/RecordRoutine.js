@@ -23,17 +23,17 @@ class RecordRoutine extends React.Component {
     this.videoNode = document.querySelector('#video');
     this.player = '';
     this.state = {
-      title: '',
-      visible: false,
+      // title: '',
+      // visible: false,
       calibration: {},
       recording: [],
       modalOpen: true
     };
     this.teamId = props.match.params.teamId;
     this.handleDelete = this.handleDelete.bind(this);
-    this.upload = this.upload.bind(this);
-    this.download = this.download.bind(this);
-    this.handleDismiss = this.handleDismiss.bind(this);
+    // this.upload = this.upload.bind(this);
+    // this.download = this.download.bind(this);
+    // this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
   }
 
@@ -104,24 +104,24 @@ class RecordRoutine extends React.Component {
     console.log('TCL: handleDelete -> recording', this.state.recording);
   }
 
-  upload(recordedData) {
-    this.props.addRoutine(x
-      this.recordedData,
-      this.state.title,
-      this.teamId,
-      this.props.userId
-    );
+  // upload(recordedData) {
+  //   this.props.addRoutine(
+  //     this.recordedData,
+  //     this.state.title,
+  //     this.teamId,
+  //     this.props.userId
+  //   );
 
-    this.setState({...this.state, visible: true});
-  }
+  //   this.setState({...this.state, visible: true});
+  // }
 
-  download() {
-    this.player.record().saveAs({video: 'video-name.webm'});
-  }
+  // download() {
+  //   this.player.record().saveAs({video: 'video-name.webm'});
+  // }
 
-  handleDismiss() {
-    this.setState({...this.state, visible: false});
-  }
+  // handleDismiss() {
+  //   this.setState({...this.state, visible: false});
+  // }
 
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
@@ -148,7 +148,7 @@ class RecordRoutine extends React.Component {
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
-          <Segment compact>
+          {/* <Segment compact>
             <Form>
               <Form.Field>
                 <label>Title</label>
@@ -172,7 +172,7 @@ class RecordRoutine extends React.Component {
             ) : (
               ''
             )}
-          </Segment>
+          </Segment> */}
         </div>
         <br />
         <div id="gallery">
@@ -180,7 +180,11 @@ class RecordRoutine extends React.Component {
             recording={this.state.recording}
             recordedData={this.state.recordedData}
             handleDelete={this.handleDelete}
-            upload={this.upload}
+            teamId={this.state.teamId}
+            userId={this.props.userId}
+            // upload={this.upload}
+            // download={this.download}
+            // title={this.state.title}
           />
         </div>
       </div>
