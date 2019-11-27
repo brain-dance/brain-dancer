@@ -8,16 +8,6 @@ const PrevAttempts = props => {
   const [isSelected, setIsSelected] = useState({});
   let attempt = 0;
 
-  const handleRewatch = (e, {name}) => {
-    let video = document.getElementById(name);
-    video.play();
-  };
-
-  const handlePause = (e, {name}) => {
-    let video = document.getElementById(name);
-    video.pause();
-  };
-
   const handleSelect = (e, {name}) => {
     let selectedBlob = recording.find(blob => blob.name === name); //video = blob
     setIsSelected(selectedBlob);
@@ -34,30 +24,17 @@ const PrevAttempts = props => {
         attempt++;
 
         return (
-          <Card fluid key={blob.name}>
+          <Card id="previous-attempt" fluid key={blob.name}>
             <Button
               basic
-              color={selected ? 'orange' : 'grey'}
+              color={selected ? 'blue' : 'grey'}
               type="button"
               key={blob.name}
               name={blob.name}
               onClick={handleSelect}
             >
-              <Card.Content>
-                <video id={blob.name} width="200" src={blobSrc} />
-              </Card.Content>
+              <video controls id={blob.name} width="200" src={blobSrc} />
             </Button>
-            <Button.Group icon fluid attached="bottom">
-              <Button name={blob.name} onClick={handleRewatch}>
-                <Icon name="play" />
-              </Button>
-              <Button name={blob.name} onClick={handlePause}>
-                <Icon name="pause" />
-              </Button>
-              <Button name={blob.name} onClick={handleDelete}>
-                <Icon name="delete" />
-              </Button>
-            </Button.Group>
             <UploadVideoForm blob={blob} teamId={teamId} userId={userId} />
           </Card>
         );

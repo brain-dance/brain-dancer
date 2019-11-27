@@ -12,7 +12,7 @@ import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 import PrevAttempts from './PrevAttempts';
 
-import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
+import {Header, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
@@ -23,17 +23,12 @@ class RecordRoutine extends React.Component {
     this.videoNode = document.querySelector('#video');
     this.player = '';
     this.state = {
-      // title: '',
-      // visible: false,
       calibration: {},
       recording: [],
       modalOpen: true
     };
     this.teamId = props.match.params.teamId;
     this.handleDelete = this.handleDelete.bind(this);
-    // this.upload = this.upload.bind(this);
-    // this.download = this.download.bind(this);
-    // this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
   }
 
@@ -103,25 +98,6 @@ class RecordRoutine extends React.Component {
     });
   }
 
-  // upload(recordedData) {
-  //   this.props.addRoutine(
-  //     this.recordedData,
-  //     this.state.title,
-  //     this.teamId,
-  //     this.props.userId
-  //   );
-
-  //   this.setState({...this.state, visible: true});
-  // }
-
-  // download() {
-  //   this.player.record().saveAs({video: 'video-name.webm'});
-  // }
-
-  // handleDismiss() {
-  //   this.setState({...this.state, visible: false});
-  // }
-
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
   }
@@ -139,6 +115,7 @@ class RecordRoutine extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
+        <Header as="h2">Record Your Routine</Header>
         <div id="recording">
           <video
             id="video"

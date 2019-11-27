@@ -32,7 +32,10 @@ body {
 
 .ui.card {
   display: flex;
-  /* overflow-x: scroll; */
+}
+
+#previous-attempt {
+  background-color: black;
 }
 
 #skeleton {
