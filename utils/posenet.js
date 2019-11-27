@@ -1,3 +1,4 @@
+require('@tensorflow/tfjs-node');
 const posenet = require('@tensorflow-models/posenet');
 
 const singlePoseNet = (stride = 16) => {

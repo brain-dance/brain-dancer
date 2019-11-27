@@ -1,32 +1,30 @@
 import axios from 'axios';
 
 // action constants
-// const GET_PRACTICES = 'GET_PRACTICES';
-// const GET_PRACTICE = 'GET_PRACTICE';
-const ADD_PRACTICE = 'ADD_PRACTICE';
+const GET_ROUTINES = 'GET_ROUTINES';
+const ADD_ROUTINE = 'ADD_ROUTINE';
 
 // action creators
-// const getPractices = practices => ({
-//   type: GET_PRACTICES,
-//   practices
+// const getRoutines = routines => ({
+//   type: GET_ROUTINES,
+//   routines
 // });
 
-// const getPractice = practice => ({
-//   type: GET_PRACTICE,
-//   practice
-// });
-
-const addPractice = practice => ({
-  type: ADD_PRACTICE,
-  practice
+const addRoutine = routine => ({
+  type: ADD_ROUTINE,
+  routine
 });
 
 // thunks
+// export const fetchRoutines = teamId => async dispatch => {
+//   const {data} = await axios.get(`/api/routines/${teamId}`);
+//   dispatch(getRoutines(data));
+// };
 
-export const addPracticeThunk = (
+export const addRoutineThunk = (
   recordedData,
   title,
-  routineId,
+  teamId,
   userId
 ) => async dispatch => {
   const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
@@ -41,30 +39,37 @@ export const addPracticeThunk = (
     // start upload
     const upload = await axios.post(serverUrl, formData);
     console.log('upload', upload);
+    const uploadUrl = upload.data.url.split('.');
+    uploadUrl[uploadUrl.length - 1] = 'mp4';
+    const fixedUrl = uploadUrl.join('.');
+
     // Docs: https://cloudinary.com/documentation/upload_videos
-    const newPractice = {
-      url: upload.data.url,
+
+    const newRoutine = {
+      url: fixedUrl,
       title,
-      routineId,
+      teamId,
       userId
     };
 
-    const {data} = await axios.post('/api/practices', newPractice);
+    const {data} = await axios.post('/api/routines', newRoutine);
 
-    dispatch(addPractice(data));
+    dispatch(addRoutine(data));
   } catch (err) {
     console.log(err);
   }
 };
 
-// initial state - array of all practices (in a routine)
+// initial state - array of all routines (in a team)
 const initialState = [];
 
 // reducer
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_PRACTICE:
-      return [...state, action.practice];
+    case GET_ROUTINES:
+      return action.routines;
+    case ADD_ROUTINE:
+      return [...state, action.routine];
     default:
       return state;
   }

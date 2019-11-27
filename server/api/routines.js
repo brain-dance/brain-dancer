@@ -1,6 +1,14 @@
 const router = require('express').Router();
-const {Routine, User, Assignment, Videoframe} = require('../db/models');
+const {
+  Routine,
+  User,
+  Assignment,
+  Practice,
+  VideoFrame
+} = require('../db/models');
 module.exports = router;
+
+const {generateWireframes} = require('../../utils/videoProcessing');
 
 router.get('/', async (req, res, next) => {
   res.send();
@@ -16,20 +24,28 @@ router.get('/:id', async (req, res, next) => {
    *  practices
    */
   try {
+    console.log(
+      `In GET route, included entities are User: ${typeof User}; Routine: ${typeof Routine}, Assignment: ${typeof Assignment}; Team: ${typeof Team}, vd: ${typeof VideoFrame}`
+    );
     const routine = await Routine.findByPk(req.params.id, {
       include: [
         {
           model: User
         },
         {
-          model: Videoframe
+          model: VideoFrame
         },
         {
-          model: Assignment,
-          include: {
-            model: User //this isn't quite right, need models
-          }
+          model: Practice
         }
+        // {
+        //   model: Assignment,
+        //   include: [
+        //     {
+        //       model: User //this isn't quite right, need models
+        //     }
+        //   ]
+        // }
       ]
     });
 
@@ -40,7 +56,28 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-  res.send();
+  try {
+    // add row in Routines table
+    const newRoutine = await Routine.create(req.body);
+    // ^ not super secure - any way to make this secure while staying dry?
+
+    // initiate server side skelly processor
+    const generatedSkellies = await generateWireframes(req.body.url);
+
+    await Promise.all(
+      generatedSkellies.map((skelly, i) => {
+        return VideoFrame.create({
+          framejson: skelly,
+          routineId: newRoutine.id,
+          frameNumber: i
+        });
+      })
+    );
+
+    res.json(newRoutine);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.put('/', async (req, res, next) => {

@@ -8,15 +8,15 @@ let myWorker;
 let messages = [];
 const videoWidth = '720px';
 const videoHeight = '480px';
-const canvas = document.getElementById('output');
-const ctx = canvas.getContext('2d');
+// const canvas = document.getElementById('output');
+// const ctx = canvas.getContext('2d');
 //ctx.height = videoHeight;
 //ctx.width = videoWidth;
 
-const workerCanv = document.getElementById('skellies');
+// const workerCanv = document.getElementById('skellies');
 // skelliesCanvas.width = videoWidth
 // skelliesCanvas.height = videoHeight
-const wcContext = workerCanv.getContext('2d');
+// const wcContext = workerCanv.getContext('2d');
 
 // const workerCanv = document.createElement('canvas');
 // workerCanv.width = videoWidth * 2;
@@ -108,7 +108,7 @@ function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
   ctx.stroke();
 }
 
-function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
   console.log('draw skeleton', keypoints);
   const adjacentKeypoints = posenet.getAdjacentKeyPoints(
     keypoints,
@@ -124,7 +124,7 @@ function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       ctx
     );
   });
-  console.log(canvas.toDataURL())
+  console.log(canvas.toDataURL());
 }
 
 function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
@@ -139,7 +139,7 @@ function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
 }
 
 export function detectPoseInRealTime(video) {
-//  canvas.width = videoWidth;
+  //  canvas.width = videoWidth;
   //canvas.height = videoHeight;
 
   async function poseDetectionFrame() {
