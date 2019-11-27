@@ -69,11 +69,12 @@ const centroid = wireframe => {
   let toReturn = {x: 0, y: 0};
   let temp = Object.keys(wireframe);
   temp.forEach(el => {
-    toReturn.x += wireframe[el].x;
-    toReturn.y += wireframe[el].y;
+    toReturn.x += wireframe[el].position.x;
+    toReturn.y += wireframe[el].position.y;
   });
   toReturn.x /= temp.length;
   toReturn.y /= temp.length;
+  return toReturn;
 };
 const translate = (wireframe, newCenter) => {
   let shifts = centroid(wireframe);
@@ -81,8 +82,8 @@ const translate = (wireframe, newCenter) => {
   shifts.y = newCenter.y - shifts.y;
   let toReturn = deepCopy(wireframe);
   Object.keys(toReturn).forEach(el => {
-    toReturn[el].x += shifts.x;
-    toReturn[el].y += shifts.y;
+    toReturn[el].position.x += shifts.x;
+    toReturn[el].position.y += shifts.y;
   });
   return toReturn;
 };

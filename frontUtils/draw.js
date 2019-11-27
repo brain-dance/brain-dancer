@@ -27,6 +27,7 @@ function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
 }
 
 export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
+  console.log("IN DRAW SKELETON: keypoints are: ", keypoints);
   const adjacentKeypoints = getAdjacentKeyPoints(keypoints, minConfidence);
 
   adjacentKeypoints.forEach(keypoints => {

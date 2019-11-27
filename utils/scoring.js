@@ -5,7 +5,9 @@ const errCost=(wfOne, wfTwo)=>{
     let errs=angleDifferences(wfOne.pose, wfTwo.pose);
     let temp=Object.keys(errs);
     //let count = 0;
-    return ((temp.reduce((acc, curr)=>acc+(errs[curr]**2), 0))**0.5)/temp.length;
+    const toRet=((temp.reduce((acc, curr)=>acc+(errs[curr]**2), 0))**0.5)/temp.length;
+    //console.log("In errCost, cost is: ", toRet);
+    return toRet;
 
 
 }
@@ -15,6 +17,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
 
     const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
     const minCostDynamic=(playerwfs, choreowfs, playerind=0, choreoind=0)=>{
+            if(playerind==playerwfs.length) return 0;
             if(costarr[playerind][choreoind]) return costarr[playerind][choreoind]
             if(playerwfs.length-playerind>choreowfs.length-choreoind) return Infinity;
             let currcost=errCost(playerwfs[playerind], choreowfs[choreoind])+minCostDynamic(playerwfs, choreowfs, playerind+1, choreoind);
@@ -24,6 +27,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
                 
             }
             costarr[playerind][choreoind]=currcost;
+            //console.log(currcost);
             return currcost;
         }
         const cost=minCostDynamic(playerwfs, choreowfs);
@@ -38,8 +42,9 @@ const minCostPairings=(playerwfs, choreowfs)=>{
                     currj=j;
                 }
             }
-            pairs.push([playerwfs[i], choreowfs[j]]);
+            pairs.push([playerwfs[i], choreowfs[currj]]);
         }
+        console.log("Minimized cost pairings are:", {pairs, cost});
         return {pairs, cost};
     }
 
@@ -94,5 +99,5 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     }
     module.exports.minCostPairings=minCostPairings;
     module.exports.parseForReplay=parseForReplay;
-    module.exports.timChangeCallback=timeChangeCallback;
+    module.exports.timeChangeCallback=timeChangeCallback;
 //    module.exports={minCostPairings, parseForReplay, timeChangeCallback}

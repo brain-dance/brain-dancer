@@ -26,7 +26,9 @@ self.onmessage = set => {
     posenet.load(poseNetConfig.input).then(newNet => {
       net = newNet;
       self.onmessage = event => {
+        console.log("In Worker, message received: ", event);
         if(event.data.type==="finished"){
+          console.log("Finishing?");
           postMessage({type: "All processed", data: allProcessed});
           allProcessed=[];
           return;

@@ -17,37 +17,42 @@ import Calibrator from './Calibrator';
 
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
-import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-
-/*const worker = new MyWorker();
-worker.postMessage({resolution: {width: 320, height: 240}});
-//const messages=[];
-worker.onmessage = event => {
-  const canvas = document.querySelector('#skeleton');
+//import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
+import scoringUtils from '../../utils/scoring'
+console.log("TCC: ", scoringUtils)
+const tGS={};
+tGS.worker = new MyWorker();
+tGS.worker.postMessage({resolution: {width: 320, height: 240}});
+tGS.messages=[];
+tGS.worker.onmessage = event => {
+  console.log("Message received from worker: ", event);
+  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 180, y:120},0, 1000); 
+  /*const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
   console.log('got message', event.data);
-  messages.push(event.data);
+  tGS.messages.push(event.data);
   //drawSkeleton(event.data.keypoints, 0, ctx);
   ctx.clearRect(0, 0, 360, 240);
   drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
-  drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
-};*/
+  drawKeypoints(event.data.keypoints, 0, ctx, 0.4);*/
+};
 
 // const workerCanv = document.getElementById('skeleton');
+
 
 const workerCanv = document.createElement('canvas');
 workerCanv.width = 320 * 2;
 workerCanv.height = 240 * 2;
 const wcContext = workerCanv.getContext('2d');
-/*sendFrame = (video, timestamp) => {
+tGS.sendFrame = (video, timestamp) => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
-  console.log(workerCanv.toDataURL());
-  worker.postMessage({
+  //console.log(workerCanv.toDataURL());
+  tGS.worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
      timestamp: timestamp
   });
-};*/
+}
 
 class RecordPractice extends React.Component {
   constructor(props) {
@@ -64,9 +69,9 @@ class RecordPractice extends React.Component {
       modalOpen: true,
       cameraCanvas: '',
       context: '',
-      recording: true,
+     // recording: true,
       worker: null,
-      allProcessedFrames: [],
+      //allProcessedFrames: [],
       LTU: 0
     };
 
@@ -77,11 +82,11 @@ class RecordPractice extends React.Component {
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
-    this.sendFrame=this.sendFrame.bind(this);
+    //this.sendFrame=this.sendFrame.bind(this);
     // this.cameraCanvas;
     // this.context;
   }
-  sendFrame(video, timestamp){
+  /*sendFrame(video, timestamp){
     wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
     wcContext.drawImage(video, 0, 0);
     console.log(workerCanv.toDataURL());
@@ -89,10 +94,10 @@ class RecordPractice extends React.Component {
       image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
        timestamp: timestamp
     });
-  }
+  }*/
 
   componentDidMount() {
-    const worker = new MyWorker();
+    /*const worker = new MyWorker();
     worker.postMessage({resolution: {width: 320, height: 240}});
     //const messages=[];
     worker.onmessage = event => {
@@ -102,7 +107,8 @@ class RecordPractice extends React.Component {
       //messages.push(event.data);
       //drawSkeleton(event.data.keypoints, 0, ctx);
       if(event.data.type=="All processed"){
-        this.setState({allProcessedFrames: parseForReplay(event.data.data, this.props.choreographerFrames, {x: 180, y: 120}, 0, 1000)})
+        //this.setState({allProcessedFrames: parseForReplay(event.data.data, this.props.choreographerFrames, {x: 180, y: 120}, 0, 1000)})
+        tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, this.props.choreographerFrames, {x: 180, y: 120}, 0, 1000)
         return;
       }
       ctx.clearRect(0, 0, 360, 240);
@@ -110,7 +116,7 @@ class RecordPractice extends React.Component {
       drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
     };
     this.setState({worker: worker});
-    
+    */
     setupCamera(this.videoNode);
     this.playbackPlayer = videojs(
       this.playback,
@@ -161,7 +167,8 @@ class RecordPractice extends React.Component {
 
     // user clicked the record button and started recording
     this.player.on('startRecord', () => {
-      this.setState({recording: true});
+      //this.setState({recording: true});
+      tGS.recording=true;
       console.log('started recording!');
     });
 
@@ -171,17 +178,20 @@ class RecordPractice extends React.Component {
 
     this.player.on('timestamp', function() {
       // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
-      if(this.state.recording){
-      console.log(
+      console.log("This context is: ", this);
+      if(tGS.recording){
+     /* console.log(
         'timestamp! here...',
         document.querySelector('.vjs-record-canvas canvas').getContext('2d')
-      );
-      sendFrame(document.querySelector('#video_html5_api'), this.player.currentTimestamp);
+      );*/
+      tGS.sendFrame(document.querySelector('#video_html5_api'), this.currentTimestamp);
       }else{
         const canvas = document.querySelector('#skeleton');
         const ctx = canvas.getContext('2d');
-        this.setState({LTU: this.player.currentTimestamp})
-        timeChangeCallback(this.player.currentTimestamp, this.state.allProcessedFrames, ctx, 1000, this.state.LTU)
+        //this.setState({LTU: this.player.currentTimestamp});
+        tGS.LTU=this.currentTimestamp;
+        //console.log(timeChangeCallback);
+        scoringUtils.timeChangeCallback(this.player.currentTimestamp, tGS.allProcessedFrames, ctx, 1000, tGS.LTU)
       }
       // worker.postMessage({
       //   image: document
@@ -195,7 +205,9 @@ class RecordPractice extends React.Component {
     this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
-      this.setState({recording: false});
+      //this.setState({recording: false});
+      tGS.worker.postMessage({type: "finished"})
+      tGS.recording=false;
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
     });
@@ -302,11 +314,7 @@ if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
 const mapStateToProps = state => {
   return {
     userId: state.user.id,
-<<<<<<< HEAD
-    targetRoutine: state.singleRoutine
-=======
     routine: state.singleRoutine
->>>>>>> 22b1bf3bc58eb3106e305824c3c5fc9e1223a992
   };
 };
 const mapDispatchToProps = dispatch => {
