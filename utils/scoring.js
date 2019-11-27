@@ -1,6 +1,6 @@
-const {angleDifferences}=require('./formatting');
-const {translate, centroid}=require('./scaling');
-import {drawSkeleton} from '../brain/posenet2';
+const {angleDifferences} =require('./formatting');
+const {translate, centroid} =require('./scaling');
+const {drawSkeleton} =require('../brain/posenet2');
 const errCost=(wfOne, wfTwo)=>{
     let errs=angleDifferences(wfOne.pose, wfTwo.pose);
     let temp=Object.keys(errs);
@@ -73,7 +73,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //Note - optimal implementation does all the transformations in a single map
         //No reason not to do that, except that this approach is easier to reason about
         //May be worth changing if we run into performance issues
-        return new Map(minCostPairings(pwfs, cws).map(
+        return new Map(minCostPairings(pwfs, cws).pairs.map(
             pair=>{
                 return [{...pair[0], pose: {...pair[0].pose, keypoints: translator(pair[0].pose.keypoints)}}, {...pair[1], pose: {...pair[1].pose, keypoints: translator(pair[1].pose.keypoints)}}]
             }
@@ -92,4 +92,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
 
         }
     }
-    module.exports={minCostPairings, parseForReplay, timeChangeCallback}
+    module.exports.minCostPairings=minCostPairings;
+    module.exports.parseForReplay=parseForReplay;
+    module.exports.timChangeCallback=timeChangeCallback;
+//    module.exports={minCostPairings, parseForReplay, timeChangeCallback}

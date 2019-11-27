@@ -121,8 +121,14 @@ const scaler = (source, target) => {
   let ratio = getVol(target) / getVol(source);
   return wireframe => simpleScale(wireframe, ratio);
 };
-
-module.exports = {
+module.exports.centroid=centroid;
+module.exports.angle=angle;
+module.exports.scaler=scaler;
+module.exports.simpleScale=simpleScale;
+module.exports.translate=translate;
+module.exports.distance=distance;
+module.exports.deepCopy=deepCopy;
+/*module.exports = {
   centroid,
   angle,
   scaler,
@@ -130,7 +136,7 @@ module.exports = {
   translate,
   distance,
   deepCopy
-};
+};*/
 /*
     All below is irrelevant.  Keeping mostly as a reminder I want to learn the algorithm later.
 

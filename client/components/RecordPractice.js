@@ -19,9 +19,9 @@ import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
 
-const worker = new MyWorker();
+/*const worker = new MyWorker();
 worker.postMessage({resolution: {width: 320, height: 240}});
-const messages=[];
+//const messages=[];
 worker.onmessage = event => {
   const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
@@ -31,7 +31,7 @@ worker.onmessage = event => {
   ctx.clearRect(0, 0, 360, 240);
   drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
   drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
-};
+};*/
 
 // const workerCanv = document.getElementById('skeleton');
 
@@ -39,8 +39,7 @@ const workerCanv = document.createElement('canvas');
 workerCanv.width = 320 * 2;
 workerCanv.height = 240 * 2;
 const wcContext = workerCanv.getContext('2d');
-
-export const sendFrame = (video, timestamp) => {
+sendFrame = (video, timestamp) => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
   console.log(workerCanv.toDataURL());
@@ -65,7 +64,10 @@ class RecordPractice extends React.Component {
       modalOpen: true,
       cameraCanvas: '',
       context: '',
-      recording: true
+      recording: true,
+      worker: null,
+      allProcessedFrames: [],
+      LTU: 0
     };
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
@@ -73,11 +75,40 @@ class RecordPractice extends React.Component {
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
+    this.sendFrame=this.sendFrame.bind(this);
     // this.cameraCanvas;
     // this.context;
   }
+  sendFrame(video, timestamp){
+    wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
+    wcContext.drawImage(video, 0, 0);
+    console.log(workerCanv.toDataURL());
+    this.state.worker.postMessage({
+      image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
+       timestamp: timestamp
+    });
+  }
 
   componentDidMount() {
+    const worker = new MyWorker();
+    worker.postMessage({resolution: {width: 320, height: 240}});
+    //const messages=[];
+    worker.onmessage = event => {
+      const canvas = document.querySelector('#skeleton');
+      const ctx = canvas.getContext('2d');
+      console.log('got message', event.data);
+      //messages.push(event.data);
+      //drawSkeleton(event.data.keypoints, 0, ctx);
+      if(event.data.type=="All processed"){
+        this.setState({allProcessedFrames: parseForReplay(event.data.data, this.props.choreographerFrames, {x: 180, y: 120}, 0, 1000)})
+        return;
+      }
+      ctx.clearRect(0, 0, 360, 240);
+      drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
+      drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
+    };
+    this.setState({worker: worker});
+    
     setupCamera(this.videoNode);
     this.playbackPlayer = videojs(
       this.playback,
@@ -138,11 +169,18 @@ class RecordPractice extends React.Component {
 
     this.player.on('timestamp', function() {
       // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
+      if(this.state.recording){
       console.log(
         'timestamp! here...',
         document.querySelector('.vjs-record-canvas canvas').getContext('2d')
       );
       sendFrame(document.querySelector('#video_html5_api'), this.player.currentTimestamp);
+      }else{
+        const canvas = document.querySelector('#skeleton');
+        const ctx = canvas.getContext('2d');
+        this.setState({LTU: this.player.currentTimestamp})
+        timeChangeCallback(this.player.currentTimestamp, this.state.allProcessedFrames, ctx, 1000, this.state.LTU)
+      }
       // worker.postMessage({
       //   image: document
       //     .querySelector('.vjs-record-canvas canvas')

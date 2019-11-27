@@ -1,5 +1,5 @@
 const posenet = require('@tensorflow-models/posenet');
-
+let allProcessed=[];
 let poseNetConfig = {};
 let net = {};
 
@@ -26,6 +26,11 @@ self.onmessage = set => {
     posenet.load(poseNetConfig.input).then(newNet => {
       net = newNet;
       self.onmessage = event => {
+        if(event.data.type==="finished"){
+          postMessage({type: "All processed", data: allProcessed});
+          allProcessed=[];
+          return;
+        }
         try {
           net
             .estimateSinglePose(event.data.image, {
@@ -33,7 +38,8 @@ self.onmessage = set => {
               decodingMethod: 'single-person'
             })
             .then(result => {
-              postMessage(result);
+              allProcessed.push({pose: result, timestamp: event.data.timestamp});
+              console.log(allProcessed.length);
             })
             .catch(err =>
               console.log('Inside estimate single pose, error occurred: ', err)

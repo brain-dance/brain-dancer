@@ -1,7 +1,7 @@
-const {angle} = require('./scaling');
-const {createCanvas, loadImage} = require('canvas');
-const {singlePoseNet} = require('./posenet');
-const sizeOf = require('image-size');
+const {angle} =require('./scaling');
+const {createCanvas, loadImage} =require('canvas');
+const {singlePoseNet} =require('./posenet');
+const sizeOf =require('image-size');
 
 const getPose = async input => {
   const net = await singlePoseNet();
@@ -140,11 +140,17 @@ const angleDifferences = (pose, targetPose) => {
   return differences;
 };
 
-module.exports = {
+module.exports.getPose=getPose;
+module.exports.canvasify=canvasify;
+module.exports.labelPose=labelPose;
+module.exports.getAngles=getAngles;
+module.exports.angleDifferences=angleDifferences;
+module.exports.ANGLES=ANGLES;
+/*module.exports = {
   getPose,
   canvasify,
   labelPose,
   getAngles,
   angleDifferences,
   ANGLES
-};
+};*/
