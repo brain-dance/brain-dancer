@@ -104,8 +104,8 @@ class RecordRoutine extends React.Component {
     console.log('TCL: handleDelete -> recording', this.state.recording);
   }
 
-  upload() {
-    this.props.addRoutine(
+  upload(recordedData) {
+    this.props.addRoutine(x
       this.recordedData,
       this.state.title,
       this.teamId,
@@ -180,6 +180,7 @@ class RecordRoutine extends React.Component {
             recording={this.state.recording}
             recordedData={this.state.recordedData}
             handleDelete={this.handleDelete}
+            upload={this.upload}
           />
         </div>
       </div>
