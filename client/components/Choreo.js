@@ -14,7 +14,7 @@ const Choreo = props => {
   const dispatch = useDispatch();
 
   const thisRoutine = useSelector(state => state.singleRoutine.url);
-
+  console.log('thisroutine', thisRoutine);
   const teamInfo = useSelector(state => state.teams);
   // const role = teamInfo.filter(team => team.id === +teamId)[0].role;
 
@@ -37,7 +37,7 @@ const Choreo = props => {
     );
     playbackPlayer.addClass('vjs-waiting');
     dispatch(getSingleRoutine(routineId));
-  }, []);
+  }, [thisRoutine]);
 
   return (
     <div id="choreo">
