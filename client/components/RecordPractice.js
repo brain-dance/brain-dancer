@@ -15,7 +15,7 @@ import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
-import {drawSkeleton} from '../../frontUtils/draw';
+import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
 const worker = new MyWorker();
@@ -25,7 +25,9 @@ worker.onmessage = event => {
   const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
   console.log('got message', event.data);
-  drawSkeleton(event.data.keypoints, 0, ctx);
+  ctx.clearRect(0, 0, 360, 240);
+  drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
+  drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
 };
 
 // const workerCanv = document.getElementById('skeleton');
@@ -38,7 +40,7 @@ const wcContext = workerCanv.getContext('2d');
 export const sendFrame = video => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
-  //console.log(workerCanv.toDataURL());
+  console.log(workerCanv.toDataURL());
   worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height)
     // timestamp: timestamp
@@ -72,6 +74,7 @@ class RecordPractice extends React.Component {
   }
 
   componentDidMount() {
+    console.log('updated!?!');
     setupCamera(this.videoNode);
     this.playbackPlayer = videojs(
       this.playback,
@@ -104,9 +107,7 @@ class RecordPractice extends React.Component {
       cameraCanvas: temp1,
       context: temp2
     });
-    console.log('look it is camera canvas', this.cameraCanvas);
     // this.setState({context: this.state.cameraCanvas.getContext('2d')});
-    console.log('look is this still undef', this.context);
 
     // error handling
     this.player.on('deviceError', function() {
@@ -200,8 +201,8 @@ class RecordPractice extends React.Component {
             className="video-js"
           >
             <source
-              src="https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mkv"
-              type="video/webm"
+              src="https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mp4"
+              type="video/mp4"
             />
           </video>
           <video
