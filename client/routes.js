@@ -49,6 +49,7 @@ class Routes extends Component {
             <Route path="/team/:teamId" component={Dashboard} />
             <Route exact path="/new-routine" component={RecordRoutine} />
             <Route exact path="/new-practice" component={RecordPractice} />
+            <Route component={Dashboard} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}

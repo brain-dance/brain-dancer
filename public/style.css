@@ -22,30 +22,27 @@ body {
 #recording {
   margin: 0 auto;
   display: flex;
-  /* flex-direction: column; */
-  align-content: center;
-  align-items: center;
-  justify-content: space-around;
-  justify-items: space-around;
+  justify-content: center;
 }
 
 #gallery {
   display: flex;
-  overflow: auto;
+  overflow: scroll;
 }
 
-#skelliesAndForm {
+.ui.card {
   display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: space-around;
-  justify-items: space-around;
+}
+
+#previous-attempt {
+  background-color: black;
 }
 
 #skeleton {
   width: 360px;
   height: 240px;
-  outline: solid red 1px;
+  background-color: black;
+  border-radius: 5px;
 }
 
 #nav {
