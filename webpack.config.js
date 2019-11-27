@@ -11,7 +11,10 @@ module.exports = {
     filename: './public/bundle.js'
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      videojs: 'video.js'
+    }
   },
   devtool: 'source-map',
   watchOptions: {
@@ -27,6 +30,13 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: {inline: true, name: 'public/worker.js'}
+        }
       }
     ]
   }

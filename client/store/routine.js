@@ -38,10 +38,15 @@ export const addRoutineThunk = (
 
     // start upload
     const upload = await axios.post(serverUrl, formData);
+    console.log('upload', upload);
+    const uploadUrl = upload.data.url.split('.');
+    uploadUrl[uploadUrl.length - 1] = 'mp4';
+    const fixedUrl = uploadUrl.join('.');
 
     // Docs: https://cloudinary.com/documentation/upload_videos
+
     const newRoutine = {
-      url: upload.url,
+      url: fixedUrl,
       title,
       teamId,
       userId
@@ -55,7 +60,7 @@ export const addRoutineThunk = (
   }
 };
 
-// initial state
+// initial state - array of all routines (in a team)
 const initialState = [];
 
 // reducer

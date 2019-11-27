@@ -3,6 +3,12 @@
   padding: 0.3rem;
 }
 
+body {
+  background-image: url('bg-splash.jpg');
+  background-position: bottom right;
+  background-size: cover;
+}
+
 #output {
   position: absolute;
   top: 0;
@@ -26,4 +32,42 @@
 #gallery {
   display: flex;
   overflow: auto;
+}
+
+#skelliesAndForm {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: space-around;
+  justify-items: space-around;
+}
+
+#skeleton {
+  width: 360px;
+  height: 240px;
+  outline: solid red 1px;
+}
+
+#nav {
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* margin-bottom: 5rem; */
+}
+
+/* .top {
+  margin-top: 5rem;
+} */
+
+#auth {
+  /* position: relative;
+  left: 20vw; */
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  width: 40vw;
+  justify-content: center;
+  align-items: center;
 }

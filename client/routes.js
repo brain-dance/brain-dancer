@@ -8,11 +8,12 @@ import {
   Dashboard,
   AddTeamForm,
   Choreo,
-  RecordPerformance
+  RecordRoutine,
+  RecordPractice
 } from './components';
+import {WatchRoutine} from './components/watchvideo';
 import {me} from './store';
-import RecordRoutine from './components/RecordRoutine';
-import RecordPractice from './components/RecordPractice';
+import WireframeTest from './components/WireframeTest';
 
 /**
  * COMPONENT
@@ -31,17 +32,21 @@ class Routes extends Component {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
-        <Route path="/routines/:id" component={Choreo} />
+        {/* <Route path="/routines/:id" component={Choreo} /> */}
+        <Route path="/test" component={WireframeTest} />
 
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
+            <Route path="/watch/routines/:id" component={WatchRoutine} />
             <Route exact path="/home" component={Dashboard} />
             <Route
-              exact
-              path="/recordPerformance"
-              component={RecordPerformance}
+              path="/team/:teamId/routine/:routineId/add"
+              component={RecordPractice}
             />
+            <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
+            <Route path="/team/:teamId/add" component={RecordRoutine} />
+            <Route path="/team/:teamId" component={Dashboard} />
             <Route exact path="/new-routine" component={RecordRoutine} />
             <Route exact path="/new-practice" component={RecordPractice} />
           </Switch>
