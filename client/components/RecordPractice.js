@@ -74,7 +74,6 @@ class RecordPractice extends React.Component {
   }
 
   componentDidMount() {
-    console.log('updated!?!');
     setupCamera(this.videoNode);
     this.playbackPlayer = videojs(
       this.playback,
