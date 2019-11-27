@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // action constants
-const SET_SINGLE_ROUTINE = 'SET_SINGLE_ROUTINE';
+export const SET_SINGLE_ROUTINE = 'SET_SINGLE_ROUTINE';
 
 // action creators
 const setSingleRoutine = routine => ({type: SET_SINGLE_ROUTINE, routine});
