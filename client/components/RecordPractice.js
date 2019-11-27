@@ -15,6 +15,36 @@ import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
+import {drawSkeleton} from '../../frontUtils/draw';
+import MyWorker from '../workers/videoNet.worker.js';
+
+const worker = new MyWorker();
+worker.postMessage({resolution: {width: 320, height: 240}});
+
+worker.onmessage = event => {
+  const canvas = document.querySelector('#skeleton');
+  const ctx = canvas.getContext('2d');
+  console.log('got message', event.data);
+  drawSkeleton(event.data.keypoints, 0, ctx);
+};
+
+// const workerCanv = document.getElementById('skeleton');
+
+const workerCanv = document.createElement('canvas');
+workerCanv.width = 320 * 2;
+workerCanv.height = 240 * 2;
+const wcContext = workerCanv.getContext('2d');
+
+export const sendFrame = video => {
+  wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
+  wcContext.drawImage(video, 0, 0);
+  //console.log(workerCanv.toDataURL());
+  worker.postMessage({
+    image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height)
+    // timestamp: timestamp
+  });
+};
+
 class RecordPractice extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +57,9 @@ class RecordPractice extends React.Component {
       title: '',
       visible: false,
       calibration: {},
-      modalOpen: true
+      modalOpen: true,
+      cameraCanvas: '',
+      context: ''
     };
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
@@ -35,6 +67,8 @@ class RecordPractice extends React.Component {
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
+    // this.cameraCanvas;
+    // this.context;
   }
 
   componentDidMount() {
@@ -63,6 +97,17 @@ class RecordPractice extends React.Component {
       videojs.log(msg);
     });
 
+    const temp1 = document.querySelector('.vjs-record-canvas canvas');
+    const temp2 = temp1.getContext('2d');
+    // yeah... it's the canvas
+    this.setState({
+      cameraCanvas: temp1,
+      context: temp2
+    });
+    console.log('look it is camera canvas', this.cameraCanvas);
+    // this.setState({context: this.state.cameraCanvas.getContext('2d')});
+    console.log('look is this still undef', this.context);
+
     // error handling
     this.player.on('deviceError', function() {
       console.warn('device error:', this.player.deviceErrorCode);
@@ -86,10 +131,20 @@ class RecordPractice extends React.Component {
     //   console.log('currently recording', this.player.record().getDuration());
     // });
 
-    // this.player.on('timestamp', function() {
-    //   console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
-    //   // sendFrame(video);
-    // });
+    this.player.on('timestamp', function() {
+      // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
+      console.log(
+        'timestamp! here...',
+        document.querySelector('.vjs-record-canvas canvas').getContext('2d')
+      );
+      sendFrame(document.querySelector('#video_html5_api'));
+      // worker.postMessage({
+      //   image: document
+      //     .querySelector('.vjs-record-canvas canvas')
+      //     .getContext('2d')
+      //     .getImageData(0, 0, 320, 240)
+      // });
+    });
 
     // user completed recording and stream is available
     this.player.on('finishRecord', () => {
@@ -156,6 +211,7 @@ class RecordPractice extends React.Component {
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
+          <canvas id="overlay"></canvas>
         </div>
         <div id="skelliesAndForm">
           <canvas id="skeleton">this is a canvas</canvas>
