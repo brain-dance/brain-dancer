@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter, Link} from 'react-router-dom';
-import {getSingleRoutine, fetchUserTeams} from '../store';
+import {setSingleRoutine, getSingleRoutine} from '../store';
 import {Button, Icon} from 'semantic-ui-react';
 
 import videojs from 'video.js';
@@ -14,7 +14,7 @@ const Choreo = props => {
   const dispatch = useDispatch();
 
   const thisRoutine = useSelector(state => state.singleRoutine.url);
-
+  console.log('thisroutine', thisRoutine);
   const teamInfo = useSelector(state => state.teams);
   // const role = teamInfo.filter(team => team.id === +teamId)[0].role;
 
@@ -22,8 +22,6 @@ const Choreo = props => {
   let playbackPlayer;
 
   useEffect(() => {
-    dispatch(getSingleRoutine(routineId));
-    dispatch(fetchUserTeams());
     playbackPlayer = videojs(
       playback,
       {
@@ -36,6 +34,10 @@ const Choreo = props => {
         videojs.log('playback screen is live!');
       }
     );
+    playbackPlayer.addClass('vjs-waiting');
+    dispatch(getSingleRoutine(routineId));
+
+    return () => dispatch(setSingleRoutine({}));
   }, []);
 
   return (
@@ -64,7 +66,7 @@ const Choreo = props => {
         controls={true}
         className="video-js"
       >
-        <source src={thisRoutine} type="video/webm" />
+        {thisRoutine && <source src={thisRoutine} type="video/mp4" />}
       </video>
       {/* <Video /> */}
       {/* <Submissions /> */}

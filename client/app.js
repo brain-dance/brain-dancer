@@ -6,7 +6,7 @@ import Routes from './routes';
 const App = () => {
   return (
     <div>
-      <Navbar />
+      <Navbar id="nav" />
       <Routes />
     </div>
   );

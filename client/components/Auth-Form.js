@@ -1,7 +1,18 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {auth} from '../store';
+import {
+  Button,
+  Segment,
+  Image,
+  Header,
+  Grid,
+  Divider,
+  Form,
+  Input
+} from 'semantic-ui-react';
 
 /**
  * COMPONENT
@@ -10,26 +21,38 @@ const AuthForm = props => {
   const {name, displayName, handleSubmit, error} = props;
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} name={name}>
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
-        </div>
-        <div>
-          <button type="submit">{displayName}</button>
-        </div>
-        {error && error.response && <div> {error.response.data} </div>}
-      </form>
-      <a href="/auth/google">{displayName} with Google</a>
+    <div id="auth">
+      <Segment basic compact padded="very">
+        <Form onSubmit={handleSubmit} name={name}>
+          <Form.Field>
+            <Input
+              transparent
+              iconPosition="left"
+              icon="at"
+              name="email"
+              placeholder="email"
+              type="text"
+            />
+          </Form.Field>
+          <Form.Field>
+            <Input
+              transparent
+              iconPosition="left"
+              icon="key"
+              name="password"
+              placeholder="password"
+              type="password"
+            />
+          </Form.Field>
+          <Button type="submit" color="blue">
+            {displayName}
+          </Button>
+          {error && error.response && <div> {error.response.data} </div>}
+          <Button as={Link} to="/auth/google" basic color="blue">
+            {displayName} with Google
+          </Button>
+        </Form>
+      </Segment>
     </div>
   );
 };
