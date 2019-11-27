@@ -1,3 +1,5 @@
+const {getAngles} = require('./formatting');
+
 //Notes - current scaling approach just straightforwardly squeezes or stretches the wireframe
 //This might be a bit weird on users with wildly different proportions, but it makes the function indifferent as to the number of
 //Keypoints we have access to.
@@ -117,9 +119,84 @@ const simpleScale = (wireframe, ratio) => {
     toReturn[el].y *= ratio;
   });
 };
-const scaler = (source, target) => {
-  let ratio = getVol(target) / getVol(source);
-  return wireframe => simpleScale(wireframe, ratio);
+// const scaler = (source, target) => {
+//   let ratio = getVol(target) / getVol(source);
+//   return wireframe => simpleScale(wireframe, ratio);
+// };
+
+const SEGMENTS = {
+  LeftShin: ['LeftAnkle', 'LeftKnee'],
+  RightShin: ['RightAnkle', 'RightKnee'],
+  LeftThigh: ['LeftKnee', 'LeftHip'],
+  RightThigh: ['RightKnee', 'RightHip'],
+  Waist: ['LeftHip', 'RightHip'],
+  LeftTorso: ['LeftHip', 'LeftShoulder'],
+  RightTorso: ['RightHip', 'RightShoulder'],
+  LeftUpperArm: ['LeftShoulder', 'LeftElbow'],
+  RightUpperArm: ['RightShoulder', 'RightElbow'],
+  LeftForeArm: ['LeftWrist', 'LeftElbow'],
+  RightForeArm: ['RightWrist', 'RightElbow']
+};
+
+const getLengths = pose => {
+  return Object.keys(SEGMENTS).reduce((lengths, segment) => {
+    const [start, end] = SEGMENTS[segment];
+    lengths[segment] = distance(...pose[start], ...pose[end]);
+    return lengths;
+  }, {});
+};
+
+const getCalibration = (source, target) => {
+  const sourceLens = getLengths(source);
+  const targetLens = getLengths(target);
+
+  return Object.keys(sourceLens).reduce((calibration, segment) => {
+    calibration[segment] = targetLens[segment] / sourceLens[segment];
+  }, {});
+};
+
+const calibrate = (source, calibration) => {
+  const sourceLens = getLengths(source);
+  return Object.keys(sourceLens).reduce((calibratedLens, segment) => {
+    calibratedLens[segment] = sourceLens[segment] * calibration[segment];
+  }, {});
+};
+
+const scaler = (source, target, calibration) => {
+  //get angles of correct wireframe
+  const sourceAngles = getAngles(source);
+
+  //calibrate segment lengths
+  const calibLengths = calibrate(source, calibration);
+
+  //find waist midpoint
+  const midpoint = {
+    x: target.leftHip.x + target.target.rightHip.x,
+    y: target.leftHip.y + target.rightHip.y
+  };
+
+  //find angle waist makes with ground
+  const waistAngle = Math.atan(
+    (source.leftHip.y + source.rightHip.y) /
+      (source.leftHip.x + source.rightHip.x)
+  );
+
+  //create new wireframe
+  const scaled = {};
+
+  //find new waist points
+  scaled.rightHip = {
+    x: midpoint.x + (Math.cos(waistAngle) * calibLengths.Waist) / 2,
+    y: midpoint.y + (Math.sin(waistAngle) * calibLengths.Waist) / 2
+  };
+
+  scaled.leftHip = {
+    x: midpoint.x - (Math.cos(waistAngle) * calibLengths.Waist) / 2,
+    y: midpoint.y - (Math.sin(waistAngle) * calibLengths.Waist) / 2
+  };
+
+  //use scaled leg lengths and angles to create new wireframe angles
+  //do that for the rest of the line segments
 };
 
 module.exports = {
