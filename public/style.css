@@ -22,11 +22,7 @@ body {
 #recording {
   margin: 0 auto;
   display: flex;
-  /* flex-direction: column; */
-  align-content: center;
-  align-items: center;
-  justify-content: space-around;
-  justify-items: space-around;
+  justify-content: center;
 }
 
 #gallery {
@@ -39,18 +35,11 @@ body {
   /* overflow-x: scroll; */
 }
 
-#skelliesAndForm {
-  display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: space-around;
-  justify-items: space-around;
-}
-
 #skeleton {
   width: 360px;
   height: 240px;
-  outline: solid red 1px;
+  background-color: black;
+  border-radius: 5px;
 }
 
 #nav {
