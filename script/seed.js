@@ -63,6 +63,12 @@ const routineVideo = {
   title: 'chicken dance'
 };
 
+const routine2 = {
+  url:
+    'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mkv',
+  title: 'testy test'
+};
+
 //TEST ACCOUNTS - Video frames
 // const testVideoFrames = [
 //   {
@@ -110,9 +116,11 @@ async function createTestUsers() {
   const seededPractice = await Practice.create(practiceVideo);
 
   const seededRoutine = await Routine.create(routineVideo);
+  const anotherRoutine = await Routine.create(routine2);
 
   // routine belongs to team
   await seededRoutine.setTeam(1);
+  await anotherRoutine.setTeam(1);
   // practice belongsto routine
   await seededPractice.setRoutine(1);
 
