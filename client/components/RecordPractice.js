@@ -17,14 +17,16 @@ import Calibrator from './Calibrator';
 
 import {drawSkeleton} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
+import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
 
 const worker = new MyWorker();
 worker.postMessage({resolution: {width: 320, height: 240}});
-
+const messages=[];
 worker.onmessage = event => {
   const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
   console.log('got message', event.data);
+  messages.push(event.data);
   drawSkeleton(event.data.keypoints, 0, ctx);
 };
 
@@ -59,7 +61,8 @@ class RecordPractice extends React.Component {
       calibration: {},
       modalOpen: true,
       cameraCanvas: '',
-      context: ''
+      context: '',
+      recording: true
     };
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
@@ -124,6 +127,7 @@ class RecordPractice extends React.Component {
 
     // user clicked the record button and started recording
     this.player.on('startRecord', () => {
+      this.setState({recording: true});
       console.log('started recording!');
     });
 
@@ -150,6 +154,7 @@ class RecordPractice extends React.Component {
     this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
+      this.setState({recording: false});
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
     });
@@ -255,7 +260,8 @@ if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
 
 const mapStateToProps = state => {
   return {
-    userId: state.user.id
+    userId: state.user.id,
+    targetRoutine: state.singleRoutine
   };
 };
 const mapDispatchToProps = dispatch => {
