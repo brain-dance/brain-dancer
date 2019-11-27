@@ -1,28 +1,18 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {
-  Button,
-  Card,
-  Form,
-  Icon,
-  Message,
-  Modal,
-  Segment
-} from 'semantic-ui-react';
+import {Button, Form, Icon, Message, Modal} from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
 
 const UploadVideoForm = props => {
   const {blob, teamId, userId} = props;
   const [open, setOpen] = useState(false);
-  const [dimmer, setDimmer] = useState(true);
   const [title, setTitle] = useState('');
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
   const [isClickedClose, setIsClickedClose] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSelectVid = () => {
-    setDimmer(true);
+  const handleSelectVid = e => {
     setOpen(!open);
     setIsClickedSelectVid(!isClickedSelectVid);
   };
@@ -40,16 +30,6 @@ const UploadVideoForm = props => {
     setIsUploaded(true);
   };
 
-  // const download = () => {
-  //   this.player.record().saveAs({video: 'video-name.webm'});
-  // };
-
-  // const handleDownload = (e, {name}) => {
-  //   let blobForDownload = recording.find(vid => vid.name === name); //video = blob
-  //   download(blobForDownload);
-  //   console.log('Handled Download ... Maybe even worked!');
-  // };
-
   const handleClickClose = () => {
     setOpen(!open);
     setIsClickedClose(!isClickedClose);
@@ -61,12 +41,13 @@ const UploadVideoForm = props => {
         <Button
           labelPosition="right"
           icon="right chevron"
-          content="Select Video for Upload"
+          color="black"
+          content="Upload Video"
           name={blob.name}
           onClick={handleSelectVid}
         />
       }
-      dimmer={dimmer}
+      dimmer="inverted"
       open={open}
       onClose={handleClickClose}
     >
