@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter, Link} from 'react-router-dom';
-import {getSingleRoutine, fetchUserTeams} from '../store';
+import {setSingleRoutine, getSingleRoutine} from '../store';
 import {Button, Icon} from 'semantic-ui-react';
 
 import videojs from 'video.js';
@@ -22,7 +22,6 @@ const Choreo = props => {
   let playbackPlayer;
 
   useEffect(() => {
-    dispatch(fetchUserTeams());
     playbackPlayer = videojs(
       playback,
       {
@@ -37,7 +36,9 @@ const Choreo = props => {
     );
     playbackPlayer.addClass('vjs-waiting');
     dispatch(getSingleRoutine(routineId));
-  }, [thisRoutine]);
+
+    return () => dispatch(setSingleRoutine({}));
+  }, []);
 
   return (
     <div id="choreo">

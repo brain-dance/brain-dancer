@@ -31,7 +31,12 @@ body {
 
 #gallery {
   display: flex;
-  overflow: auto;
+  overflow: scroll;
+}
+
+.ui.card {
+  display: flex;
+  /* overflow-x: scroll; */
 }
 
 #skelliesAndForm {
