@@ -22,7 +22,6 @@ const Choreo = props => {
   let playbackPlayer;
 
   useEffect(() => {
-    dispatch(getSingleRoutine(routineId));
     dispatch(fetchUserTeams());
     playbackPlayer = videojs(
       playback,
@@ -36,6 +35,7 @@ const Choreo = props => {
         videojs.log('playback screen is live!');
       }
     );
+    dispatch(getSingleRoutine(routineId));
   }, []);
 
   return (
@@ -64,7 +64,7 @@ const Choreo = props => {
         controls={true}
         className="video-js"
       >
-        <source src={thisRoutine} type="video/webm" />
+        {thisRoutine && <source src={thisRoutine} type="video/mp4" />}
       </video>
       {/* <Video /> */}
       {/* <Submissions /> */}
