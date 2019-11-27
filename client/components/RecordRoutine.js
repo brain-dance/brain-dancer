@@ -90,6 +90,11 @@ class RecordRoutine extends React.Component {
         return {recording: [...state.recording, this.recordedData]};
       });
     });
+
+    // this.player.on('startConvert', () => {});
+    // this.player.on('finishConvert', () => {
+    //   console.log('convert completed!', this.player.convertedData)
+    // }); //player.convertedData
     // return player.dispose();
   }
 
