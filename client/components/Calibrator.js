@@ -9,6 +9,8 @@ import 'video.js/dist/video-js.min.css';
 import 'videojs-record/dist/css/videojs.record.css';
 import 'videojs-record/dist/css/videojs.record.min.css';
 
+import {Button} from 'semantic-ui-react';
+
 const Calibrator = props => {
   const [camera, setCamera] = useState({});
   const [count, setCount] = useState(0);
@@ -76,7 +78,7 @@ const Calibrator = props => {
         setCount(0);
         clearInterval(countdown);
       }
-    }, 800);
+    }, 600);
   };
 
   return (
@@ -86,10 +88,9 @@ const Calibrator = props => {
         ref={node => (videoPlayer = node)}
         className="video-js vjs-default-skin"
       />
-      <button type="button" onClick={handleCapture}>
-        Take Picture
-      </button>
-      {count !== 0 && <div>{count}</div>}
+      <Button type="button" onClick={handleCapture}>
+        Take Picture {count !== 0 && <div>{count}</div>}
+      </Button>
     </div>
   );
 };
