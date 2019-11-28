@@ -1,4 +1,4 @@
-const {angle} = require('./scaling');
+const {angle} = require('./geometry');
 const {createCanvas, loadImage} = require('canvas');
 const {singlePoseNet} = require('./posenet');
 const sizeOf = require('image-size');
@@ -11,7 +11,6 @@ const getPose = async input => {
 };
 
 const canvasify = async imagePath => {
-  console.log('canvasing');
   const dim = sizeOf(imagePath);
   const canvas = await createCanvas(dim.width, dim.height);
   const ctx = await canvas.getContext('2d');
@@ -177,11 +176,9 @@ const angleDifferences = (pose, targetPose) => {
   return differences;
 };
 
-module.exports = {
-  getPose,
-  canvasify,
-  labelPose,
-  getAngles,
-  angleDifferences,
-  ANGLES
-};
+module.exports.getPose = getPose;
+module.exports.canvasify = canvasify;
+module.exports.labelPose = labelPose;
+module.exports.getAngles = getAngles;
+module.exports.angleDifferences = angleDifferences;
+module.exports.ANGLES = ANGLES;
