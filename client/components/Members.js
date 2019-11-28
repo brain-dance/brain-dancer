@@ -6,7 +6,7 @@ const Members = props => {
   const members = props.members || [];
 
   return (
-    <Segment>
+    <Segment basic color="blue">
       <Header as="h3">Members</Header>
       {members.map(member => (
         <Member member={member} key={member.id} />

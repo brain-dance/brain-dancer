@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import {addPracticeThunk} from '../store';
 
@@ -19,7 +20,8 @@ import {
   Message,
   Modal,
   Item,
-  Grid
+  Grid,
+  Header
 } from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
@@ -220,6 +222,16 @@ class RecordPractice extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
+        <Header as="h2">
+          <Button
+            primary
+            as={Link}
+            to={`/team/${this.teamId}/routine/${this.routineId}`}
+            floated="left"
+          >
+            Back to Routine
+          </Button>
+        </Header>
         <div id="recording">
           <video
             id="routine"
