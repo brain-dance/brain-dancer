@@ -1,20 +1,11 @@
 /* eslint-disable max-statements */
 const {getAngles} = require('./formatting');
+const {getMidpoint, distance, angle} = require('./geometry');
 
 //Notes - current scaling approach just straightforwardly squeezes or stretches the wireframe
 //This might be a bit weird on users with wildly different proportions, but it makes the function indifferent as to the number of
 //Keypoints we have access to.
 //Additionally, all functions are pure - a new wireframe is returned any time scale or translate is called.
-const distance = (x1, y1, x2, y2) => {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-};
-const angle = (centerX, centerY, x2, y2, x3, y3) => {
-  //Need to include a check for sign of the angle
-  return Math.acos(
-    ((x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY)) /
-      (distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3))
-  );
-};
 
 const deepCopy = obj => {
   console.log(obj.prototype);
@@ -31,38 +22,6 @@ const deepCopy = obj => {
   return toReturn;
 };
 
-const nextPoint = (x1, y1, x2, y2, theta, distance) => {
-  let temp = angle(x1, y1, x2, y2, x2, y1) + theta;
-  return {x: x1 + distance * Math.cos(temp), y: y1 + distance * Math.sin(temp)};
-};
-
-const dDistancedX1 = (x1, y1, x2, y2) => {
-  return (
-    (1 / 2) *
-    Math.pow(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2), -0.5) *
-    (2 * x1 - 2 * x2)
-  );
-};
-const dAngledcenterX = (centerX, centerY, x2, y2, x3, y3) => {
-  let u = (x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY);
-  let du = centerX * (x3 + x2 - 2 * centerX) * -1;
-  let v =
-    distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3);
-  let dv =
-    dDistancedX1(centerX, centerY, x2, y2) *
-      distance(centerX, centerY, x3, y3) +
-    dDistancedX1(centerX, centerY, x3, y3) * distance(centerX, centerY, x2, y2);
-  return (u * dv - v * du) / Math.pow(v, 2);
-};
-const dAngledx2 = (centerX, centerY, x2, y2, x3, y3) => {
-  let u = (x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY);
-  let v =
-    distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3);
-  let du = x3 - centerX;
-  let dv =
-    dDistancedX1(x2, y2, centerX, centerY) * distance(centerX, centerY, x3, y3);
-  return (u * dv - v * du) / Math.pow(v, 2);
-};
 /*const scale=(distances, angles)=>{
     let points=[];
     let curr={x1: 0, y1: 0, x2: 1, y2: 0};
@@ -89,6 +48,7 @@ const translate = (wireframe, newCenter) => {
   });
   return toReturn;
 };
+
 const getVol = wireframe => {
   let temp = {
     x1,
@@ -126,35 +86,18 @@ const simpleScale = (wireframe, ratio) => {
 // };
 
 const SEGMENTS = {
-  leftShin: ['LeftAnkle', 'LeftKnee'],
-  rightShin: ['RightAnkle', 'RightKnee'],
-  leftThigh: ['LeftKnee', 'LeftHip'],
-  rightThigh: ['RightKnee', 'RightHip'],
-  waist: ['LeftHip', 'RightHip'],
-  leftTorso: ['LeftHip', 'LeftShoulder'],
-  rightTorso: ['RightHip', 'RightShoulder'],
-  leftUpperArm: ['LeftShoulder', 'LeftElbow'],
-  rightUpperArm: ['RightShoulder', 'RightElbow'],
-  leftForeArm: ['LeftWrist', 'LeftElbow'],
-  rightForeArm: ['RightWrist', 'RightElbow'],
-  collar: ['LeftShoulder, RightShoulder']
-};
-
-const getLengths = pose => {
-  return Object.keys(SEGMENTS).reduce((lengths, segment) => {
-    const [start, end] = SEGMENTS[segment];
-    lengths[segment] = distance(
-      pose[start].x,
-      pose[start].y,
-      pose[end].x,
-      pose[end].y
-    );
-    return lengths;
-  }, {});
-};
-
-const getMidpoint = (x1, y1, x2, y2) => {
-  return {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
+  leftShin: ['leftAnkle', 'leftKnee'],
+  rightShin: ['rightAnkle', 'rightKnee'],
+  leftThigh: ['leftKnee', 'leftHip'],
+  rightThigh: ['rightKnee', 'rightHip'],
+  waist: ['leftHip', 'rightHip'],
+  leftTorso: ['leftHip', 'leftShoulder'],
+  rightTorso: ['rightHip', 'rightShoulder'],
+  leftUpperArm: ['leftShoulder', 'leftElbow'],
+  rightUpperArm: ['rightShoulder', 'rightElbow'],
+  leftForeArm: ['leftWrist', 'leftElbow'],
+  rightForeArm: ['rightWrist', 'rightElbow'],
+  collar: ['leftShoulder', 'rightShoulder']
 };
 
 const getSpineLength = pose => {
@@ -175,27 +118,35 @@ const getSpineLength = pose => {
   return distance(pelvis.x, pelvis.y, neck.x, neck.y);
 };
 
-const calibrateSpine = (source, target) => {
-  return getSpineLength(target) / getSpineLength(source);
+const getLengths = pose => {
+  const initial = {spine: getSpineLength(pose)};
+  return Object.keys(SEGMENTS).reduce((lengths, segment) => {
+    const [start, end] = SEGMENTS[segment];
+    lengths[segment] = distance(
+      pose[start].x,
+      pose[start].y,
+      pose[end].x,
+      pose[end].y
+    );
+    return lengths;
+  }, initial);
 };
 
 const getCalibration = (source, target) => {
   const sourceLens = getLengths(source);
   const targetLens = getLengths(target);
 
-  const initial = {
-    spine: calibrateSpine(source, target)
-  };
-
   return Object.keys(sourceLens).reduce((calibration, segment) => {
     calibration[segment] = targetLens[segment] / sourceLens[segment];
-  }, initial);
+    return calibration;
+  }, {});
 };
 
 const calibrate = (source, calibration) => {
   const sourceLens = getLengths(source);
   return Object.keys(sourceLens).reduce((calibratedLens, segment) => {
     calibratedLens[segment] = sourceLens[segment] * calibration[segment];
+    return calibratedLens;
   }, {});
 };
 
@@ -230,14 +181,14 @@ const scaler = (source, target, calibration) => {
 
   //find angle waist makes with ground
   const waistAngle = Math.atan(
-    (source.leftHip.y + source.rightHip.y) /
-      (source.leftHip.x + source.rightHip.x)
+    (source.rightHip.y - source.leftHip.y) /
+      (source.rightHip.x - source.leftHip.x)
   );
 
   //find angle shoulders make with ground
   const shouldersAngle = Math.atan(
-    (source.rightShoulder.y + source.rightShoulder.y) /
-      (source.leftShoulder.x + source.rightShoulder.x)
+    (source.rightShoulder.y - source.leftShoulder.y) /
+      (source.rightShoulder.x - source.leftShoulder.x)
   );
 
   //create new wireframe
@@ -256,14 +207,18 @@ const scaler = (source, target, calibration) => {
   };
 
   //find left leg points
-  theta = sourceAngles.LeftKneeLeftHipRightHip - waistAngle - Math.PI;
+  theta =
+    -(2 * Math.PI - sourceAngles.LeftKneeLeftHipRightHip) +
+    waistAngle +
+    Math.PI;
   scaled.leftKnee = {
     x: scaled.leftHip.x - calibLengths.leftThigh * Math.cos(theta),
     y: scaled.leftHip.y - calibLengths.leftThigh * Math.sin(theta)
   };
 
-  theta = sourceAngles.LeftAnkleLeftKneeLeftHip - theta - Math.PI;
-  scaled.leftThigh = {
+  theta =
+    -(2 * Math.PI - sourceAngles.LeftAnkleLeftKneeLeftHip) + theta + Math.PI;
+  scaled.leftAnkle = {
     x: scaled.leftKnee.x - calibLengths.leftShin * Math.cos(theta),
     y: scaled.leftKnee.y - calibLengths.leftShin * Math.sin(theta)
   };
@@ -276,7 +231,7 @@ const scaler = (source, target, calibration) => {
   };
 
   theta = Math.PI - theta - sourceAngles.RightKneeRightHipLeftHip;
-  scaled.rightKnee = {
+  scaled.rightAnkle = {
     x: scaled.rightKnee.x + calibLengths.rightShin * Math.cos(theta),
     y: scaled.rightKnee.y - calibLengths.rightShin * Math.sin(theta)
   };
@@ -291,13 +246,11 @@ const scaler = (source, target, calibration) => {
     sourceNeck.y
   );
 
-  const spineLength = getSpineLength(source) * calibLengths.spine;
-
   //find scaled neck
   theta = Math.PI + waistAngle + spineAngle;
   const scaledNeck = {
-    x: sourcePelvis.x + spineLength * Math.cos(theta),
-    y: sourcePelvis.y + spineLength * Math.sin(theta)
+    x: sourcePelvis.x + calibLengths.spine * Math.cos(theta),
+    y: sourcePelvis.y + calibLengths.spine * Math.sin(theta)
   };
 
   //find shoulders
@@ -338,18 +291,25 @@ const scaler = (source, target, calibration) => {
     x: scaled.rightElbow.x + calibLengths.rightForeArm * Math.cos(theta),
     y: scaled.rightElbow.y - calibLengths.rightForeArm * Math.sin(theta)
   };
+
+  //return keypoints as pose
+  return {
+    keypoints: Object.keys(scaled).reduce((parts, part) => {
+      parts.push({part, position: scaled[part]});
+      return parts;
+    }, [])
+  };
 };
 
-module.exports = {
-  centroid,
-  angle,
-  scaler,
-  simpleScale,
-  translate,
-  distance,
-  deepCopy,
-  getCalibration
-};
+module.exports.angle = angle;
+module.exports.centroid = centroid;
+module.exports.scaler = scaler;
+module.exports.simpleScale = simpleScale;
+module.exports.translate = translate;
+module.exports.distance = distance;
+module.exports.deepCopy = deepCopy;
+module.exports.getCalibration = getCalibration;
+
 /*
     All below is irrelevant.  Keeping mostly as a reminder I want to learn the algorithm later.
 
