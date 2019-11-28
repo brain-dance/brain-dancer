@@ -1,6 +1,6 @@
 /* eslint-disable max-statements */
 const {getAngles} = require('./formatting');
-const {getMidpoint, distance, angle} = require('./geometry');
+const {getMidpoint, distance, angle, extrapolate} = require('./geometry');
 
 //Notes - current scaling approach just straightforwardly squeezes or stretches the wireframe
 //This might be a bit weird on users with wildly different proportions, but it makes the function indifferent as to the number of
@@ -207,34 +207,34 @@ const scaler = (source, target, calibration) => {
   };
 
   //find left leg points
-  theta =
-    -(2 * Math.PI - sourceAngles.LeftKneeLeftHipRightHip) +
-    waistAngle +
-    Math.PI;
-  scaled.leftKnee = {
-    x: scaled.leftHip.x - calibLengths.leftThigh * Math.cos(theta),
-    y: scaled.leftHip.y - calibLengths.leftThigh * Math.sin(theta)
-  };
+  scaled.leftKnee = extrapolate(
+    scaled.leftHip,
+    scaled.rightHip,
+    calibLengths.leftThigh,
+    sourceAngles.RightHipLeftHipLeftKnee
+  );
 
-  theta =
-    -(2 * Math.PI - sourceAngles.LeftAnkleLeftKneeLeftHip) + theta + Math.PI;
-  scaled.leftAnkle = {
-    x: scaled.leftKnee.x - calibLengths.leftShin * Math.cos(theta),
-    y: scaled.leftKnee.y - calibLengths.leftShin * Math.sin(theta)
-  };
+  scaled.leftAnkle = extrapolate(
+    scaled.leftKnee,
+    scaled.leftHip,
+    calibLengths.leftShin,
+    sourceAngles.LeftHipLeftKneeLeftAnkle
+  );
 
   //find right leg points
-  theta = Math.PI - waistAngle - sourceAngles.RightKneeRightHipLeftHip;
-  scaled.rightKnee = {
-    x: scaled.rightHip.x + calibLengths.rightThigh * Math.cos(theta),
-    y: scaled.rightHip.y - calibLengths.rightThigh * Math.sin(theta)
-  };
+  scaled.rightKnee = extrapolate(
+    scaled.rightHip,
+    scaled.leftHip,
+    calibLengths.rightThigh,
+    sourceAngles.LeftHipRightHipRightKnee
+  );
 
-  theta = Math.PI - theta - sourceAngles.RightKneeRightHipLeftHip;
-  scaled.rightAnkle = {
-    x: scaled.rightKnee.x + calibLengths.rightShin * Math.cos(theta),
-    y: scaled.rightKnee.y - calibLengths.rightShin * Math.sin(theta)
-  };
+  scaled.rightAnkle = extrapolate(
+    scaled.rightKnee,
+    scaled.rightHip,
+    calibLengths.rightShin,
+    sourceAngles.RightHipRightKneeRightAnkle
+  );
 
   //find spine
   const spineAngle = angle(
@@ -247,7 +247,7 @@ const scaler = (source, target, calibration) => {
   );
 
   //find scaled neck
-  theta = Math.PI + waistAngle + spineAngle;
+  theta = waistAngle + spineAngle;
   const scaledNeck = {
     x: sourcePelvis.x + calibLengths.spine * Math.cos(theta),
     y: sourcePelvis.y + calibLengths.spine * Math.sin(theta)
@@ -265,32 +265,35 @@ const scaler = (source, target, calibration) => {
   };
 
   // find left arm points
-  theta =
-    sourceAngles.LeftElbowLeftShoulderRightShoulder - shouldersAngle - Math.PI;
-  scaled.leftElbow = {
-    x: scaled.leftShoulder.x - calibLengths.leftUpperArm * Math.cos(theta),
-    y: scaled.leftShoulder.y - calibLengths.leftUpperArm * Math.sin(theta)
-  };
 
-  theta = sourceAngles.LeftWristLeftElbowLeftShoulder - theta - Math.PI;
-  scaled.leftWrist = {
-    x: scaled.leftElbow.x - calibLengths.leftForeArm * Math.cos(theta),
-    y: scaled.leftElbow.y - calibLengths.leftForeArm * Math.sin(theta)
-  };
+  scaled.leftElbow = extrapolate(
+    scaled.leftShoulder,
+    scaled.rightShoulder,
+    calibLengths.leftUpperArm,
+    sourceAngles.RightShoulderLeftShoulderLeftElbow
+  );
+
+  scaled.leftWrist = extrapolate(
+    scaled.leftElbow,
+    scaled.leftShoulder,
+    calibLengths.leftForeArm,
+    sourceAngles.LeftShoulderLeftElbowLeftWrist
+  );
 
   //find right arm points
-  theta =
-    Math.PI - shouldersAngle - sourceAngles.RightElbowRightShoulderLeftShoulder;
-  scaled.rightElbow = {
-    x: scaled.rightShoulder.x + calibLengths.rightUpperArm * Math.cos(theta),
-    y: scaled.rightShoulder.y - calibLengths.rightUpperArm * Math.sin(theta)
-  };
+  scaled.rightElbow = extrapolate(
+    scaled.rightShoulder,
+    scaled.leftShoulder,
+    calibLengths.rightUpperArm,
+    sourceAngles.LeftShoulderRightShoulderRightElbow
+  );
 
-  theta = Math.PI - theta - sourceAngles.RightWristRightElbowRightShoulder;
-  scaled.rightWrist = {
-    x: scaled.rightElbow.x + calibLengths.rightForeArm * Math.cos(theta),
-    y: scaled.rightElbow.y - calibLengths.rightForeArm * Math.sin(theta)
-  };
+  scaled.rightWrist = extrapolate(
+    scaled.rightElbow,
+    scaled.rightShoulder,
+    calibLengths.rightForeArm,
+    sourceAngles.RightShoulderRightElbowRightWrist
+  );
 
   //return keypoints as pose
   return {

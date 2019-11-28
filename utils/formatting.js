@@ -40,12 +40,12 @@ const labelPose = pose => {
 //Note - functions in scoring.js depend on these label names.  If label names change, be sure to update scoring as well.
 const ANGLES = {
   leftKnee: {
-    left: 'leftAnkle',
-    right: 'leftHip',
-    label: 'LeftAnkleLeftKneeLeftHip'
+    left: 'leftHip',
+    right: 'leftAnkle',
+    label: 'LeftHipLeftKneeLeftAnkle'
   },
   leftHip: [
-    {left: 'leftKnee', right: 'rightHip', label: 'LeftKneeLeftHipRightHip'},
+    {left: 'rightHip', right: 'leftKnee', label: 'RightHipLeftHipLeftKnee'},
     {
       left: 'leftShoulder',
       right: 'rightHip',
@@ -59,23 +59,23 @@ const ANGLES = {
       label: 'LeftHipLeftShoulderLeftElbow'
     },
     {
-      left: 'leftElbow',
-      right: 'rightShoulder',
-      label: 'LeftElbowLeftShoulderRightShoulder'
+      left: 'rightShoulder',
+      right: 'leftElbow',
+      label: 'RightShoulderLeftShoulderLeftElbow'
     }
   ],
   leftElbow: {
-    left: 'leftWrist',
-    right: 'leftShoulder',
-    label: 'LeftWristLeftElbowLeftShoulder'
+    left: 'leftShoulder',
+    right: 'leftWrist',
+    label: 'LeftShoulderLeftElbowLeftWrist'
   },
   rightKnee: {
-    left: 'rightAnkle',
-    right: 'rightHip',
-    label: 'RightAnkleRightKneeRightHip'
+    left: 'rightHip',
+    right: 'rightAnkle',
+    label: 'RightHipRightKneeRightAnkle'
   },
   rightHip: [
-    {left: 'rightKnee', right: 'leftHip', label: 'RightKneeRightHipLeftHip'},
+    {left: 'leftHip', right: 'rightKnee', label: 'LeftHipRightHipRightKnee'},
     {
       left: 'rightShoulder',
       right: 'leftHip',
@@ -94,15 +94,15 @@ const ANGLES = {
       label: 'RightHipRightShoulderLeftShoulder'
     },
     {
-      left: 'rightElbow',
-      right: 'leftShoulder',
-      label: 'RightElbowRightShoulderLeftShoulder'
+      left: 'leftShoulder',
+      right: 'rightElbow',
+      label: 'LeftShoulderRightShoulderRightElbow'
     }
   ],
   rightElbow: {
-    left: 'rightWrist',
-    right: 'rightShoulder',
-    label: 'RightWristRightElbowRightShoulder'
+    left: 'rightShoulder',
+    right: 'rightWrist',
+    label: 'RightShoulderRightElbowRightWrist'
   }
 };
 

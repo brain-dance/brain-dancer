@@ -4,15 +4,23 @@ const distance = (x1, y1, x2, y2) => {
 
 const angle = (centerX, centerY, x2, y2, x3, y3) => {
   //Need to include a check for sign of the angle
-  return Math.acos(
-    ((x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY)) /
-      (distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3))
-  );
+  let theta2 = Math.atan2(y3 - centerY, x3 - centerX);
+  let theta1 = Math.atan2(y2 - centerY, x2 - centerX);
+
+  if (theta1 < 0) theta1 = 2 * Math.PI + theta1;
+  if (theta2 < 0) theta2 = 2 * Math.PI + theta2;
+
+  return theta2 - theta1;
+
+  // return Math.acos(
+  //   ((x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY)) /
+  //     (distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3))
+  // );
 };
 
-const nextPoint = (x1, y1, x2, y2, theta, distance) => {
-  let temp = angle(x1, y1, x2, y2, x2, y1) + theta;
-  return {x: x1 + distance * Math.cos(temp), y: y1 + distance * Math.sin(temp)};
+const nextPoint = (x1, y1, x2, y2, theta, length) => {
+  let temp = angle(x1, y1, x2, y1, x2, y2) + theta;
+  return {x: x1 + length * Math.cos(temp), y: y1 + length * Math.sin(temp)};
 };
 
 const dDistancedX1 = (x1, y1, x2, y2) => {
@@ -48,6 +56,17 @@ const getMidpoint = (x1, y1, x2, y2) => {
   return {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
 };
 
+const extrapolate = (point, prevPoint, r, theta) => {
+  let theta0 = Math.atan2(prevPoint.y - point.y, prevPoint.x - point.x);
+  if (theta0 < 0) theta0 = 2 * Math.PI + theta0;
+  return {
+    x: point.x + r * Math.cos(theta + theta0),
+    y: point.y + r * Math.sin(theta + theta0)
+  };
+};
+
 module.exports.getMidpoint = getMidpoint;
 module.exports.angle = angle;
 module.exports.distance = distance;
+module.exports.nextPoint = nextPoint;
+module.exports.extrapolate = extrapolate;
