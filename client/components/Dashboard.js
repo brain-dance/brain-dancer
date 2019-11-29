@@ -5,6 +5,7 @@ import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
 import {fetchUserTeams} from '../store';
 import AddTeamForm from './AddTeamForm';
+import AddMemberForm from './AddMemberForm';
 
 /**
  * COMPONENT
@@ -17,6 +18,7 @@ export const Dashboard = props => {
   //TK: Identify which team displays when user logs in (currently first one)
   const [selectedTeam, setSelectedTeam] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUserTeams());
@@ -48,7 +50,18 @@ export const Dashboard = props => {
               </Modal.Content>
             </Modal>
           </div>
-          <Team team={selectedTeam} />
+          <div>
+            <Modal dimmer="inverted" open={memberModalOpen}>
+              <Modal.Content>
+                <AddMemberForm setMemberModalOpen={setMemberModalOpen} />
+              </Modal.Content>
+            </Modal>
+          </div>
+          <Team
+            team={selectedTeam}
+            setMemberModalOpen={setMemberModalOpen}
+            teamId={selectedTeam.id}
+          />
         </Grid.Column>
       </Grid>
     );
