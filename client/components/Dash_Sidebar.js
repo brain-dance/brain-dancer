@@ -10,10 +10,8 @@ export const DashSidebar = props => {
   const {teams, selectedTeam, handleSelectTeam} = props;
   // const {teams} = user;
 
-  const [isClickedAddTeam, setIsClickedAddTeam] = useState(false);
-
   const handleClickAddTeam = () => {
-    setIsClickedAddTeam(true);
+    props.setModalOpen(true);
   };
 
   return teams.length ? (

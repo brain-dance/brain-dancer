@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Team, User, Routine} = require('../db/models');
+const {Team, User, UserTeam, Routine} = require('../db/models');
 module.exports = router;
 
 // /api/teams route
@@ -56,6 +56,12 @@ router.post('/', async (req, res, next) => {
   try {
     const {name, description, category} = req.body;
     const newTeam = await Team.create({name, description, category});
+    // creator of team (req.user) is created as a choreographer in the new team
+    await UserTeam.create({
+      role: 'choreographer',
+      userId: req.user.id,
+      teamId: newTeam.id
+    });
     res.status(200).json(newTeam);
   } catch (err) {
     next(err);
