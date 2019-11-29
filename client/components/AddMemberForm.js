@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import {Form, Header, Icon} from 'semantic-ui-react';
-import {fetchAllUsers, addMemberThunk} from '../store';
+import {fetchAllUsers, addTeamMemberThunk} from '../store';
 
 const AddMemberForm = function(props) {
   const dispatch = useDispatch();
@@ -20,8 +21,6 @@ const AddMemberForm = function(props) {
     value: user.id
   }));
 
-  console.log('u', userOptions);
-
   const options = [
     {key: 'd', text: 'dancer', value: 'dancer'},
     {key: 'c', text: 'choreographer', value: 'choreographer'}
@@ -29,7 +28,8 @@ const AddMemberForm = function(props) {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    dispatch(addMemberThunk(props.teamId, userId, role));
+    console.log('submit', props.match.params.teamId, userId, role);
+    dispatch(addTeamMemberThunk(props.match.params.teamId, userId, role));
     props.setMemberModalOpen(false);
   };
 
@@ -42,8 +42,10 @@ const AddMemberForm = function(props) {
           label="User"
           options={userOptions}
           onChange={evt => {
-            console.log(evt.target.value);
-            setUserId(evt.target.id);
+            console.log(evt.target.innerText);
+            setUserId(
+              allUsers.find(user => user.name === evt.target.innerText).id
+            );
           }}
         />
         <Form.Select
@@ -69,4 +71,4 @@ const AddMemberForm = function(props) {
   );
 };
 
-export default AddMemberForm;
+export default withRouter(AddMemberForm);

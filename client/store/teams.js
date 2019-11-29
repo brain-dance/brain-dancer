@@ -5,6 +5,7 @@ const GET_ALL_TEAMS = 'GET_ALL_TEAMS';
 const GET_USER_TEAMS = 'GET_USER_TEAMS';
 const GET_SINGLE_TEAM = 'GET_SINGLE_TEAM';
 const ADD_TEAM = 'ADD_TEAM';
+const ADD_TEAM_MEMBER = 'ADD_TEAM_MEMBER';
 const UPDATE_TEAM = 'UPDATE_TEAM';
 const DELETE_TEAM = 'DELETE_TEAM';
 
@@ -17,6 +18,12 @@ const getUserTeams = teams => ({
 const addTeam = team => ({
   type: ADD_TEAM,
   team
+});
+
+const addTeamMember = (teamId, member) => ({
+  type: ADD_TEAM_MEMBER,
+  teamId,
+  member
 });
 
 const updateTeam = team => ({
@@ -46,6 +53,14 @@ export const addTeamThunk = teamBody => async dispatch => {
   dispatch(addTeam(data));
 };
 
+export const addTeamMemberThunk = (teamId, userId, role) => async dispatch => {
+  const {data} = await axios.post(`/api/teams/${teamId}`, {
+    role,
+    userId
+  }); //returns member to add
+  dispatch(addTeamMember(teamId, data));
+};
+
 export const updateTeamThunk = (teamId, teamBody) => async dispatch => {
   const {data} = await axios.put(`/api/teams/${teamId}`, teamBody);
   dispatch(updateTeam(data));
@@ -71,6 +86,15 @@ const reducer = (state = teams, action) => {
     case ADD_TEAM:
       //adds to team AND sets as active team
       return [...state, action.team];
+    case ADD_TEAM_MEMBER:
+      return state.map(team => {
+        if (team.id === action.teamId) {
+          team.members = [...team.members, action.member];
+          return team;
+        } else {
+          return team;
+        }
+      });
     case UPDATE_TEAM:
       return state.map(team => {
         if (team.id === +action.team.id) {

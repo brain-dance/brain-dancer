@@ -51,6 +51,24 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+//add new team member
+router.post('/:teamId', async (req, res, next) => {
+  try {
+    const {role, userId} = req.body;
+
+    await UserTeam.create({
+      role,
+      userId,
+      teamId: req.params.teamId
+    });
+
+    const memberToAdd = await User.findByPk(userId);
+    res.status(201).json(memberToAdd);
+  } catch (err) {
+    next(err);
+  }
+});
+
 //add new team
 router.post('/', async (req, res, next) => {
   try {
@@ -62,7 +80,7 @@ router.post('/', async (req, res, next) => {
       userId: req.user.id,
       teamId: newTeam.id
     });
-    res.status(200).json(newTeam);
+    res.status(201).json(newTeam);
   } catch (err) {
     next(err);
   }

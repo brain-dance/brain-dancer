@@ -57,11 +57,7 @@ export const Dashboard = props => {
               </Modal.Content>
             </Modal>
           </div>
-          <Team
-            team={selectedTeam}
-            setMemberModalOpen={setMemberModalOpen}
-            teamId={selectedTeam.id}
-          />
+          <Team team={selectedTeam} setMemberModalOpen={setMemberModalOpen} />
         </Grid.Column>
       </Grid>
     );
