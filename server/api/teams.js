@@ -101,6 +101,20 @@ router.put('/:id', async (req, res, next) => {
   }
 });
 
+router.delete('/:teamId/:userId', async (req, res, next) => {
+  try {
+    await UserTeam.destroy({
+      where: {
+        teamId: req.params.teamId,
+        userId: req.params.userId
+      }
+    });
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
 //remove a team (should be admin?)
 router.delete('/:id', async (req, res, next) => {
   try {

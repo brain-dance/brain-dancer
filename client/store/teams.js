@@ -8,6 +8,7 @@ const ADD_TEAM = 'ADD_TEAM';
 const ADD_TEAM_MEMBER = 'ADD_TEAM_MEMBER';
 const UPDATE_TEAM = 'UPDATE_TEAM';
 const DELETE_TEAM = 'DELETE_TEAM';
+const DELETE_TEAM_MEMBER = 'DELETE_TEAM_MEMBER';
 
 // ACTION CREATORS
 const getUserTeams = teams => ({
@@ -35,6 +36,12 @@ const updateTeam = team => ({
 const deleteTeam = teamId => ({
   type: DELETE_TEAM,
   teamId
+});
+
+const deleteTeamMember = (teamId, userId) => ({
+  type: DELETE_TEAM_MEMBER,
+  teamId,
+  userId
 });
 
 // THUNKS
@@ -72,6 +79,11 @@ export const deleteTeamThunk = teamId => async dispatch => {
   dispatch(deleteTeam(teamId));
 };
 
+export const deleteTeamMemberThunk = (teamId, userId) => async dispatch => {
+  await axios.delete(`api/teams/${teamId}/${userId}`);
+  dispatch(deleteTeamMember(teamId, userId));
+};
+
 // INITIAL STATE
 const teams = [];
 
@@ -92,7 +104,7 @@ const reducer = (state = teams, action) => {
         if (team.id === +action.teamId) {
           team.members = team.members.concat([
             {...action.member, userteams: {role: action.role}}
-          ]); //this is hacky and i'm sorry
+          ]); //this is hacky and i'm sorry. am open to corrections
           return team;
         } else {
           return team;
@@ -109,6 +121,18 @@ const reducer = (state = teams, action) => {
 
     case DELETE_TEAM:
       return state.list.filter(team => team.id !== +action.teamId);
+
+    case DELETE_TEAM_MEMBER:
+      return state.map(team => {
+        if (team.id === +action.teamId) {
+          return {
+            ...team,
+            members: team.members.filter(member => member.id !== action.userId)
+          };
+        } else {
+          return team;
+        }
+      });
 
     default:
       return state;
