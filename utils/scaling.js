@@ -1,4 +1,3 @@
-/* eslint-disable max-statements */
 const {getAngles} = require('./formatting');
 const {getMidpoint, distance, angle, extrapolate} = require('./geometry');
 
@@ -101,23 +100,13 @@ const SEGMENTS = {
 };
 
 const getSpineLength = pose => {
-  const neck = getMidpoint(
-    pose.leftShoulder.x,
-    pose.leftShoulder.y,
-    pose.rightShoulder.x,
-    pose.rightShoulder.y
-  );
-
-  const pelvis = getMidpoint(
-    pose.leftHip.x,
-    pose.leftHip.y,
-    pose.rightHip.x,
-    pose.rightHip.y
-  );
+  const neck = getMidpoint(pose.leftShoulder, pose.rightShoulder);
+  const pelvis = getMidpoint(pose.leftHip, pose.rightHip);
 
   return distance(pelvis.x, pelvis.y, neck.x, neck.y);
 };
 
+//finds all lengths for a given pose including the spine
 const getLengths = pose => {
   const initial = {spine: getSpineLength(pose)};
   return Object.keys(SEGMENTS).reduce((lengths, segment) => {
@@ -132,6 +121,7 @@ const getLengths = pose => {
   }, initial);
 };
 
+//returns a wireframe of the relative segment lengths
 const getCalibration = (source, target) => {
   const sourceLens = getLengths(source);
   const targetLens = getLengths(target);
@@ -142,6 +132,7 @@ const getCalibration = (source, target) => {
   }, {});
 };
 
+//takes a source wireframe and retuns calibrated segment lengths
 const calibrate = (source, calibration) => {
   const sourceLens = getLengths(source);
   return Object.keys(sourceLens).reduce((calibratedLens, segment) => {
@@ -157,27 +148,10 @@ const scaler = (source, target, calibration) => {
   //calibrate segment lengths
   const calibLengths = calibrate(source, calibration);
 
-  //find waist midpoint
-  const sourcePelvis = getMidpoint(
-    source.leftHip.x,
-    source.leftHip.y,
-    source.rightHip.x,
-    source.rightHip.y
-  );
-
-  const sourceNeck = getMidpoint(
-    source.leftShoulder.x,
-    source.leftShoulder.y,
-    source.rightShoulder.x,
-    source.rightShoulder.y
-  );
-
-  const targetPelvis = getMidpoint(
-    target.leftHip.x,
-    target.leftHip.y,
-    target.rightHip.x,
-    target.rightHip.y
-  );
+  //find midpoints
+  const sourcePelvis = getMidpoint(source.leftHip, source.rightHip);
+  const sourceNeck = getMidpoint(source.leftShoulder, source.rightShoulder);
+  const targetPelvis = getMidpoint(target.leftHip, target.rightHip);
 
   //find angle waist makes with ground
   const waistAngle = Math.atan(
@@ -195,7 +169,7 @@ const scaler = (source, target, calibration) => {
   const scaled = {};
   let theta;
 
-  //find new waist points
+  //find new waist points (uses known waist midpoint and scaled waist length)
   scaled.rightHip = {
     x: targetPelvis.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
     y: targetPelvis.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
@@ -206,7 +180,7 @@ const scaler = (source, target, calibration) => {
     y: targetPelvis.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
-  //find left leg points
+  //find left leg points using source angles
   scaled.leftKnee = extrapolate(
     scaled.leftHip,
     scaled.rightHip,
@@ -221,7 +195,7 @@ const scaler = (source, target, calibration) => {
     sourceAngles.LeftHipLeftKneeLeftAnkle
   );
 
-  //find right leg points
+  //find right leg points using source angles
   scaled.rightKnee = extrapolate(
     scaled.rightHip,
     scaled.leftHip,
@@ -236,7 +210,7 @@ const scaler = (source, target, calibration) => {
     sourceAngles.RightHipRightKneeRightAnkle
   );
 
-  //find spine
+  //find angle spine makes with waist
   const spineAngle = angle(
     sourcePelvis.x,
     sourcePelvis.y,
@@ -246,14 +220,14 @@ const scaler = (source, target, calibration) => {
     sourceNeck.y
   );
 
-  //find scaled neck
+  //find scaled neck using scaled spine
   theta = waistAngle + spineAngle;
   const scaledNeck = {
     x: sourcePelvis.x + calibLengths.spine * Math.cos(theta),
     y: sourcePelvis.y + calibLengths.spine * Math.sin(theta)
   };
 
-  //find shoulders
+  //find shoulders using neck as midpoint
   scaled.leftShoulder = {
     x: scaledNeck.x - (calibLengths.collar * Math.cos(shouldersAngle)) / 2,
     y: scaledNeck.y - (calibLengths.collar * Math.sin(shouldersAngle)) / 2
@@ -265,7 +239,6 @@ const scaler = (source, target, calibration) => {
   };
 
   // find left arm points
-
   scaled.leftElbow = extrapolate(
     scaled.leftShoulder,
     scaled.rightShoulder,

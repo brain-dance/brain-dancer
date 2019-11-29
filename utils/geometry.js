@@ -2,8 +2,10 @@ const distance = (x1, y1, x2, y2) => {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 };
 
+// returns the angle made by three points starting from the second point
+// and moving counter-clockwise to the third point
+// the returned angle is in radians with range -2pi to 2pi
 const angle = (centerX, centerY, x2, y2, x3, y3) => {
-  //Need to include a check for sign of the angle
   let theta2 = Math.atan2(y3 - centerY, x3 - centerX);
   let theta1 = Math.atan2(y2 - centerY, x2 - centerX);
 
@@ -52,10 +54,14 @@ const dAngledx2 = (centerX, centerY, x2, y2, x3, y3) => {
   return (u * dv - v * du) / Math.pow(v, 2);
 };
 
-const getMidpoint = (x1, y1, x2, y2) => {
-  return {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
+// finds the midpoint of two angles
+const getMidpoint = (left, right) => {
+  return {x: (left.x + right.x) / 2, y: (left.y + right.y) / 2};
 };
 
+// takes a two points, a length, and an angle theta
+// returns a point a distance r from the first point and
+// creating an angle theta with the previous point
 const extrapolate = (point, prevPoint, r, theta) => {
   let theta0 = Math.atan2(prevPoint.y - point.y, prevPoint.x - point.x);
   if (theta0 < 0) theta0 = 2 * Math.PI + theta0;
