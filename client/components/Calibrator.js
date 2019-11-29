@@ -9,7 +9,7 @@ import 'video.js/dist/video-js.min.css';
 import 'videojs-record/dist/css/videojs.record.css';
 import 'videojs-record/dist/css/videojs.record.min.css';
 
-import {Button} from 'semantic-ui-react';
+import {Button, Image, Header} from 'semantic-ui-react';
 
 const Calibrator = props => {
   const [camera, setCamera] = useState({});
@@ -18,8 +18,8 @@ const Calibrator = props => {
 
   const options = {
     controls: true,
-    width: 320,
-    height: 240,
+    width: 480,
+    height: 360,
     fluid: false,
     controlBar: {
       volumePanel: false,
@@ -88,9 +88,14 @@ const Calibrator = props => {
         ref={node => (videoPlayer = node)}
         className="video-js vjs-default-skin"
       />
-      <Button type="button" onClick={handleCapture}>
-        Take Picture {count !== 0 && <div>{count}</div>}
-      </Button>
+      <div>
+        <Image src="/calibrate-guide.png" size="medium" rounded />
+        <Header as="h5">Calibration</Header>
+        <p>Make sure your entire body fits in the frame.</p>
+        <Button type="button" onClick={handleCapture} color="blue">
+          Take Picture {count !== 0 && <div>{count}</div>}
+        </Button>
+      </div>
     </div>
   );
 };

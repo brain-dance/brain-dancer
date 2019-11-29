@@ -106,7 +106,7 @@ class RecordRoutine extends React.Component {
     return (
       <div>
         <div>
-          <Modal open={this.state.modalOpen}>
+          <Modal open={this.state.modalOpen} dimmer="inverted">
             <Modal.Content>
               <Calibrator
                 calibration={this.state.calibration}

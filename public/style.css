@@ -39,8 +39,8 @@ body {
 }
 
 #skeleton {
-  width: 360px;
-  height: 240px;
+  width: 640px;
+  height: 360px;
   background-color: black;
   border-radius: 5px;
 }
@@ -79,4 +79,10 @@ body {
 
 #sidebar {
   height: 100vh;
+}
+
+#calibrator {
+  display: flex;
+  align-content: center;
+  justify-content: space-evenly;
 }
