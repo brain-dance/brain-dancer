@@ -20,10 +20,11 @@ const addTeam = team => ({
   team
 });
 
-const addTeamMember = (teamId, member) => ({
+const addTeamMember = (teamId, member, role) => ({
   type: ADD_TEAM_MEMBER,
   teamId,
-  member
+  member,
+  role
 });
 
 const updateTeam = team => ({
@@ -58,7 +59,7 @@ export const addTeamMemberThunk = (teamId, userId, role) => async dispatch => {
     role,
     userId
   }); //returns member to add
-  dispatch(addTeamMember(teamId, data));
+  dispatch(addTeamMember(teamId, data, role));
 };
 
 export const updateTeamThunk = (teamId, teamBody) => async dispatch => {
@@ -88,8 +89,10 @@ const reducer = (state = teams, action) => {
       return [...state, action.team];
     case ADD_TEAM_MEMBER:
       return state.map(team => {
-        if (team.id === action.teamId) {
-          team.members = [...team.members, action.member];
+        if (team.id === +action.teamId) {
+          team.members = team.members.concat([
+            {...action.member, userteams: {role: action.role}}
+          ]); //this is hacky and i'm sorry
           return team;
         } else {
           return team;

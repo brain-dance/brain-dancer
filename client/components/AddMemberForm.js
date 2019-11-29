@@ -28,7 +28,6 @@ const AddMemberForm = function(props) {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    console.log('submit', props.match.params.teamId, userId, role);
     dispatch(addTeamMemberThunk(props.match.params.teamId, userId, role));
     props.setMemberModalOpen(false);
   };
