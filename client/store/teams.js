@@ -80,7 +80,7 @@ export const deleteTeamThunk = teamId => async dispatch => {
 };
 
 export const deleteTeamMemberThunk = (teamId, userId) => async dispatch => {
-  await axios.delete(`api/teams/${teamId}/${userId}`);
+  await axios.delete(`/api/teams/${teamId}/${userId}`);
   dispatch(deleteTeamMember(teamId, userId));
 };
 

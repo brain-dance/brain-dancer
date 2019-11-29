@@ -2,6 +2,7 @@ import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {List, Icon} from 'semantic-ui-react';
+import {deleteTeamMemberThunk} from '../store';
 
 const Member = props => {
   const {member} = props;
@@ -19,7 +20,7 @@ const Member = props => {
         <List.Content floated="right">
           <Icon
             name="trash"
-            onClick={() => dispatch(props.deleteMember(teamId, member.id))}
+            onClick={() => dispatch(deleteTeamMemberThunk(teamId, member.id))}
           />
         </List.Content>
       )}
