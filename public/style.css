@@ -34,6 +34,7 @@ body {
 #previous-attempt {
   background-color: black;
   display: inline-block;
+  padding: 0;
 }
 
 #skeleton {
