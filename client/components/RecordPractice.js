@@ -30,13 +30,13 @@ import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
 const worker = new MyWorker();
-worker.postMessage({resolution: {width: 320, height: 240}});
+worker.postMessage({resolution: {width: 640, height: 360}});
 
 worker.onmessage = event => {
   const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
   // console.log('got message', event.data);
-  ctx.clearRect(0, 0, 360, 240);
+  ctx.clearRect(0, 0, 640, 360);
   drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
   drawKeypoints(event.data.keypoints, 0, ctx, 0.4);
 };
@@ -44,8 +44,8 @@ worker.onmessage = event => {
 // const workerCanv = document.getElementById('skeleton');
 
 const workerCanv = document.createElement('canvas');
-workerCanv.width = 320 * 2;
-workerCanv.height = 240 * 2;
+workerCanv.width = 480 * 2;
+workerCanv.height = 360 * 2;
 const wcContext = workerCanv.getContext('2d');
 
 export const sendFrame = video => {
@@ -94,8 +94,8 @@ class RecordPractice extends React.Component {
       this.playback,
       {
         controls: true,
-        width: 320,
-        height: 240,
+        width: 640,
+        height: 360,
         playbackRates: [0.5, 1, 1.5, 2]
       },
       () => {
@@ -200,7 +200,7 @@ class RecordPractice extends React.Component {
   drawBoth() {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, 360, 240);
+    ctx.clearRect(0, 0, 640, 360);
     console.log('draw!');
     // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
@@ -211,7 +211,17 @@ class RecordPractice extends React.Component {
 
   render() {
     return (
-      <div>
+      <Segment>
+        <Header as="h2" floated="left">
+          <Button
+            primary
+            as={Link}
+            to={`/team/${this.teamId}/routine/${this.routineId}`}
+            floated="left"
+          >
+            Back to Routine
+          </Button>
+        </Header>
         <div>
           <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
@@ -222,16 +232,7 @@ class RecordPractice extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
-        <Header as="h2">
-          <Button
-            primary
-            as={Link}
-            to={`/team/${this.teamId}/routine/${this.routineId}`}
-            floated="left"
-          >
-            Back to Routine
-          </Button>
-        </Header>
+
         <div id="recording">
           <video
             id="routine"
@@ -271,7 +272,7 @@ class RecordPractice extends React.Component {
         <Segment id="gallery">
           <p>Video list could be here, maybe as cards?</p>
         </Segment>
-      </div>
+      </Segment>
     );
   }
 }

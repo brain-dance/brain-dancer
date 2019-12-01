@@ -12,15 +12,18 @@ const Team = props => {
       <Header as="h1">
         {team.name}{' '}
         {myRole === 'choreographer' && (
-          <Button
-            primary
-            as={Link}
-            to={`/team/${props.team.id}/add`}
-            floated="right"
-          >
-            <Icon name="add" />
-            <Icon name="record" />
-          </Button>
+          <Button.Group floated="right">
+            <Button
+              color="orange"
+              onClick={() => props.setMemberModalOpen(true)}
+            >
+              <Icon name="user plus" />
+            </Button>
+            <Button primary as={Link} to={`/team/${props.team.id}/add`}>
+              <Icon name="add" />
+              <Icon name="record" />
+            </Button>
+          </Button.Group>
         )}
       </Header>
 

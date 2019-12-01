@@ -26,8 +26,8 @@ const Choreo = props => {
       playback,
       {
         controls: true,
-        width: 320,
-        height: 240,
+        width: 630,
+        height: 360,
         playbackRates: [0.5, 1, 1.5, 2]
       },
       () => {
