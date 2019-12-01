@@ -1,3 +1,88 @@
 * {
   box-sizing: border-box;
+  padding: 0.3rem;
+}
+
+body {
+  background-image: url('bg-splash.jpg');
+  background-position: bottom right;
+  background-size: cover;
+}
+
+#output {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 360px;
+  height: 210px;
+  margin: 8px;
+}
+
+#recording {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+#gallery {
+  display: flex;
+  overflow: scroll;
+}
+
+.ui.card {
+  display: flex;
+}
+
+#previous-attempt {
+  background-color: black;
+}
+
+#skeleton {
+  width: 640px;
+  height: 360px;
+  background-color: black;
+  border-radius: 5px;
+}
+
+#nav {
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* margin-bottom: 5rem; */
+}
+
+/* .top {
+  margin-top: 5rem;
+} */
+
+#auth {
+  /* position: relative;
+  left: 20vw; */
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  width: 40vw;
+  justify-content: center;
+  align-items: center;
+}
+
+#team {
+  height: 100vh;
+}
+
+#choreo {
+  height: 100vh;
+}
+
+#sidebar {
+  height: 100vh;
+}
+
+#calibrator {
+  display: flex;
+  align-content: center;
+  justify-content: space-evenly;
 }

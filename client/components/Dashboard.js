@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Grid} from 'semantic-ui-react';
+import {Grid, Modal} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
 import {fetchUserTeams} from '../store';
 import {fetchAssignments} from '../store/assignment';
+import AddTeamForm from './AddTeamForm';
+import AddMemberForm from './AddMemberForm';
 
 /**
  * COMPONENT
@@ -17,6 +19,8 @@ export const Dashboard = props => {
 
   //TK: Identify which team displays when user logs in (currently first one)
   const [selectedTeam, setSelectedTeam] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUserTeams());
@@ -42,10 +46,25 @@ export const Dashboard = props => {
             setSelectedTeam={setSelectedTeam}
             handleSelectTeam={handleSelectTeam}
             assignments={assignments}
+            setModalOpen={setModalOpen}
           />
         </Grid.Column>
         <Grid.Column width={11}>
-          <Team team={selectedTeam} />
+          <div>
+            <Modal dimmer="inverted" open={modalOpen}>
+              <Modal.Content>
+                <AddTeamForm setModalOpen={setModalOpen} />
+              </Modal.Content>
+            </Modal>
+          </div>
+          <div>
+            <Modal dimmer="inverted" open={memberModalOpen}>
+              <Modal.Content>
+                <AddMemberForm setMemberModalOpen={setMemberModalOpen} />
+              </Modal.Content>
+            </Modal>
+          </div>
+          <Team team={selectedTeam} setMemberModalOpen={setMemberModalOpen} />
         </Grid.Column>
       </Grid>
     );

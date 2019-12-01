@@ -10,7 +10,7 @@ const Assignment = require('./assignment');
 //Assignment
 User.hasMany(Assignment);
 Assignment.belongsTo(Routine); //and therefore one choreographer
-
+Assignment.belongsTo(User);
 //Team
 User.belongsToMany(Team, {through: UserTeam});
 Team.belongsToMany(User, {through: UserTeam});
@@ -22,6 +22,8 @@ Routine.belongsTo(Team);
 Routine.hasMany(VideoFrame);
 Routine.hasOne(CalibrationFrame);
 CalibrationFrame.belongsTo(Routine);
+Routine.hasMany(Assignment);
+Routine.hasMany(Practice);
 
 //Practice
 Practice.belongsTo(User); //dancer

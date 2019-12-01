@@ -3,34 +3,45 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {logout} from '../store';
+import {Menu, Header, Icon, Image} from 'semantic-ui-react';
 
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div>
-    <h1>BrainDancer</h1>
-    <nav>
-      {isLoggedIn ? (
-        <div>
-          {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
-        </div>
-      ) : (
-        <div>
-          {/* The navbar will show these links before you log in */}
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-        </div>
-      )}
-    </nav>
-    <hr />
+    {isLoggedIn ? (
+      <Menu secondary>
+        {/* The Menubar will show these links after you log in */}
+        <Menu.Item name="home" as={Link} to="/home">
+          <Image src="/coreo.png" size="small" />
+        </Menu.Item>
+        <Menu.Item name="recordRoutine" as={Link} to="/team/1/add">
+          <Icon name="record" /> Routine
+        </Menu.Item>
+        <Menu.Item name="recordPractice" as={Link} to="/team/1/routine/1/add">
+          <Icon name="record" /> Practice
+        </Menu.Item>
+        <Menu.Item position="right" name="logout" onClick={handleClick}>
+          Logout
+        </Menu.Item>
+      </Menu>
+    ) : (
+      <Menu secondary>
+        {/* The navbar will show these links before you log in */}
+        <Menu.Item name="login" as={Link} to="/login">
+          <Image src="/coreo.png" size="small" />
+        </Menu.Item>
+        <Menu.Menu position="right">
+          <Menu.Item name="login" as={Link} to="/login">
+            Login
+          </Menu.Item>
+          <Menu.Item name="signup" as={Link} to="/signup">
+            Sign Up
+          </Menu.Item>
+        </Menu.Menu>
+      </Menu>
+    )}
   </div>
 );
 
-/**
- * CONTAINER
- */
 const mapState = state => {
   return {
     isLoggedIn: !!state.user.id

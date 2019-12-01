@@ -6,20 +6,20 @@ const db = require('../db');
 //That could very easily be incorrect, but is pretty trivial to change.
 const VideoFrame = db.define('videoframe', {
   framejson: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: false,
     validate: {
       notEmpty: true
-    }
+    },
     ///CAN RESTORE IF WE ARE USING JSONs; FOR NOW, USING STRINGS
-    // get: function() {
-    //   // console.log('Data Value:', this.getDataValue('framejson'));
-    //   return JSON.parse(this.getDataValue('framejson'));
-    // },
-    // set: function(obj) {
-    //   console.log('DATAVALUE IN SET: ', obj);
-    //   this.setDataValue('framejson', JSON.stringify(obj));
-    // }
+    get: function() {
+      // console.log('Data Value:', this.getDataValue('framejson'));
+      return JSON.parse(this.getDataValue('framejson'));
+    },
+    set: function(obj) {
+      console.log('DATAVALUE IN SET: ', obj);
+      this.setDataValue('framejson', JSON.stringify(obj));
+    }
   },
 
   frameNumber: {

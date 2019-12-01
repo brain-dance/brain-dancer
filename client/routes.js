@@ -2,8 +2,18 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {Login, Signup, Dashboard, AddTeamForm, Choreo} from './components';
+import {
+  Login,
+  Signup,
+  Dashboard,
+  AddTeamForm,
+  Choreo,
+  RecordRoutine,
+  RecordPractice
+} from './components';
+import {WatchRoutine} from './components/watchvideo';
 import {me} from './store';
+import WireframeTest from './components/WireframeTest';
 
 /**
  * COMPONENT
@@ -22,17 +32,24 @@ class Routes extends Component {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
-        {/* <Route path="/signup" component={AddTeamForm} /> */}
-        <Route path="/routines/:id" component={Choreo} />
+        {/* <Route path="/routines/:id" component={Choreo} /> */}
+        <Route path="/test" component={WireframeTest} />
+
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
+            <Route path="/watch/routines/:id" component={WatchRoutine} />
             <Route exact path="/home" component={Dashboard} />
-            {/* <Route
-              exact
-              path="/recordPerformance"
-              component={RecordPerformance}
-            /> */}
+            <Route
+              path="/team/:teamId/routine/:routineId/add"
+              component={RecordPractice}
+            />
+            <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
+            <Route path="/team/:teamId/add" component={RecordRoutine} />
+            <Route path="/team/:teamId" component={Dashboard} />
+            <Route exact path="/new-routine" component={RecordRoutine} />
+            <Route exact path="/new-practice" component={RecordPractice} />
+            <Route component={Dashboard} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}
