@@ -8,19 +8,13 @@ const LoadingScreen = props => {
     setTimeout(function() {
       setIsUploaded(true);
     }, 10000);
-    ///make this wait 10 seconds.
-    console.log('TCL: isUploaded', isUploaded);
   });
 
   return !isUploaded ? (
     <div>
-      <Segment>
-        <Dimmer active>
-          <Loader inverted size="mini">
-            Uploading Video
-          </Loader>
-        </Dimmer>
-      </Segment>
+      <Loader>
+        <h3>Please wait while we upload your video.</h3>
+      </Loader>
     </div>
   ) : (
     <Message

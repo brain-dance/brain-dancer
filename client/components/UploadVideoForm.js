@@ -57,7 +57,9 @@ const UploadVideoForm = props => {
       <Button floated="right" type="icon" onClick={handleClickClose}>
         <Icon name="window close" />
       </Button>
-      <Modal.Header>Submit Your Routine</Modal.Header>
+      <Modal.Header>
+        {!isClickedUpload ? 'Submit Your Routine' : 'Please Wait'}
+      </Modal.Header>
       {!isClickedUpload ? (
         <div>
           <Form>
