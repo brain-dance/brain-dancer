@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {Button, Form, Icon, Message, Modal} from 'semantic-ui-react';
+import {Button, Form, Icon, Modal} from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
+import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
   const {blob, teamId, userId} = props;
@@ -17,6 +18,11 @@ const UploadVideoForm = props => {
     setIsClickedSelectVid(!isClickedSelectVid);
   };
 
+  const handleClickClose = () => {
+    setOpen(!open);
+    setIsClickedClose(!isClickedClose);
+  };
+
   const addRoutine = () => {
     dispatch(addRoutineThunk(blob, title, teamId, userId));
   };
@@ -28,11 +34,7 @@ const UploadVideoForm = props => {
   const handleUpload = () => {
     upload();
     setIsUploaded(true);
-  };
-
-  const handleClickClose = () => {
-    setOpen(!open);
-    setIsClickedClose(!isClickedClose);
+    // setTimeout(handleClickClose(), 10000);
   };
 
   return (
@@ -77,10 +79,11 @@ const UploadVideoForm = props => {
         </div>
       ) : (
         <div>
-          <Message
+          {/* <Message
             header="Video submitted!"
             content="Video processing. Check back soon :)"
-          />
+          /> */}
+          <LoadingScreen />
         </div>
       )}
     </Modal>
