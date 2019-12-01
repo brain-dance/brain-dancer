@@ -96,7 +96,8 @@ const SEGMENTS = {
   rightUpperArm: ['rightShoulder', 'rightElbow'],
   leftForeArm: ['leftWrist', 'leftElbow'],
   rightForeArm: ['rightWrist', 'rightElbow'],
-  collar: ['leftShoulder', 'rightShoulder']
+  collar: ['leftShoulder', 'rightShoulder'],
+  head: ['leftEar', 'rightEar']
 };
 
 const getSpineLength = pose => {
@@ -106,9 +107,16 @@ const getSpineLength = pose => {
   return distance(pelvis.x, pelvis.y, neck.x, neck.y);
 };
 
+const getNeckLength = pose => {
+  const neck = getMidpoint(pose.leftShoulder, pose.rightShoulder);
+  const head = pose.head;
+
+  return distance(neck.x, neck.y, head.x, head.y);
+};
+
 //finds all lengths for a given pose including the spine
 const getLengths = pose => {
-  const initial = {spine: getSpineLength(pose)};
+  const initial = {spine: getSpineLength(pose), neck: getNeckLength(pose)};
   return Object.keys(SEGMENTS).reduce((lengths, segment) => {
     const [start, end] = SEGMENTS[segment];
     lengths[segment] = distance(
@@ -141,6 +149,7 @@ const calibrate = (source, calibration) => {
   }, {});
 };
 
+//accepts labeled poses only
 const scaler = (source, target, calibration) => {
   //get angles of correct wireframe
   const sourceAngles = getAngles(source);
@@ -150,24 +159,13 @@ const scaler = (source, target, calibration) => {
 
   //find midpoints
   const sourcePelvis = getMidpoint(source.leftHip, source.rightHip);
-  const sourceNeck = getMidpoint(source.leftShoulder, source.rightShoulder);
   const targetPelvis = getMidpoint(target.leftHip, target.rightHip);
 
   //find angle waist makes with ground
-  const waistAngle = Math.atan(
-    (source.rightHip.y - source.leftHip.y) /
-      (source.rightHip.x - source.leftHip.x)
-  );
-
-  //find angle shoulders make with ground
-  const shouldersAngle = Math.atan(
-    (source.rightShoulder.y - source.leftShoulder.y) /
-      (source.rightShoulder.x - source.leftShoulder.x)
-  );
+  const waistAngle = sourceAngles.waist;
 
   //create new wireframe
   const scaled = {};
-  let theta;
 
   //find new waist points (uses known waist midpoint and scaled waist length)
   scaled.rightHip = {
@@ -210,33 +208,28 @@ const scaler = (source, target, calibration) => {
     sourceAngles.RightHipRightKneeRightAnkle
   );
 
-  //find angle spine makes with waist
-  const spineAngle = angle(
-    sourcePelvis.x,
-    sourcePelvis.y,
-    source.rightHip.x,
-    source.rightHip.y,
-    sourceNeck.x,
-    sourceNeck.y
+  //find scaled neck using scaled spine
+  const scaledNeck = extrapolate(
+    sourcePelvis,
+    source.rightHip,
+    calibLengths.spine,
+    sourceAngles.spine
   );
 
-  //find scaled neck using scaled spine
-  theta = waistAngle + spineAngle;
-  const scaledNeck = {
-    x: sourcePelvis.x + calibLengths.spine * Math.cos(theta),
-    y: sourcePelvis.y + calibLengths.spine * Math.sin(theta)
-  };
-
   //find shoulders using neck as midpoint
-  scaled.leftShoulder = {
-    x: scaledNeck.x - (calibLengths.collar * Math.cos(shouldersAngle)) / 2,
-    y: scaledNeck.y - (calibLengths.collar * Math.sin(shouldersAngle)) / 2
-  };
+  scaled.rightShoulder = extrapolate(
+    scaledNeck,
+    sourcePelvis,
+    calibLengths.collar / 2,
+    sourceAngles.shoulders
+  );
 
-  scaled.rightShoulder = {
-    x: scaledNeck.x + (calibLengths.collar * Math.cos(shouldersAngle)) / 2,
-    y: scaledNeck.y + (calibLengths.collar * Math.sin(shouldersAngle)) / 2
-  };
+  scaled.leftShoulder = extrapolate(
+    scaledNeck,
+    sourcePelvis,
+    -calibLengths.collar / 2,
+    sourceAngles.shoulders
+  );
 
   // find left arm points
   scaled.leftElbow = extrapolate(
@@ -268,13 +261,31 @@ const scaler = (source, target, calibration) => {
     sourceAngles.RightShoulderRightElbowRightWrist
   );
 
-  //return keypoints as pose
-  return {
-    keypoints: Object.keys(scaled).reduce((parts, part) => {
-      parts.push({part, position: scaled[part]});
-      return parts;
-    }, [])
-  };
+  //find head point
+  scaled.head = extrapolate(
+    scaledNeck,
+    scaled.rightShoulder,
+    calibLengths.neck,
+    sourceAngles.neck
+  );
+
+  //find ear points
+  scaled.rightEar = extrapolate(
+    scaled.head,
+    scaledNeck,
+    calibLengths.head / 2,
+    sourceAngles.head
+  );
+
+  scaled.leftEar = extrapolate(
+    scaled.head,
+    scaledNeck,
+    -calibLengths.head / 2,
+    sourceAngles.head
+  );
+
+  // pose is returned labeled
+  return scaled;
 };
 
 module.exports.angle = angle;
