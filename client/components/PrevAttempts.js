@@ -27,14 +27,15 @@ const PrevAttempts = props => {
           <div id="previous-attempt" key={blob.name}>
             <Card>
               <Button.Group vertical>
+                {/* This button should be smaller; fix later */}
                 <Button
                   icon
+                  circular
                   name={blob.name}
                   onClick={handleDelete}
                   color="black"
-                  attached="top"
                   size="mini"
-                  float="right"
+                  floated="right"
                 >
                   <Icon name="delete" />
                 </Button>
