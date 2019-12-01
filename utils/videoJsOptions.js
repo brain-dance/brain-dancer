@@ -1,7 +1,7 @@
 const videoJsOptions = {
   controls: true,
-  width: 320,
-  height: 240,
+  width: 640,
+  height: 360,
   fluid: false,
   controlBar: {
     volumePanel: false
