@@ -24,19 +24,36 @@ const PrevAttempts = props => {
         attempt++;
 
         return (
-          <div id="previous-attempt" fluid key={blob.name}>
+          <div id="previous-attempt" key={blob.name}>
             <Card>
-              <Button
-                basic
-                color={selected ? 'blue' : 'grey'}
-                type="button"
-                key={blob.name}
-                name={blob.name}
-                onClick={handleSelect}
-              >
-                <video controls id={blob.name} width="200" src={blobSrc} />
-              </Button>
-              <UploadVideoForm blob={blob} teamId={teamId} userId={userId} />
+              <Button.Group vertical>
+                <Button
+                  icon
+                  name={blob.name}
+                  onClick={handleDelete}
+                  color="black"
+                  attached="top"
+                  size="mini"
+                  float="right"
+                >
+                  <Icon name="delete" />
+                </Button>
+                <Button
+                  color={selected ? 'blue' : 'black'}
+                  type="button"
+                  key={blob.name}
+                  name={blob.name}
+                  onClick={handleSelect}
+                >
+                  <video controls id={blob.name} width="200" src={blobSrc} />
+                </Button>
+                <UploadVideoForm
+                  attached="bottom"
+                  blob={blob}
+                  teamId={teamId}
+                  userId={userId}
+                />
+              </Button.Group>
             </Card>
           </div>
         );
