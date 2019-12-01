@@ -26,10 +26,7 @@ const labelPose = pose => {
     return all;
   }, {});
 
-  labeled.head = {
-    x: (labeled.leftEye.x + labeled.nose.x + labeled.rightEye.x) / 3,
-    y: (labeled.leftEye.y + labeled.nose.y + labeled.rightEye.y) / 3
-  };
+  labeled.head = getMidpoint(labeled.leftEar, labeled.rightEar);
 
   delete labeled.leftEye;
   delete labeled.rightEye;
