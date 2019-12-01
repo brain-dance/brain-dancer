@@ -4,12 +4,14 @@ import {Grid} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
 import {fetchUserTeams} from '../store';
+import {fetchAssignments} from '../store/assignment';
 
 /**
  * COMPONENT
  */
 export const Dashboard = props => {
   const teams = useSelector(state => state.teams);
+  const assignments = useSelector(state => state.assignment);
   // const isChoreographer = user.status === 'choreographer';
   const dispatch = useDispatch();
 
@@ -19,6 +21,10 @@ export const Dashboard = props => {
   useEffect(() => {
     dispatch(fetchUserTeams());
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchAssignments);
+  });
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
@@ -35,6 +41,7 @@ export const Dashboard = props => {
             selectedTeam={selectedTeam}
             setSelectedTeam={setSelectedTeam}
             handleSelectTeam={handleSelectTeam}
+            assignments={assignments}
           />
         </Grid.Column>
         <Grid.Column width={11}>

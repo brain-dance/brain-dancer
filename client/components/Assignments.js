@@ -1,16 +1,13 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useState} from 'react';
+// import {useDispatch, useSelector} from 'react-redux';
 import {Image, Label, Menu} from 'semantic-ui-react';
-import {fetchAssignments} from '../store/assignment';
 
 export const Assignments = props => {
-  const assignments = useSelector(state => state.assignment);
-  const dispatch = useDispatch();
   const [isActiveItem, setIsActiveItem] = useState('');
 
-  useEffect(() => {
-    dispatch(fetchAssignments());
-  });
+  // useEffect(() => {
+  //   dispatch(fetchAssignments());
+  // });
 
   const handleItemClick = (e, {name}) => {
     setIsActiveItem(name);

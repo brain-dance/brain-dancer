@@ -5,7 +5,7 @@ import TeamList from './TeamList';
 import Assignments from './Assignments';
 
 export const DashSidebar = props => {
-  const {teams, selectedTeam, handleSelectTeam} = props;
+  const {teams, selectedTeam, handleSelectTeam, assignments} = props;
   // const {teams} = user;
 
   // const [isClickedAddTeam, setIsClickedAddTeam] = useState(false);
@@ -17,7 +17,7 @@ export const DashSidebar = props => {
   return teams.length ? (
     <div>
       <Header as="h3">Assignments</Header>
-      <Assignments />
+      <Assignments assignments={assignments} />
       <br />
       <Grid>
         <Grid.Column width={3}>
