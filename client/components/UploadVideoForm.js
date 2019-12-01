@@ -10,10 +10,12 @@ const UploadVideoForm = props => {
   const [title, setTitle] = useState('');
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
   const [isClickedClose, setIsClickedClose] = useState(false);
+  const [isClickedUpload, setIsClickedUpload] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSelectVid = e => {
+  const handleSelectVid = () => {
     setOpen(!open);
     setIsClickedSelectVid(!isClickedSelectVid);
   };
@@ -32,9 +34,8 @@ const UploadVideoForm = props => {
   };
 
   const handleUpload = () => {
+    setIsClickedUpload(true);
     upload();
-    setIsUploaded(true);
-    // setTimeout(handleClickClose(), 10000);
   };
 
   return (
@@ -57,7 +58,7 @@ const UploadVideoForm = props => {
         <Icon name="window close" />
       </Button>
       <Modal.Header>Submit Your Routine</Modal.Header>
-      {!isUploaded ? (
+      {!isClickedUpload ? (
         <div>
           <Form>
             <Form.Field>
@@ -79,11 +80,10 @@ const UploadVideoForm = props => {
         </div>
       ) : (
         <div>
-          {/* <Message
-            header="Video submitted!"
-            content="Video processing. Check back soon :)"
-          /> */}
-          <LoadingScreen />
+          <LoadingScreen
+            isUploaded={isUploaded}
+            setIsUploaded={setIsUploaded}
+          />
         </div>
       )}
     </Modal>
