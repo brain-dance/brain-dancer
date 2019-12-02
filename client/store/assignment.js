@@ -15,20 +15,14 @@ export const fetchAssignments = () => async dispatch => {
   dispatch(getAssignments(data));
 };
 
-// initial state
-const initialState = {
-  routine: {},
-  team: {},
-  completed: false
-};
+// initial state (array of objects {routine, team, completed})
+const initialState = [];
 
 // reducer
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ASSIGNMENTS:
-    ///THIS GOES CONSTANTLY; I"M NOT SURE WHY....
-    // return {...state, assignment: action};
-    // return state;
+      return action.assignments;
     default:
       return state;
   }
