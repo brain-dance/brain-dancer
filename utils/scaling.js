@@ -1,17 +1,10 @@
+const {getAngles} = require('./formatting');
+const {getMidpoint, distance, angle, extrapolate} = require('./geometry');
+
 //Notes - current scaling approach just straightforwardly squeezes or stretches the wireframe
 //This might be a bit weird on users with wildly different proportions, but it makes the function indifferent as to the number of
 //Keypoints we have access to.
 //Additionally, all functions are pure - a new wireframe is returned any time scale or translate is called.
-const distance = (x1, y1, x2, y2) => {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-};
-const angle = (centerX, centerY, x2, y2, x3, y3) => {
-  //Need to include a check for sign of the angle
-  return Math.acos(
-    ((x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY)) /
-      (distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3))
-  );
-};
 
 const deepCopy = obj => {
   console.log(obj.prototype);
@@ -28,38 +21,6 @@ const deepCopy = obj => {
   return toReturn;
 };
 
-const nextPoint = (x1, y1, x2, y2, theta, distance) => {
-  let temp = angle(x1, y1, x2, y2, x2, y1) + theta;
-  return {x: x1 + distance * Math.cos(temp), y: y1 + distance * Math.sin(temp)};
-};
-
-const dDistancedX1 = (x1, y1, x2, y2) => {
-  return (
-    (1 / 2) *
-    Math.pow(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2), -0.5) *
-    (2 * x1 - 2 * x2)
-  );
-};
-const dAngledcenterX = (centerX, centerY, x2, y2, x3, y3) => {
-  let u = (x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY);
-  let du = centerX * (x3 + x2 - 2 * centerX) * -1;
-  let v =
-    distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3);
-  let dv =
-    dDistancedX1(centerX, centerY, x2, y2) *
-      distance(centerX, centerY, x3, y3) +
-    dDistancedX1(centerX, centerY, x3, y3) * distance(centerX, centerY, x2, y2);
-  return (u * dv - v * du) / Math.pow(v, 2);
-};
-const dAngledx2 = (centerX, centerY, x2, y2, x3, y3) => {
-  let u = (x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY);
-  let v =
-    distance(centerX, centerY, x2, y2) * distance(centerX, centerY, x3, y3);
-  let du = x3 - centerX;
-  let dv =
-    dDistancedX1(x2, y2, centerX, centerY) * distance(centerX, centerY, x3, y3);
-  return (u * dv - v * du) / Math.pow(v, 2);
-};
 /*const scale=(distances, angles)=>{
     let points=[];
     let curr={x1: 0, y1: 0, x2: 1, y2: 0};
@@ -87,6 +48,7 @@ const translate = (wireframe, newCenter) => {
   });
   return toReturn;
 };
+
 const getVol = wireframe => {
   let temp = {
     x1,
@@ -118,26 +80,224 @@ const simpleScale = (wireframe, ratio) => {
     toReturn[el].y *= ratio;
   });
 };
-const scaler = (source, target) => {
-  let ratio = getVol(target) / getVol(source);
-  return wireframe => simpleScale(wireframe, ratio);
+// const scaler = (source, target) => {
+//   let ratio = getVol(target) / getVol(source);
+//   return wireframe => simpleScale(wireframe, ratio);
+// };
+
+const SEGMENTS = {
+  leftShin: ['leftAnkle', 'leftKnee'],
+  rightShin: ['rightAnkle', 'rightKnee'],
+  leftThigh: ['leftKnee', 'leftHip'],
+  rightThigh: ['rightKnee', 'rightHip'],
+  waist: ['leftHip', 'rightHip'],
+  leftTorso: ['leftHip', 'leftShoulder'],
+  rightTorso: ['rightHip', 'rightShoulder'],
+  leftUpperArm: ['leftShoulder', 'leftElbow'],
+  rightUpperArm: ['rightShoulder', 'rightElbow'],
+  leftForeArm: ['leftWrist', 'leftElbow'],
+  rightForeArm: ['rightWrist', 'rightElbow'],
+  collar: ['leftShoulder', 'rightShoulder'],
+  head: ['leftEar', 'rightEar']
 };
-module.exports.centroid=centroid;
-module.exports.angle=angle;
-module.exports.scaler=scaler;
-module.exports.simpleScale=simpleScale;
-module.exports.translate=translate;
-module.exports.distance=distance;
-module.exports.deepCopy=deepCopy;
-/*module.exports = {
-  centroid,
-  angle,
-  scaler,
-  simpleScale,
-  translate,
-  distance,
-  deepCopy
-};*/
+
+const getSpineLength = pose => {
+  const neck = getMidpoint(pose.leftShoulder, pose.rightShoulder);
+  const pelvis = getMidpoint(pose.leftHip, pose.rightHip);
+
+  return distance(pelvis.x, pelvis.y, neck.x, neck.y);
+};
+
+const getNeckLength = pose => {
+  const neck = getMidpoint(pose.leftShoulder, pose.rightShoulder);
+  const head = pose.head;
+
+  return distance(neck.x, neck.y, head.x, head.y);
+};
+
+//finds all lengths for a given pose including the spine
+const getLengths = pose => {
+  const initial = {spine: getSpineLength(pose), neck: getNeckLength(pose)};
+  return Object.keys(SEGMENTS).reduce((lengths, segment) => {
+    const [start, end] = SEGMENTS[segment];
+    lengths[segment] = distance(
+      pose[start].x,
+      pose[start].y,
+      pose[end].x,
+      pose[end].y
+    );
+    return lengths;
+  }, initial);
+};
+
+//returns a wireframe of the relative segment lengths
+const getCalibration = (source, target) => {
+  const sourceLens = getLengths(source);
+  const targetLens = getLengths(target);
+
+  return Object.keys(sourceLens).reduce((calibration, segment) => {
+    calibration[segment] = targetLens[segment] / sourceLens[segment];
+    return calibration;
+  }, {});
+};
+
+//takes a source wireframe and retuns calibrated segment lengths
+const calibrate = (source, calibration) => {
+  const sourceLens = getLengths(source);
+  return Object.keys(sourceLens).reduce((calibratedLens, segment) => {
+    calibratedLens[segment] = sourceLens[segment] * calibration[segment];
+    return calibratedLens;
+  }, {});
+};
+
+//accepts labeled poses only
+const scaler = (source, target, calibration) => {
+  //get angles of correct wireframe
+  const sourceAngles = getAngles(source);
+
+  //calibrate segment lengths
+  const calibLengths = calibrate(source, calibration);
+
+  //find midpoints
+  const sourcePelvis = getMidpoint(source.leftHip, source.rightHip);
+  const targetPelvis = getMidpoint(target.leftHip, target.rightHip);
+
+  //find angle waist makes with ground
+  const waistAngle = sourceAngles.waist;
+
+  //create new wireframe
+  const scaled = {};
+
+  //find new waist points (uses known waist midpoint and scaled waist length)
+  scaled.rightHip = {
+    x: targetPelvis.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: targetPelvis.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
+  };
+
+  scaled.leftHip = {
+    x: targetPelvis.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: targetPelvis.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
+  };
+
+  //find left leg points using source angles
+  scaled.leftKnee = extrapolate(
+    scaled.leftHip,
+    scaled.rightHip,
+    calibLengths.leftThigh,
+    sourceAngles.RightHipLeftHipLeftKnee
+  );
+
+  scaled.leftAnkle = extrapolate(
+    scaled.leftKnee,
+    scaled.leftHip,
+    calibLengths.leftShin,
+    sourceAngles.LeftHipLeftKneeLeftAnkle
+  );
+
+  //find right leg points using source angles
+  scaled.rightKnee = extrapolate(
+    scaled.rightHip,
+    scaled.leftHip,
+    calibLengths.rightThigh,
+    sourceAngles.LeftHipRightHipRightKnee
+  );
+
+  scaled.rightAnkle = extrapolate(
+    scaled.rightKnee,
+    scaled.rightHip,
+    calibLengths.rightShin,
+    sourceAngles.RightHipRightKneeRightAnkle
+  );
+
+  //find scaled neck using scaled spine
+  const scaledNeck = extrapolate(
+    sourcePelvis,
+    source.rightHip,
+    calibLengths.spine,
+    sourceAngles.spine
+  );
+
+  //find shoulders using neck as midpoint
+  scaled.rightShoulder = extrapolate(
+    scaledNeck,
+    sourcePelvis,
+    calibLengths.collar / 2,
+    sourceAngles.shoulders
+  );
+
+  scaled.leftShoulder = extrapolate(
+    scaledNeck,
+    sourcePelvis,
+    -calibLengths.collar / 2,
+    sourceAngles.shoulders
+  );
+
+  // find left arm points
+  scaled.leftElbow = extrapolate(
+    scaled.leftShoulder,
+    scaled.rightShoulder,
+    calibLengths.leftUpperArm,
+    sourceAngles.RightShoulderLeftShoulderLeftElbow
+  );
+
+  scaled.leftWrist = extrapolate(
+    scaled.leftElbow,
+    scaled.leftShoulder,
+    calibLengths.leftForeArm,
+    sourceAngles.LeftShoulderLeftElbowLeftWrist
+  );
+
+  //find right arm points
+  scaled.rightElbow = extrapolate(
+    scaled.rightShoulder,
+    scaled.leftShoulder,
+    calibLengths.rightUpperArm,
+    sourceAngles.LeftShoulderRightShoulderRightElbow
+  );
+
+  scaled.rightWrist = extrapolate(
+    scaled.rightElbow,
+    scaled.rightShoulder,
+    calibLengths.rightForeArm,
+    sourceAngles.RightShoulderRightElbowRightWrist
+  );
+
+  //find head point
+  scaled.head = extrapolate(
+    scaledNeck,
+    scaled.rightShoulder,
+    calibLengths.neck,
+    sourceAngles.neck
+  );
+
+  //find ear points
+  scaled.rightEar = extrapolate(
+    scaled.head,
+    scaledNeck,
+    calibLengths.head / 2,
+    sourceAngles.head
+  );
+
+  scaled.leftEar = extrapolate(
+    scaled.head,
+    scaledNeck,
+    -calibLengths.head / 2,
+    sourceAngles.head
+  );
+
+  // pose is returned labeled
+  return scaled;
+};
+
+module.exports.angle = angle;
+module.exports.centroid = centroid;
+module.exports.scaler = scaler;
+module.exports.simpleScale = simpleScale;
+module.exports.translate = translate;
+module.exports.distance = distance;
+module.exports.deepCopy = deepCopy;
+module.exports.getCalibration = getCalibration;
+
 /*
     All below is irrelevant.  Keeping mostly as a reminder I want to learn the algorithm later.
 

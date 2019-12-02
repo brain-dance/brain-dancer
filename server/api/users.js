@@ -7,7 +7,7 @@ router.get('/', async (req, res, next) => {
   try {
     const users = await User.findAll({
       include: [{model: Team}],
-      attributes: ['id', 'email']
+      attributes: ['id', 'name', 'email']
     });
     res.send(users);
   } catch (err) {

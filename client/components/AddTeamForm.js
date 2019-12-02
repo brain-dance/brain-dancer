@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Form} from 'semantic-ui-react';
+import {Form, Header, Icon} from 'semantic-ui-react';
 import {addTeamThunk} from '../store';
 
 const AddTeamForm = function(props) {
@@ -24,11 +24,12 @@ const AddTeamForm = function(props) {
   const handleSubmit = evt => {
     evt.preventDefault();
     dispatch(addTeamThunk(formState));
+    props.setModalOpen(false);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <h2>Add a Team</h2>
+      <Header as="h2">Add a Team</Header>
       <Form.Group widths="equal">
         <Form.Input
           fluid
@@ -38,7 +39,6 @@ const AddTeamForm = function(props) {
             setFormState({...formState, name: evt.target.value});
           }}
         />
-
         <Form.Select
           fluid
           label="Category"
@@ -65,7 +65,16 @@ const AddTeamForm = function(props) {
           setFormState({...formState, imgUrl: evt.target.value});
         }}
       />
-      <Form.Button>Submit</Form.Button>
+      <Form.Group>
+        <Form.Button content="Submit" type="submit" color="blue" />
+        <Form.Button
+          content="Cancel"
+          type="button"
+          onClick={() => {
+            props.setModalOpen(false);
+          }}
+        />
+      </Form.Group>
     </Form>
   );
 };

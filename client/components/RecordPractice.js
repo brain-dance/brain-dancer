@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import {addPracticeThunk} from '../store';
 
@@ -11,7 +12,17 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Card, Form, Message, Modal} from 'semantic-ui-react';
+import {
+  Button,
+  Segment,
+  Card,
+  Form,
+  Message,
+  Modal,
+  Item,
+  Grid,
+  Header
+} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
@@ -41,8 +52,8 @@ tGS.worker.onmessage = event => {
 
 
 const workerCanv = document.createElement('canvas');
-workerCanv.width = 320 * 2;
-workerCanv.height = 240 * 2;
+workerCanv.width = 480 * 2;
+workerCanv.height = 360 * 2;
 const wcContext = workerCanv.getContext('2d');
 tGS.sendFrame = (video, timestamp) => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
@@ -82,7 +93,8 @@ class RecordPractice extends React.Component {
     this.download = this.download.bind(this);
     this.handleDismiss = this.handleDismiss.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
-    //this.sendFrame=this.sendFrame.bind(this);
+    this.playboth = this.playboth.bind(this);
+    this.drawBoth = this.drawBoth.bind(this);
     // this.cameraCanvas;
     // this.context;
   }
@@ -122,8 +134,8 @@ class RecordPractice extends React.Component {
       this.playback,
       {
         controls: true,
-        width: 320,
-        height: 240,
+        width: 640,
+        height: 360,
         playbackRates: [0.5, 1, 1.5, 2]
       },
       () => {
@@ -237,11 +249,39 @@ class RecordPractice extends React.Component {
     this.setState({...this.state, calibration, modalOpen: false});
   }
 
+  playboth() {
+    console.log('hi');
+    this.player.play();
+    this.playbackPlayer.play();
+  }
+
+  drawBoth() {
+    const canvas = document.querySelector('#skeleton');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 640, 360);
+    console.log('draw!');
+    // not sure how to go about this specifically per frame
+    // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
+    // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
+    // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
+    // drawKeypoints(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
+  }
+
   render() {
     return (
-      <div>
+      <Segment>
+        <Header as="h2" floated="left">
+          <Button
+            primary
+            as={Link}
+            to={`/team/${this.teamId}/routine/${this.routineId}`}
+            floated="left"
+          >
+            Back to Routine
+          </Button>
+        </Header>
         <div>
-          <Modal open={this.state.modalOpen}>
+          <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
               <Calibrator
                 calibration={this.state.calibration}
@@ -250,17 +290,16 @@ class RecordPractice extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
+
         <div id="recording">
           <video
             id="routine"
             ref={node => (this.playback = node)}
             controls={true}
             className="video-js"
+            onTimeUpdate={this.drawBoth}
           >
-            <source
-              src={this.props.routine.url}
-              type="video/mp4"
-            />
+            <source src={this.props.routine.url} type="video/mp4" />
           </video>
           <video
             id="video"
@@ -269,40 +308,29 @@ class RecordPractice extends React.Component {
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
-          <canvas id="overlay"></canvas>
         </div>
-        <div id="skelliesAndForm">
-          <canvas id="skeleton">this is a canvas</canvas>
-          <Segment compact>
-            <Form>
-              <Form.Field>
-                <label>Title</label>
-                <input
-                  value={this.state.title}
-                  onChange={evt => {
-                    this.setState({...this.state, title: evt.target.value});
-                  }}
-                />
-              </Form.Field>
-            </Form>
-            <p>When you are ready, submit your video for processing!</p>
-            <Button content="Submit" onClick={this.upload} />
-            <Button content="Download" onClick={this.download} />
-            {this.state.visible ? (
-              <Message
-                onDismiss={this.handleDismiss}
-                header="Video submitted!"
-                content="Video processing. Check back soon :)"
-              />
-            ) : (
-              ''
-            )}
+        <Grid column={1} centered>
+          <Segment basic compact padded="very">
+            <Item>
+              <Item.Content>
+                <canvas id="skeleton"></canvas>
+              </Item.Content>
+              <Item.Content verticalAlign="top">
+                <Item.Header>
+                  <Button
+                    content="Play back"
+                    onClick={this.playboth}
+                    color="blue"
+                  />
+                </Item.Header>
+              </Item.Content>
+            </Item>
           </Segment>
-        </div>
+        </Grid>
         <Segment id="gallery">
           <p>Video list could be here, maybe as cards?</p>
         </Segment>
-      </div>
+      </Segment>
     );
   }
 }
@@ -314,7 +342,8 @@ if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
 const mapStateToProps = state => {
   return {
     userId: state.user.id,
-    routine: state.singleRoutine
+    routine: state.singleRoutine,
+    routineFrames: state.singleRoutine.videoframes
   };
 };
 const mapDispatchToProps = dispatch => {

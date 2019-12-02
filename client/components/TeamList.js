@@ -35,7 +35,7 @@ export const TeamList = props => {
       <p>No team? Join a team to get dancing!</p>
     </div>
   ) : (
-    <Menu pointing vertical>
+    <div>
       {teams.map(team => {
         return (
           <Menu.Item
@@ -55,7 +55,7 @@ export const TeamList = props => {
           </Menu.Item>
         );
       })}
-    </Menu>
+    </div>
   );
 };
 

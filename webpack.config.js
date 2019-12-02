@@ -1,4 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development';
+const webpack = require('webpack');
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -20,6 +21,12 @@ module.exports = {
   watchOptions: {
     ignored: /node_modules/
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      videojs: 'video.js/dist/video.cjs.js',
+      RecordRTC: 'recordrtc'
+    })
+  ],
   module: {
     rules: [
       {
@@ -40,6 +47,7 @@ module.exports = {
       }
     ]
   },
+  target: 'node',
   node: {
     fs: 'empty'
   }

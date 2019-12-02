@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Team, User, Routine} = require('../db/models');
+const {Team, User, UserTeam, Routine} = require('../db/models');
 module.exports = router;
 
 // /api/teams route
@@ -51,12 +51,36 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
+//add new team member
+router.post('/:teamId', async (req, res, next) => {
+  try {
+    const {role, userId} = req.body;
+
+    await UserTeam.create({
+      role,
+      userId,
+      teamId: req.params.teamId
+    });
+
+    const memberToAdd = await User.findByPk(userId);
+    res.status(201).json(memberToAdd);
+  } catch (err) {
+    next(err);
+  }
+});
+
 //add new team
 router.post('/', async (req, res, next) => {
   try {
     const {name, description, category} = req.body;
     const newTeam = await Team.create({name, description, category});
-    res.status(200).json(newTeam);
+    // creator of team (req.user) is created as a choreographer in the new team
+    await UserTeam.create({
+      role: 'choreographer',
+      userId: req.user.id,
+      teamId: newTeam.id
+    });
+    res.status(201).json(newTeam);
   } catch (err) {
     next(err);
   }
@@ -72,6 +96,20 @@ router.put('/:id', async (req, res, next) => {
     );
     const updatedTeam = Team.findByPk(req.params.id);
     res.status(201).json(updatedTeam);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/:teamId/:userId', async (req, res, next) => {
+  try {
+    await UserTeam.destroy({
+      where: {
+        teamId: req.params.teamId,
+        userId: req.params.userId
+      }
+    });
+    res.status(204).end();
   } catch (err) {
     next(err);
   }

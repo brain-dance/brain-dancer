@@ -1,7 +1,7 @@
 const videoJsOptions = {
   controls: true,
-  width: 320,
-  height: 240,
+  width: 640,
+  height: 360,
   fluid: false,
   controlBar: {
     volumePanel: false
@@ -11,7 +11,7 @@ const videoJsOptions = {
       audio: true,
       video: true,
       maxLength: 10,
-      timeSlice: 1000, //necessary for timestamp
+      timeSlice: 200, //necessary for timestamp
       debug: true
       // convertEngine: 'ffmpeg.js',
       // convertOptions: []
