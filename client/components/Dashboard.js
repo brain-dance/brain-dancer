@@ -30,8 +30,11 @@ export const Dashboard = props => {
 
   const handleUpdateTeam = (teamId, memberId) => {
     dispatch(deleteTeamMemberThunk(teamId, memberId));
-    console.log('member', memberId, 'deleted');
-    
+    const updatedSelectedTeam = {
+      ...selectedTeam,
+      members: selectedTeam.members.filter(member => member.id !== memberId)
+    };
+    setSelectedTeam(updatedSelectedTeam);
   };
 
   if (!teams || !teams.length) {

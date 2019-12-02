@@ -13,7 +13,6 @@ const Member = props => {
   const teamId = +props.match.params.teamId;
   const teams = useSelector(state => state.teams);
   const thisTeam = teams.find(team => team.id === teamId);
-  console.log('props', props);
   return (
     <List.Item>
       {thisTeam && thisTeam.role === 'choreographer' && (
