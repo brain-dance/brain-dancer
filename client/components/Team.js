@@ -28,7 +28,10 @@ const Team = props => {
       </Header>
 
       <Routines routines={team.routines} />
-      <Members members={team.members} />
+      <Members
+        members={team.members}
+        handleUpdateTeam={props.handleUpdateTeam}
+      />
     </Segment>
   );
 };
