@@ -12,6 +12,8 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
+import {stopWebcam} from '../../frontUtils/workarounds';
+
 import {
   Button,
   Segment,
@@ -166,6 +168,11 @@ class RecordPractice extends React.Component {
       this.recordedData = this.player.recordedData;
     });
     // return player.dispose();
+  }
+
+  componentWillUnmount() {
+    stopWebcam(this.videoNode);
+    this.player.dispose();
   }
 
   upload() {

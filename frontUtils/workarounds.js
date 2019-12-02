@@ -5,6 +5,7 @@ export const stopWebcam = videoNode => {
   for (let i = 0; i < tracks.length; i++) {
     const track = tracks[i];
     track.stop();
+    console.log(track);
   }
 
   videoNode.srcObject = null;
