@@ -72,13 +72,19 @@ const routine2 = {
 const routine3 = {
   url:
     'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
-  title: 'gorilla dansu'
+  title: 'Gorilla Dansu'
 };
 
 const routine4 = {
   url:
     'http://res.cloudinary.com/braindance/video/upload/v1574881747/dduo3i3txavwqwx4y8ad.mp4',
-  title: 'i dunno'
+  title: 'IDK'
+};
+
+const finndance = {
+  url:
+    'https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mp4',
+  title: 'The Finn Dance'
 };
 
 //TEST ACCOUNTS - Video frames
@@ -131,12 +137,14 @@ async function createTestUsers() {
   const anotherRoutine = await Routine.create(routine2);
   const andAnother = await Routine.create(routine3);
   const andAnotherOther = await Routine.create(routine4);
+  const finn = await Routine.create(finndance);
 
   // routine belongs to team
   await seededRoutine.setTeam(1);
   await anotherRoutine.setTeam(1);
   await andAnother.setTeam(2);
   await andAnotherOther.setTeam(2);
+  await finn.setTeam(1);
   // practice belongsto routine
   await seededPractice.setRoutine(1);
 
