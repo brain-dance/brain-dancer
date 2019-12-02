@@ -104,6 +104,7 @@ class RecordRoutine extends React.Component {
   }
 
   setCalibration(calibration) {
+    console.log('calibration', calibration);
     this.setState({...this.state, calibration, modalOpen: false});
   }
 
@@ -138,6 +139,7 @@ class RecordRoutine extends React.Component {
             handleDelete={this.handleDelete}
             teamId={this.teamId}
             userId={this.props.userId}
+            calibration={this.state.calibration}
           />
         </div>
       </div>

@@ -26,11 +26,11 @@ const UploadVideoForm = props => {
   };
 
   const addRoutine = () => {
-    dispatch(addRoutineThunk(blob, title, teamId, userId));
+    dispatch(addRoutineThunk(blob, title, teamId, userId, props.calibration));
   };
 
   const upload = () => {
-    addRoutine(blob, title, teamId, userId);
+    addRoutine(blob, title, teamId, userId, props.calibration);
   };
 
   const handleUpload = () => {

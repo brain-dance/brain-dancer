@@ -53,6 +53,7 @@ const PrevAttempts = props => {
                   blob={blob}
                   teamId={teamId}
                   userId={userId}
+                  calibration={props.calibration}
                 />
               </Button.Group>
             </Card>

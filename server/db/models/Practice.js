@@ -12,6 +12,9 @@ const Practice = db.define('practice', {
   },
   title: {
     type: Sequelize.STRING
+  },
+  grade: {
+    type: Sequelize.INTEGER
   }
 });
 
