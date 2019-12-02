@@ -47,7 +47,7 @@ const Calibrator = props => {
     });
 
     // error handling
-    console.log(player);
+    // console.log(player);
     player.on('deviceError', function() {
       console.warn('device error:', player.deviceErrorCode);
     });
