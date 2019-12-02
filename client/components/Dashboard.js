@@ -6,6 +6,7 @@ import Team from './Team';
 import {fetchUserTeams} from '../store';
 import AddTeamForm from './AddTeamForm';
 import AddMemberForm from './AddMemberForm';
+import {deleteTeamMemberThunk} from '../store';
 
 /**
  * COMPONENT
@@ -14,7 +15,7 @@ export const Dashboard = props => {
   const teams = useSelector(state => state.teams);
   const dispatch = useDispatch();
 
-  //TK: Identify which team displays when user logs in (currently first one)
+  //TK: Identify which team displays when user logs in (currently none)
   const [selectedTeam, setSelectedTeam] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
@@ -25,6 +26,12 @@ export const Dashboard = props => {
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
+  };
+
+  const handleUpdateTeam = (teamId, memberId) => {
+    dispatch(deleteTeamMemberThunk(teamId, memberId));
+    console.log('member', memberId, 'deleted');
+    
   };
 
   if (!teams || !teams.length) {
@@ -56,7 +63,11 @@ export const Dashboard = props => {
               </Modal.Content>
             </Modal>
           </div>
-          <Team team={selectedTeam} setMemberModalOpen={setMemberModalOpen} />
+          <Team
+            team={selectedTeam}
+            setMemberModalOpen={setMemberModalOpen}
+            handleUpdateTeam={handleUpdateTeam}
+          />
         </Grid.Column>
       </Grid>
     );
