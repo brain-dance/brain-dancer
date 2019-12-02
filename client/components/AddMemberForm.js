@@ -41,7 +41,6 @@ const AddMemberForm = function(props) {
           label="User"
           options={userOptions}
           onChange={evt => {
-            console.log(evt.target.innerText);
             setUserId(
               allUsers.find(user => user.name === evt.target.innerText).id
             );

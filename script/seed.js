@@ -1,4 +1,5 @@
 const faker = require('faker');
+const {generateWireframes} = require('../../utils/videoProcessing');
 const {
   User,
   UserTeam,
@@ -57,31 +58,31 @@ const practiceVideo = {
   title: 'how do i clap'
 };
 
-const routineVideo = {
+const chickenDance = {
   url:
     'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mp4',
   title: 'chicken dance'
 };
 
-const routine2 = {
+const testVideo = {
   url:
     'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mp4',
   title: 'testy test'
 };
 
-const routine3 = {
+const gorillaDansu = {
   url:
     'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
   title: 'Gorilla Dansu'
 };
 
-const routine4 = {
+const idkDance = {
   url:
     'http://res.cloudinary.com/braindance/video/upload/v1574881747/dduo3i3txavwqwx4y8ad.mp4',
   title: 'IDK'
 };
 
-const finndance = {
+const finnDance = {
   url:
     'https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mp4',
   title: 'The Finn Dance'
@@ -133,11 +134,53 @@ async function createTestUsers() {
 
   const seededPractice = await Practice.create(practiceVideo);
 
-  const seededRoutine = await Routine.create(routineVideo);
-  const anotherRoutine = await Routine.create(routine2);
-  const andAnother = await Routine.create(routine3);
-  const andAnotherOther = await Routine.create(routine4);
-  const finn = await Routine.create(finndance);
+  const seededRoutine = await Routine.create(chickenDance);
+  const anotherRoutine = await Routine.create(testVideo);
+  const andAnother = await Routine.create(gorillaDansu);
+  const andAnotherOther = await Routine.create(idkDance);
+  const finn = await Routine.create(finnDance);
+
+  // generate lots of wireframes - comment out if this takes too long :)
+  const generatedSkellies = await generateWireframes(chickenDance.url);
+  await Promise.all(
+    generatedSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: chickenDance.id,
+        frameNumber: i
+      });
+    })
+  );
+  const gorillaSkellies = await generateWireframes(gorillaDansu.url);
+  await Promise.all(
+    gorillaSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: gorillaDansu.id,
+        frameNumber: i
+      });
+    })
+  );
+  const idkSkellies = await generateWireframes(idkDance.url);
+  await Promise.all(
+    idkSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: idkDance.id,
+        frameNumber: i
+      });
+    })
+  );
+  const finnSkellies = await generateWireframes(finnDance.url);
+  await Promise.all(
+    finnSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: finnDance.id,
+        frameNumber: i
+      });
+    })
+  );
 
   // routine belongs to team
   await seededRoutine.setTeam(1);
