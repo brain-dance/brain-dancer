@@ -41,28 +41,32 @@ export const Assignments = props => {
     </Segment>
   ) : (
     <div>
-      {assignments.map(assignment => {
-        let {id, title, url, teamId} = assignment.routine;
-        if (assignment.completed !== true) {
-          return (
-            <Card key={assignment.id}>
-              <Card.Header>{title}</Card.Header>
-              <Card.Content>
-                {/* NEED TO GET TEAM NAME IN HERE! */}
-                {teamId}
-                <video id={title} width="200" controls src={url} />
-                <Button
-                  name={`${teamId} ${id}`}
-                  primary
-                  onClick={redirectToPractice}
-                >
-                  Practice Routine
-                </Button>
-              </Card.Content>
-            </Card>
-          );
-        }
-      })}
+      <Header as="h3">Assignments</Header>
+      <Card.Group itemsPerRow={3}>
+        {assignments.map(assignment => {
+          let {id, title, url, teamId} = assignment.routine;
+          if (assignment.completed !== true) {
+            return (
+              <Card id="assgn" key={assignment.id} raised>
+                <Card.Content>
+                  <Card.Header>{title}</Card.Header>
+                  <Card.Meta>TEAM NAME HERE</Card.Meta>
+                  <video id={title} width="200" controls src={url} />
+                  <Button
+                    attached="bottom"
+                    name={`${teamId} ${id}`}
+                    // color="black"
+                    primary
+                    onClick={redirectToPractice}
+                  >
+                    Practice Routine
+                  </Button>
+                </Card.Content>
+              </Card>
+            );
+          }
+        })}
+      </Card.Group>
     </div>
   );
 };
