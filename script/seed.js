@@ -69,13 +69,13 @@ const routine2 = {
   title: 'testy test'
 };
 
-const routine2 = {
+const routine3 = {
   url:
     'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
   title: 'gorilla dansu'
 };
 
-const routine2 = {
+const routine4 = {
   url:
     'http://res.cloudinary.com/braindance/video/upload/v1574881747/dduo3i3txavwqwx4y8ad.mp4',
   title: 'i dunno'
@@ -129,10 +129,14 @@ async function createTestUsers() {
 
   const seededRoutine = await Routine.create(routineVideo);
   const anotherRoutine = await Routine.create(routine2);
+  const andAnother = await Routine.create(routine3);
+  const andAnotherOther = await Routine.create(routine4);
 
   // routine belongs to team
   await seededRoutine.setTeam(1);
   await anotherRoutine.setTeam(1);
+  await andAnother.setTeam(2);
+  await andAnotherOther.setTeam(2);
   // practice belongsto routine
   await seededPractice.setRoutine(1);
 
