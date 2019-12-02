@@ -27,15 +27,14 @@ body {
 
 #gallery {
   display: flex;
-  overflow: scroll;
-}
-
-.ui.card {
-  display: flex;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 #previous-attempt {
   background-color: black;
+  display: inline-block;
+  padding: 0;
 }
 
 #skeleton {
