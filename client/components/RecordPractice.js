@@ -35,9 +35,10 @@ const tGS={};
 tGS.worker = new MyWorker();
 tGS.worker.postMessage({resolution: {width: 320, height: 240}});
 tGS.messages=[];
+tGS.recording=true;
 tGS.worker.onmessage = event => {
   console.log("Message received from worker: ", event);
-  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 180, y:120},0, 1000); 
+  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 180, y:120},-1, 1000); 
   /*const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
   console.log('got message', event.data);
@@ -61,7 +62,7 @@ tGS.sendFrame = (video, timestamp) => {
   //console.log(workerCanv.toDataURL());
   tGS.worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
-     timestamp: timestamp
+     timestamp: timestamp-tGS.startTime
   });
 }
 
@@ -181,6 +182,7 @@ class RecordPractice extends React.Component {
     this.player.on('startRecord', () => {
       //this.setState({recording: true});
       tGS.recording=true;
+      tGS.startTime=Date.now();
       console.log('started recording!');
     });
 
@@ -188,9 +190,11 @@ class RecordPractice extends React.Component {
     //   console.log('currently recording', this.player.record().getDuration());
     // });
 
-    this.player.on('timestamp', function() {
+    this.player.on('timestamp', function(evt) {
+      //console.log("IN TIMESTAMP, do we have an event? ", evt);
       // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
-      console.log("This context is: ", this);
+     // console.log("This context is: ", this);
+     console.log("DOES THIS FIRE IN PLAYBACK?");
       if(tGS.recording){
      /* console.log(
         'timestamp! here...',
@@ -198,12 +202,13 @@ class RecordPractice extends React.Component {
       );*/
       tGS.sendFrame(document.querySelector('#video_html5_api'), this.currentTimestamp);
       }else{
+        console.log("ARE WE PRESENT?");
         const canvas = document.querySelector('#skeleton');
         const ctx = canvas.getContext('2d');
         //this.setState({LTU: this.player.currentTimestamp});
-        tGS.LTU=this.currentTimestamp;
+        tGS.LTU=this.currentTimestamp-tGS.startTime;
         //console.log(timeChangeCallback);
-        scoringUtils.timeChangeCallback(this.player.currentTimestamp, tGS.allProcessedFrames, ctx, 1000, tGS.LTU)
+        scoringUtils.timeChangeCallback(this.player.currentTimestamp-tGS.startTime, tGS.allProcessedFrames, ctx, 1000, tGS.LTU)
       }
       // worker.postMessage({
       //   image: document

@@ -14,11 +14,12 @@ const errCost=(wfOne, wfTwo)=>{
 const minCostPairings=(playerwfs, choreowfs)=>{
     //So, what do these wireframes actually look like?
     //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
-
+    
     const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
     const minCostDynamic=(playerwfs, choreowfs, playerind=0, choreoind=0)=>{
+       
             if(playerind==playerwfs.length) return 0;
-            if(costarr[playerind][choreoind]) return costarr[playerind][choreoind]
+            if(costarr[playerind][choreoind]!==undefined) return costarr[playerind][choreoind]
             if(playerwfs.length-playerind>choreowfs.length-choreoind) return Infinity;
             let currcost=errCost(playerwfs[playerind], choreowfs[choreoind])+minCostDynamic(playerwfs, choreowfs, playerind+1, choreoind);
             for(let j=choreoind; j<choreowfs.length; j++){
@@ -49,11 +50,21 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     }
 
     const rendermistakes=(playerwf, choreowf, errbound)=>{
+        //console.log("In render mistakes, player wireframe is: ", playerwf);
+        //console.log("In render mistakes, choreo wireframe is: ", choreowf);
         let temp=angleDifferences(playerwf.pose, choreowf.pose);
+        //console.log("IRM, temp: ", temp);
 
-        let toDisplay=Object.keys(angleDifferences).filter(angle=>temp[angle]>errbound).join('').toLowerCase();
+        let toDisplay=Object.keys(temp).filter(angle=>temp[angle]>errbound).join('').toLowerCase();
         let toReturn=translate(choreowf.pose.keypoints, centroid(playerwf.pose.keypoints))
-        return toReturn.filter(el=>toDisplay.includes(el.part.toLowerCase()));
+        console.log("IRM, RETURNING: ", toReturn);
+        console.log("IRM, toDisplay: ", toDisplay);
+        console.log("IRM, post-filter: ", toReturn.filter(el=>{
+            toDisplay.includes(el.part.toLowerCase())}));
+        return toReturn.filter((el)=>{
+            console.log("In filter, element is: ", el);
+            console.log("And, to be thorough, part is: ", el.part);
+            return true/*toDisplay.includes(el.part.toLowerCase())*/});
         //Path needs to be written.
         //Takes the list of displayable angles, maps them to the relevant points.
         //Implementation depends sufficiently on the actual wireframe object structure that I'm not touching it yet.
@@ -73,18 +84,25 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //Return the new arr, which then gets interacted with by an event handler
         let globalTranslate={x: centroid(pwfs[0].pose.keypoints).x-center.x, y: centroid(pwfs[0].pose.keypoints).y-center.y};
         const translator=wireframe=>wireframe.map(
-            coord=>({x: coord.x-globalTranslate.x, y: coord.y-globalTranslate.y})
+            keypoint=>({...keypoint, position:{x: keypoint.position.x-globalTranslate.x, y: keypoint.position.y-globalTranslate.y}})
+            
         );
         //Note - optimal implementation does all the transformations in a single map
         //No reason not to do that, except that this approach is easier to reason about
         //May be worth changing if we run into performance issues
-        return new Map(minCostPairings(pwfs, cws).pairs.map(
+        const toReturn=new Map(minCostPairings(pwfs, cws).pairs.map(
             pair=>{
+                console.log("In pfr, first map statement, pair is: ", pair);
                 return [{...pair[0], pose: {...pair[0].pose, keypoints: translator(pair[0].pose.keypoints)}}, {...pair[1], pose: {...pair[1].pose, keypoints: translator(pair[1].pose.keypoints)}}]
             }
         ).map(pair=>{
-            [pair[0], rendermistakes(pair[0], pair[1], errbound)]
+           let toReturn=[pair[0], rendermistakes(pair[0], pair[1], errbound)]
+           console.log("In pfr, map statement two, toReturn is", toReturn);
+           console.log("IPFRMS2, pair is : ", pair);
+            return toReturn;
         }).map(pair=>[pair[0].timestamp-pair[0].timestamp%refreshrate, pair]))
+        console.log("Parsed: result is: ", toReturn);
+        return toReturn;
     }
     const timeChangeCallback=(timestamp, map, ctx, width, height, refreshrate, lastupdate)=>{
         let temp=timestamp-timestamp%refreshrate;

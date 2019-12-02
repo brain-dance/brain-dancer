@@ -7,14 +7,17 @@ const {getMidpoint, distance, angle, extrapolate} = require('./geometry');
 //Additionally, all functions are pure - a new wireframe is returned any time scale or translate is called.
 
 const deepCopy = obj => {
-  console.log(obj.prototype);
+  //console.log(obj.prototype);
+  if(Array.isArray(obj)){
+    return obj.map(el=>typeof el=='object' ? deepCopy(el) : el)
+  }
   const toReturn = Object.assign(
     Object.create(Object.getPrototypeOf(obj)),
     obj
   );
   const toReturnKeys = Object.keys(toReturn);
   toReturnKeys.forEach(key => {
-    if (typeof key == 'object') {
+    if (typeof toReturn[key] == 'object') {
       toReturn[key] = deepCopy(toReturn[key]);
     }
   });
@@ -42,6 +45,7 @@ const translate = (wireframe, newCenter) => {
   shifts.x = newCenter.x - shifts.x;
   shifts.y = newCenter.y - shifts.y;
   let toReturn = deepCopy(wireframe);
+  
   Object.keys(toReturn).forEach(el => {
     toReturn[el].position.x += shifts.x;
     toReturn[el].position.y += shifts.y;
