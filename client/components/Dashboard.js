@@ -12,7 +12,6 @@ import AddMemberForm from './AddMemberForm';
  */
 export const Dashboard = props => {
   const teams = useSelector(state => state.teams);
-  // const isChoreographer = user.status === 'choreographer';
   const dispatch = useDispatch();
 
   //TK: Identify which team displays when user logs in (currently first one)
