@@ -26,7 +26,7 @@ self.onmessage = set => {
     posenet.load(poseNetConfig.input).then(newNet => {
       net = newNet;
       self.onmessage = event => {
-        console.log("In Worker, message received: ", event);
+        //console.log("In Worker, message received: ", event);
         if(event.data.type==="finished"){
           console.log("Finishing?");
           postMessage({type: "All processed", data: allProcessed});
@@ -41,7 +41,7 @@ self.onmessage = set => {
             })
             .then(result => {
               allProcessed.push({pose: result, timestamp: event.data.timestamp});
-              console.log(allProcessed.length);
+             // console.log(allProcessed.length);
             })
             .catch(err =>
               console.log('Inside estimate single pose, error occurred: ', err)

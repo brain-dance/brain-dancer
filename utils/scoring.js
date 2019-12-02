@@ -100,7 +100,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
            console.log("In pfr, map statement two, toReturn is", toReturn);
            console.log("IPFRMS2, pair is : ", pair);
             return toReturn;
-        }).map(pair=>[pair[0].timestamp-pair[0].timestamp%refreshrate, pair]))
+        }).map(pair=>[(pair[0].timestamp-pwfs[0].timestamp)-(pair[0].timestamp-pwfs[0].timestamp)%refreshrate, pair]))
         console.log("Parsed: result is: ", toReturn);
         return toReturn;
     }
@@ -108,9 +108,10 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         let temp=timestamp-timestamp%refreshrate;
         let newDraws=map.get(temp);
         if(temp!==lastupdate&&newDraws){
+            console.log("Context, width, height: ", ctx, width, height);
             ctx.clearRect(0, 0, width, height);
             drawSkeleton(newDraws[0].pose.keypoints, 0, ctx);
-            drawSkeleton(newDraws[1], 0, ctx);
+            //drawSkeleton(newDraws[1], 0, ctx);
             //newDraws[1] contains the error path, which should also be drawn.
 
         }
