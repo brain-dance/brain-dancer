@@ -15,7 +15,7 @@ export const Assignments = props => {
 
   useEffect(() => {
     dispatch(fetchAssignments());
-  });
+  }, [assignments.length]);
 
   const redirectToDashboard = () => {
     props.history.push('/dashboard');

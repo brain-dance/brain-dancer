@@ -22,11 +22,7 @@ const initialState = [];
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ASSIGNMENTS:
-      console.log('Penguins');
-    // return action.assignments;
-    ///THIS GOES CONSTANTLY; I"M NOT SURE WHY....
-    // return {...state, assignment: action};
-    // return [...state, action.assignments];
+      return action.assignments;
     default:
       return state;
   }
