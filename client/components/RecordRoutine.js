@@ -34,7 +34,6 @@ class RecordRoutine extends React.Component {
   }
 
   componentDidMount() {
-    setupCamera(this.videoNode);
     this.player = videojs(this.videoNode, videoJsOptions, () => {
       // print version information at startup
       var msg =
@@ -86,6 +85,7 @@ class RecordRoutine extends React.Component {
       });
     });
 
+    this.player.record().getDevice();
     // this.player.on('startConvert', () => {});
     // this.player.on('finishConvert', () => {
     //   console.log('convert completed!', this.player.convertedData)
@@ -94,8 +94,6 @@ class RecordRoutine extends React.Component {
   }
 
   componentWillUnmount() {
-    // videojs unmount workaround
-    stopWebcam(this.videoNode);
     this.player.dispose();
   }
 

@@ -63,6 +63,7 @@ const Calibrator = props => {
 
     player.record().getDevice();
     setCamera(player);
+
     return () => {
       stopWebcam(videoNode.current);
     };
