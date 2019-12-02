@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter, Link} from 'react-router-dom';
 import {setSingleRoutine, getSingleRoutine} from '../store';
@@ -6,6 +6,7 @@ import {Card, Segment, Header, Button, Icon, Divider} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import 'webrtc-adapter';
+import {stopWebcam} from '../../frontUtils/workarounds';
 
 const Choreo = props => {
   const routineId = props.match.params.routineId;
@@ -18,12 +19,12 @@ const Choreo = props => {
   const teamInfo = useSelector(state => state.teams);
   // const role = teamInfo.filter(team => team.id === +teamId)[0].role;
 
-  let playback;
+  const playback = useRef(null);
   let playbackPlayer;
 
   useEffect(() => {
     playbackPlayer = videojs(
-      playback,
+      playback.current,
       {
         controls: true,
         width: 630,
@@ -37,7 +38,10 @@ const Choreo = props => {
     playbackPlayer.addClass('vjs-waiting');
     dispatch(getSingleRoutine(routineId));
 
-    return () => dispatch(setSingleRoutine({}));
+    return () => {
+      dispatch(setSingleRoutine({}));
+      playbackPlayer.dispose();
+    };
   }, []);
 
   return (
@@ -60,12 +64,7 @@ const Choreo = props => {
       </Header>
       <Divider />
       <Header as="h2">{routine.title}</Header>
-      <video
-        id="routine"
-        ref={node => (playback = node)}
-        controls={true}
-        className="video-js"
-      >
+      <video id="routine" ref={playback} controls={true} className="video-js">
         {thisRoutine && <source src={thisRoutine} type="video/mp4" />}
       </video>
       {/* <Submissions /> */}

@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom';
 
 import {addPracticeThunk} from '../store';
 
-import setupCamera from '../../utils/setupCamera';
 import videoJsOptions from '../../utils/videoJsOptions';
 
 import videojs from 'video.js';
@@ -89,7 +88,6 @@ class RecordPractice extends React.Component {
   }
 
   componentDidMount() {
-    setupCamera(this.videoNode);
     this.playbackPlayer = videojs(
       this.playback,
       {
@@ -166,6 +164,12 @@ class RecordPractice extends React.Component {
       this.recordedData = this.player.recordedData;
     });
     // return player.dispose();
+
+    this.player.record().getDevice();
+  }
+
+  componentWillUnmount() {
+    this.player.dispose();
   }
 
   upload() {
