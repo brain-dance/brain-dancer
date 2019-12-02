@@ -30,18 +30,15 @@ export const addRoutineThunk = (
 ) => async dispatch => {
   const imageServerUrl =
     'https://api.cloudinary.com/v1_1/braindance/image/upload';
+
   const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
   var recording = recordedData;
   try {
     // info to upload calibration image
-    // var calibrationFormData = new FormData();
-    // calibrationFormData.append('file', calibration);
-    // calibrationFormData.append('upload_preset', 'acrhvgee');
     const calibrationFormData = {
       file: calibration,
       upload_preset: 'acrhvgee'
     };
-    console.log('calibrationformdata', calibrationFormData);
 
     // info to upload video
     var formData = new FormData();

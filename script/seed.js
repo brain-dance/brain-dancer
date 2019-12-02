@@ -53,20 +53,32 @@ const testTeams = [
 //TEST ACCOUNTS - Video
 const practiceVideo = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mkv',
+    'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mp4',
   title: 'how do i clap'
 };
 
 const routineVideo = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mkv',
+    'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mp4',
   title: 'chicken dance'
 };
 
 const routine2 = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mkv',
+    'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mp4',
   title: 'testy test'
+};
+
+const routine2 = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
+  title: 'gorilla dansu'
+};
+
+const routine2 = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1574881747/dduo3i3txavwqwx4y8ad.mp4',
+  title: 'i dunno'
 };
 
 //TEST ACCOUNTS - Video frames
