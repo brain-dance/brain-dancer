@@ -5,8 +5,7 @@ import {Button, Header, Image, Item, Label, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
 
 export const Assignments = props => {
-  const assignments = useSelector(state => state.assignment);
-  //Q. DO WE WANT ASSIGNMENTS AS AN OBJECT??
+  const assignments = useSelector(state => state.assignments);
   console.log('TCL: assignments', assignments);
   const [isActiveItem, setIsActiveItem] = useState('');
   const dispatch = useDispatch();
@@ -22,7 +21,7 @@ export const Assignments = props => {
     props.history.push('/dashboard');
   };
 
-  return !assignments.hasOwnProperty('routine') ? (
+  return !assignments.length ? (
     <Segment placeholder color="orange">
       <Header>
         Your tasks are done. Go you!{' '}
@@ -39,8 +38,8 @@ export const Assignments = props => {
     <div>
       {/* SHOWS UP IF THERE ARE ASSIGNMENTS: CONFIRM THAT WE WANT {} VS [] */}
       {/*
-      {assignments.map(assignment => {
-        return ( */}
+        {assignments.map(assignment => {
+          return ( */}
       <Item
       // name={assignments.routine.id}
       // active={isActiveItem === name}
