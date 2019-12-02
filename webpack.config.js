@@ -48,7 +48,8 @@ module.exports = {
     ]
   },
   target: 'node',
-  node: {
+  /*node: {
     fs: 'empty'
-  }
+  },
+ // externals : { canvas: {} }*/
 };
