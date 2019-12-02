@@ -57,14 +57,14 @@ const minCostPairings=(playerwfs, choreowfs)=>{
 
         let toDisplay=Object.keys(temp).filter(angle=>temp[angle]>errbound).join('').toLowerCase();
         let toReturn=translate(choreowf.pose.keypoints, centroid(playerwf.pose.keypoints))
-        console.log("IRM, RETURNING: ", toReturn);
-        console.log("IRM, toDisplay: ", toDisplay);
-        console.log("IRM, post-filter: ", toReturn.filter(el=>{
-            toDisplay.includes(el.part.toLowerCase())}));
-        return toReturn.filter((el)=>{
-            console.log("In filter, element is: ", el);
-            console.log("And, to be thorough, part is: ", el.part);
-            return true/*toDisplay.includes(el.part.toLowerCase())*/});
+       // console.log("IRM, RETURNING: ", toReturn);
+        //console.log("IRM, toDisplay: ", toDisplay);
+      //  console.log("IRM, post-filter: ", toReturn.filter(el=>{
+        //    toDisplay.includes(el.part.toLowerCase())}));
+        return toReturn/*.filter((el)=>{
+            //console.log("In filter, element is: ", el);
+            //console.log("And, to be thorough, part is: ", el.part);
+            return true/*toDisplay.includes(el.part.toLowerCase())});*/
         //Path needs to be written.
         //Takes the list of displayable angles, maps them to the relevant points.
         //Implementation depends sufficiently on the actual wireframe object structure that I'm not touching it yet.
@@ -92,13 +92,13 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //May be worth changing if we run into performance issues
         const toReturn=new Map(minCostPairings(pwfs, cws).pairs.map(
             pair=>{
-                console.log("In pfr, first map statement, pair is: ", pair);
+            //    console.log("In pfr, first map statement, pair is: ", pair);
                 return [{...pair[0], pose: {...pair[0].pose, keypoints: translator(pair[0].pose.keypoints)}}, {...pair[1], pose: {...pair[1].pose, keypoints: translator(pair[1].pose.keypoints)}}]
             }
         ).map(pair=>{
            let toReturn=[pair[0], rendermistakes(pair[0], pair[1], errbound)]
-           console.log("In pfr, map statement two, toReturn is", toReturn);
-           console.log("IPFRMS2, pair is : ", pair);
+         //  console.log("In pfr, map statement two, toReturn is", toReturn);
+         //  console.log("IPFRMS2, pair is : ", pair);
             return toReturn;
         }).map(pair=>[(pair[0].timestamp-pwfs[0].timestamp)-(pair[0].timestamp-pwfs[0].timestamp)%refreshrate, pair]))
         console.log("Parsed: result is: ", toReturn);
@@ -111,7 +111,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
             console.log("Context, width, height: ", ctx, width, height);
             ctx.clearRect(0, 0, width, height);
             drawSkeleton(newDraws[0].pose.keypoints, 0, ctx);
-            //drawSkeleton(newDraws[1], 0, ctx);
+            drawSkeleton(newDraws[1], 0, ctx);
             //newDraws[1] contains the error path, which should also be drawn.
 
         }

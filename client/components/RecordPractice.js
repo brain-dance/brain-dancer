@@ -39,9 +39,11 @@ tGS.messages=[];
 tGS.recording=true;
 tGS.worker.onmessage = event => {
   console.log("Message received from worker: ", event);
-  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 180, y:120},-1, 1000);
+  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 320, y:180},-1, 1000);
   const video=document.querySelector('#video_html5_api');
-  video.addEventListener('play', ()=>{tGS.replayStart=Date.now()});
+  video.addEventListener('play', ()=>{
+    console.log("IS PLAY EVENT OCCURRING?");
+    tGS.replayStart=Date.now()});
   
   video.addEventListener('timeupdate', (event)=>{
     //console.log("ARE WE PRESENT?");
@@ -50,8 +52,9 @@ tGS.worker.onmessage = event => {
         //this.setState({LTU: this.player.currentTimestamp});
         
         //console.log(timeChangeCallback);
-        scoringUtils.timeChangeCallback(Date.now()-tGS.startTime, tGS.allProcessedFrames, ctx, 640, 360, 1000, tGS.LTU)
-        tGS.LTU=Date.now()-tGS.startTime;
+        console.log("Start time is", tGS.replayStart)
+        scoringUtils.timeChangeCallback(Date.now()-tGS.replayStart, tGS.allProcessedFrames, ctx, 640, 360, 1000, tGS.LTU)
+        tGS.LTU=Date.now()-tGS.replayStart;
   })
   /*const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
@@ -76,7 +79,7 @@ tGS.sendFrame = (video, timestamp) => {
   //console.log(workerCanv.toDataURL());
   tGS.worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
-     timestamp: timestamp-tGS.startTime
+     timestamp: timestamp
   });
 }
 
@@ -86,7 +89,7 @@ class RecordPractice extends React.Component {
     this.recordedData = {name: 'empty'};
     this.videoNode = document.querySelector('#video');
     this.playback = document.querySelector('#routine');
-    this.replayCanv=document.querySelector('#skeleton');
+    this.replayCanv=React.createRef();
     this.player = '';
     this.state = {
       title: '',
@@ -284,7 +287,7 @@ class RecordPractice extends React.Component {
           <Segment basic compact padded="very">
             <Item>
               <Item.Content>
-                <canvas id="skeleton" ref={node=>(this.replayCanv=node)}></canvas>
+                <canvas id="skeleton" ref={this.replayCanv}></canvas>
               </Item.Content>
               <Item.Content verticalAlign="top">
                 <Item.Header>
