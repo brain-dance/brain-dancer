@@ -1,29 +1,33 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {Button, Header, Image, Item, Label, Segment} from 'semantic-ui-react';
+import {Button, Card, Header, Image, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
 
 export const Assignments = props => {
-  const assignments = useSelector(state => state.assignment);
-  //Q. DO WE WANT ASSIGNMENTS AS AN OBJECT??
-  console.log('TCL: assignments', assignments);
-  const [isActiveItem, setIsActiveItem] = useState('');
+  const assignments = useSelector(state => state.assignments);
   const dispatch = useDispatch();
-  const handleItemClick = (e, {name}) => {
-    setIsActiveItem(name);
-  };
 
   useEffect(() => {
     dispatch(fetchAssignments());
-  });
+  }, [assignments.length]);
 
   const redirectToDashboard = () => {
     props.history.push('/dashboard');
   };
 
-  return !assignments.hasOwnProperty('routine') ? (
-    <Segment placeholder color="orange">
+  const redirectToPractice = (e, {name}) => {
+    let nameArr = name.split(' ');
+    let selectedTeamId = +nameArr[0];
+    let selectedRoutineId = +nameArr[1];
+
+    props.history.push(
+      `/team/${selectedTeamId}/routine/${selectedRoutineId}/add`
+    );
+  };
+
+  return !assignments.length ? (
+    <Segment placeholder color="orange" textAlign="center">
       <Header>
         Your tasks are done. Go you!{' '}
         <Image
@@ -37,27 +41,37 @@ export const Assignments = props => {
     </Segment>
   ) : (
     <div>
-      {/* SHOWS UP IF THERE ARE ASSIGNMENTS: CONFIRM THAT WE WANT {} VS [] */}
-      {/*
-      {assignments.map(assignment => {
-        return ( */}
-      <Item
-      // name={assignments.routine.id}
-      // active={isActiveItem === name}
-      // onClick={handleItemClick}
-      >
-        {/* THIS WILL BE THE ROUTINE SPLASH IMAGE? */}
-        {/* INCLUDE TEAM NAME? */}
-        <Image
-          size="mini"
-          src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
-        />
-        {assignments.completed ? (
-          <Label color="olive" />
-        ) : (
-          <Label color="pink" />
-        )}
-      </Item>
+      <Header as="h3">Assignments</Header>
+      <Card.Group itemsPerRow={3}>
+        {assignments.map(assignment => {
+          let {id, title, url, teamId, team} = assignment.routine;
+
+          if (assignment.completed !== true) {
+            return (
+              <Card id="assgn" key={assignment.id} raised>
+                <Card.Content>
+                  <Card.Header>{title}</Card.Header>
+                  {team && team.name ? (
+                    <Card.Meta>{team.name}</Card.Meta>
+                  ) : (
+                    <Card.Meta>Team Name</Card.Meta>
+                  )}
+                  <video id={title} width="200" controls src={url} />
+                  <Button
+                    attached="bottom"
+                    name={`${teamId} ${id}`}
+                    // color="black"
+                    primary
+                    onClick={redirectToPractice}
+                  >
+                    Practice Routine
+                  </Button>
+                </Card.Content>
+              </Card>
+            );
+          }
+        })}
+      </Card.Group>
     </div>
   );
 };

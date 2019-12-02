@@ -37,6 +37,14 @@ body {
   padding: 0;
 }
 
+/* Style for assignments on /my-assignments */
+#assgn {
+  /* background-color: black; */
+  display: inline-block;
+  padding: 0;
+  /* Typeface color won't update */
+}
+
 #skeleton {
   width: 640px;
   height: 360px;

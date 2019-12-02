@@ -15,4 +15,9 @@ const Routine = db.define('routine', {
   }
 });
 
+Routine.beforeCreate(function(routine) {
+  routine.title =
+    routine.title.slice(0, 1).toUpperCase() + routine.title.slice(1);
+});
+
 module.exports = Routine;
