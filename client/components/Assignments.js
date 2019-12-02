@@ -22,9 +22,9 @@ export const Assignments = props => {
     props.history.push('/dashboard');
   };
 
-  return !assignments.length ? (
+  return !assignments.hasOwnProperty('routine') ? (
     <Segment placeholder color="orange">
-      <Header icon>
+      <Header>
         Your tasks are done. Go you!{' '}
         <Image
           size="big"
@@ -36,32 +36,29 @@ export const Assignments = props => {
       </Button>
     </Segment>
   ) : (
-    // <Menu pointing vertical>
     <div>
+      {/* SHOWS UP IF THERE ARE ASSIGNMENTS: CONFIRM THAT WE WANT {} VS [] */}
+      {/*
       {assignments.map(assignment => {
-        return (
-          <Item
-            key={assignment.id}
-            name={assignment.id}
-            active={isActiveItem === name}
-            onClick={handleItemClick}
-          >
-            {/* THIS WILL BE THE ROUTINE SPLASH IMAGE? */}
-            {/* INCLUDE TEAM NAME? */}
-            <Image
-              size="mini"
-              src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
-            />
-            {assignment.completed ? (
-              <Label color="olive" />
-            ) : (
-              <Label color="pink" />
-            )}
-          </Item>
-        );
-      })}
+        return ( */}
+      <Item
+      // name={assignments.routine.id}
+      // active={isActiveItem === name}
+      // onClick={handleItemClick}
+      >
+        {/* THIS WILL BE THE ROUTINE SPLASH IMAGE? */}
+        {/* INCLUDE TEAM NAME? */}
+        <Image
+          size="mini"
+          src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
+        />
+        {assignments.completed ? (
+          <Label color="olive" />
+        ) : (
+          <Label color="pink" />
+        )}
+      </Item>
     </div>
-    // </Menu>
   );
 };
 
