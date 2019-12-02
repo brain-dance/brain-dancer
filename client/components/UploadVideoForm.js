@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import {Button, Form, Icon, Modal} from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
 import LoadingScreen from './LoadingScreen';
@@ -12,8 +13,8 @@ const UploadVideoForm = props => {
   const [isClickedClose, setIsClickedClose] = useState(false);
   const [isClickedUpload, setIsClickedUpload] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const isPractice = props.match.params.hasOwnProperty('routineId');
 
   const handleSelectVid = () => {
     setOpen(!open);
@@ -38,7 +39,8 @@ const UploadVideoForm = props => {
     upload();
   };
 
-  return (
+  ///UploadVideoForm will be *SLIGHTLY* DIFFERENT IF ISPRACTICE
+  return
     <Modal
       trigger={
         <Button
@@ -92,4 +94,4 @@ const UploadVideoForm = props => {
   );
 };
 
-export default UploadVideoForm;
+export default withRouter(UploadVideoForm);
