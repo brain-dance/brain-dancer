@@ -1,13 +1,10 @@
 import React, {useState} from 'react';
-// import {useDispatch, useSelector} from 'react-redux';
 import {Image, Label, Menu} from 'semantic-ui-react';
 
-export const Assignments = props => {
+export const AssignmentList = props => {
+  const {assignments} = props;
+  console.log('TCL: assignments', assignments);
   const [isActiveItem, setIsActiveItem] = useState('');
-
-  // useEffect(() => {
-  //   dispatch(fetchAssignments());
-  // });
 
   const handleItemClick = (e, {name}) => {
     setIsActiveItem(name);
@@ -50,4 +47,4 @@ export const Assignments = props => {
   );
 };
 
-export default Assignments;
+export default AssignmentList;

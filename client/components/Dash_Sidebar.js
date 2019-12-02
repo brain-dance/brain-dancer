@@ -1,13 +1,11 @@
-import React, {useState} from 'react';
-// import {useDispatch, useSelector} from 'react-redux';
+import React from 'react';
 import {Link} from 'react-router-dom';
-import {Header, Button, Icon, Segment, Grid, Menu} from 'semantic-ui-react';
+import {Icon, Menu} from 'semantic-ui-react';
 import TeamList from './TeamList';
-import Assignments from './Assignments';
+// import AssignmentList from './Assignments';
 
 export const DashSidebar = props => {
-  const {teams, selectedTeam, handleSelectTeam, assignments} = props;
-  // const {teams} = user;
+  const {teams, selectedTeam, handleSelectTeam} = props;
 
   const handleClickAddTeam = () => {
     props.setModalOpen(true);
@@ -16,10 +14,18 @@ export const DashSidebar = props => {
   return teams.length ? (
     <Menu vertical id="sidebar">
       <Menu.Item>
+        {/* ARE WE PICTURING THIS AS A SEPARATE PAGE? */}
         <Menu.Header as={Link} to="/assignments">
           Assignments
         </Menu.Header>
       </Menu.Item>
+      {/* <Menu.Menu>
+        <AssignmentList
+          assignments={assignments}
+          // selectedAssignment={selectedAssignment}
+          // handleSelectAssignment={handleSelectAssignment}
+        />
+      </Menu.Menu> */}
       <Menu.Item>
         <Menu.Header>Teams</Menu.Header>
       </Menu.Item>
