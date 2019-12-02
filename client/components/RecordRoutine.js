@@ -11,11 +11,11 @@ import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
-import PrevAttempts from './PrevAttempts';
 
 import {Header, Modal} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
+import PrevAttempts from './PrevAttempts';
 
 class RecordRoutine extends React.Component {
   constructor(props) {
@@ -28,6 +28,7 @@ class RecordRoutine extends React.Component {
       recording: [],
       modalOpen: true
     };
+
     this.teamId = props.match.params.teamId;
     this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
@@ -135,7 +136,6 @@ class RecordRoutine extends React.Component {
         <div id="gallery">
           <PrevAttempts
             recording={this.state.recording}
-            recordedData={this.state.recordedData}
             handleDelete={this.handleDelete}
             teamId={this.teamId}
             userId={this.props.userId}

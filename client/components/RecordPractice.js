@@ -24,6 +24,7 @@ import {
 } from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
+import PrevAttempts from './PrevAttempts';
 
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
@@ -71,18 +72,22 @@ class RecordPractice extends React.Component {
       calibration: {},
       modalOpen: true,
       cameraCanvas: '',
-      context: ''
+      context: '',
+      recording: []
     };
 
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
 
-    this.upload = this.upload.bind(this);
-    this.download = this.download.bind(this);
-    this.handleDismiss = this.handleDismiss.bind(this);
+    //JMM - MIGHT NEED TO REFACTOR TO MOVE UPLOAD/DOWNLOAD TO UPLOADVIDEOFORM
+    // this.upload = this.upload.bind(this);
+    // this.download = this.download.bind(this);
+    // this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
+
     // this.cameraCanvas;
     // this.context;
   }
@@ -162,6 +167,9 @@ class RecordPractice extends React.Component {
       // can be downloaded by the user, stored on server etc.
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
+      this.setState(state => {
+        return {recording: [...state.recording, this.recordedData]};
+      });
     });
     // return player.dispose();
 
@@ -172,24 +180,31 @@ class RecordPractice extends React.Component {
     this.player.dispose();
   }
 
-  upload() {
-    this.props.addPractice(
-      this.recordedData,
-      this.state.title,
-      this.routineId,
-      this.props.userId
-    );
-
-    this.setState({...this.state, visible: true});
+  handleDelete(e, {name}) {
+    this.setState(state => {
+      return {recording: state.recording.filter(blob => blob.name !== name)};
+    });
   }
 
-  download() {
-    this.player.record().saveAs({video: 'video-name.webm'});
-  }
+  //JMM - MIGHT ALL MOVE TO UPLOADVIDEOFORM
+  // upload() {
+  //   this.props.addPractice(
+  //     this.recordedData,
+  //     this.state.title,
+  //     this.routineId,
+  //     this.props.userId
+  //   );
 
-  handleDismiss() {
-    this.setState({...this.state, visible: false});
-  }
+  //   this.setState({...this.state, visible: true});
+  // }
+
+  // download() {
+  //   this.player.record().saveAs({video: 'video-name.webm'});
+  // }
+
+  // handleDismiss() {
+  //   this.setState({...this.state, visible: false});
+  // }
 
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
@@ -216,16 +231,20 @@ class RecordPractice extends React.Component {
   render() {
     return (
       <Segment>
+        <Button
+          primary
+          as={Link}
+          to={`/team/${this.teamId}/routine/${this.routineId}`}
+          floated="left"
+          //Do we want a left chevron icon here?
+          labelPosition="left"
+          icon="left chevron"
+          content="Back to Routine"
+        />
         <Header as="h2" floated="left">
-          <Button
-            primary
-            as={Link}
-            to={`/team/${this.teamId}/routine/${this.routineId}`}
-            floated="left"
-          >
-            Back to Routine
-          </Button>
+          Record a Practice
         </Header>
+        <br />
         <div>
           <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
@@ -236,7 +255,7 @@ class RecordPractice extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
-
+        <br />
         <div id="recording">
           <video
             id="routine"
@@ -253,7 +272,7 @@ class RecordPractice extends React.Component {
             controls={true}
             autoPlay
             className="video-js vjs-default-skin"
-          ></video>
+          />
         </div>
         <Grid column={1} centered>
           <Segment basic compact padded="very">
@@ -273,9 +292,15 @@ class RecordPractice extends React.Component {
             </Item>
           </Segment>
         </Grid>
-        <Segment id="gallery">
-          <p>Video list could be here, maybe as cards?</p>
-        </Segment>
+        <div id="gallery">
+          <PrevAttempts
+            recording={this.state.recording}
+            handleDelete={this.handleDelete}
+            teamId={this.teamId}
+            userId={this.props.userId}
+            calibration={this.state.calibration}
+          />
+        </div>
       </Segment>
     );
   }
