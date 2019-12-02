@@ -6,7 +6,8 @@ const {
   Routine,
   Practice,
   CalibrationFrame,
-  VideoFrame
+  VideoFrame,
+  Assignment
 } = require('../server/db/models');
 const db = require('../server/db/db');
 const {green, red} = require('chalk');
@@ -117,12 +118,16 @@ async function createTestUsers() {
 
   const seededRoutine = await Routine.create(routineVideo);
   const anotherRoutine = await Routine.create(routine2);
+  const seededAssignmentDone = await Assignment.create({completed: true});
+  const seededAssignmentUndone = await Assignment.create({completed: false});
 
   // routine belongs to team
   await seededRoutine.setTeam(1);
   await anotherRoutine.setTeam(1);
   // practice belongsto routine
   await seededPractice.setRoutine(1);
+
+  //
 
   // const seededVideoFrames = await Promise.all(
   //   testVideoFrames.map(videoFrame => {
@@ -161,6 +166,12 @@ async function createTestUsers() {
   //Video belongsTo User
   await seededRoutine.setUser(choreographer);
   await seededPractice.setUser(dancer);
+
+  //Assignment belongsTo User + belongsTo Routine; assign 2 routines to Fred Astaire, one of which is completed
+  await seededAssignmentDone.setRoutine(1);
+  await seededAssignmentDone.setUser(2);
+  await seededAssignmentUndone.setRoutine(2);
+  await seededAssignmentUndone.setUser(2);
 
   //Routine / Practice hasMany VideoFrames
   // let [
