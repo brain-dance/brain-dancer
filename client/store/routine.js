@@ -28,17 +28,17 @@ export const addRoutineThunk = (
   userId,
   calibration
 ) => async dispatch => {
-  const imageServerUrl =
-    'https://api.cloudinary.com/v1_1/braindance/image/upload';
+  // const imageServerUrl =
+  //   'https://api.cloudinary.com/v1_1/braindance/image/upload';
 
   const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
   var recording = recordedData;
   try {
     // info to upload calibration image
-    const calibrationFormData = {
-      file: calibration,
-      upload_preset: 'acrhvgee'
-    };
+    // const calibrationFormData = {
+    //   file: calibration,
+    //   upload_preset: 'acrhvgee'
+    // };
 
     // info to upload video
     var formData = new FormData();
@@ -47,8 +47,10 @@ export const addRoutineThunk = (
     // console.log('upload recording ' + recording.name + ' to ' + serverUrl);
 
     // start upload
-    const calibUpload = await axios.post(imageServerUrl, calibrationFormData);
-    console.log('calibration uploaded', calibUpload);
+    // const calibUpload = await axios.post(imageServerUrl, calibrationFormData);
+    // console.log('calibration uploaded', calibUpload);
+    const res = await axios.post('/api/calibration', calibration);
+    console.log('calibration skelly', res);
 
     const upload = await axios.post(serverUrl, formData);
     console.log('upload', upload);

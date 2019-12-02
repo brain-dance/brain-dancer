@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const {CalibrationFrame} = require('../db/models');
+const {getPose, canvasify} = require('../../utils/formatting');
+
 module.exports = router;
 
 router.get('/', async (req, res, next) => {
@@ -13,7 +15,10 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const cFrame = await CalibrationFrame.create(req.body);
+    const fetchedSkelly = await getPose(await canvasify(req.body));
+    // const calibrationSkelly = await getPose(fetchedSkelly);
+    console.log('calib', fetchedSkelly);
+    const cFrame = await CalibrationFrame.create(fetchedSkelly);
     res.json(cFrame);
   } catch (err) {
     next(err);

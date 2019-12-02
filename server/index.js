@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const compression = require('compression');
 const session = require('express-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./db');
 const sessionStore = new SequelizeStore({db});
@@ -45,6 +46,13 @@ const createApp = () => {
 
   // body parsing middleware
   app.use(express.json());
+  app.use(
+    bodyParser.urlencoded({
+      parameterLimit: 100000,
+      limit: '50mb',
+      extended: true
+    })
+  );
   app.use(express.urlencoded({extended: true}));
 
   // compression middleware
