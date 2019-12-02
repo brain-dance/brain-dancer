@@ -44,13 +44,18 @@ export const Assignments = props => {
       <Header as="h3">Assignments</Header>
       <Card.Group itemsPerRow={3}>
         {assignments.map(assignment => {
-          let {id, title, url, teamId} = assignment.routine;
+          let {id, title, url, teamId, team} = assignment.routine;
+
           if (assignment.completed !== true) {
             return (
               <Card id="assgn" key={assignment.id} raised>
                 <Card.Content>
                   <Card.Header>{title}</Card.Header>
-                  <Card.Meta>TEAM NAME HERE</Card.Meta>
+                  {team && team.name ? (
+                    <Card.Meta>{team.name}</Card.Meta>
+                  ) : (
+                    <Card.Meta>Team Name</Card.Meta>
+                  )}
                   <video id={title} width="200" controls src={url} />
                   <Button
                     attached="bottom"
