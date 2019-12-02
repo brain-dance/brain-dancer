@@ -8,9 +8,18 @@ const Routines = props => {
   return (
     <Segment basic id="routines" color="orange">
       <Header as="h2">Routines</Header>
-      {routines.map(routine => (
-        <Routine key={routine.id} routine={routine} />
-      ))}
+      {!routines.length ? (
+        <div>
+          There are no routines yet for this team. Reach out to your
+          choreographer for assignments.
+        </div>
+      ) : (
+        <div>
+          {routines.map(routine => (
+            <Routine key={routine.id} routine={routine} />
+          ))}
+        </div>
+      )}
     </Segment>
   );
 };
