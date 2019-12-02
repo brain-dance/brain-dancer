@@ -1,11 +1,11 @@
 import React from 'react';
 import {withRouter, Link} from 'react-router-dom';
-import {useSelector} from 'react-redux';
 import {Routines, Members} from './index';
 import {Segment, Header, Button, Icon} from 'semantic-ui-react';
 
 const Team = props => {
   const team = props.team;
+
   const myRole = team.role;
   return (
     <Segment raised id="team">
