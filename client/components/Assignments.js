@@ -1,17 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {Button, Header, Image, Item, Label, Segment} from 'semantic-ui-react';
+import {Button, Card, Header, Image, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
 
 export const Assignments = props => {
   const assignments = useSelector(state => state.assignments);
-  console.log('TCL: assignments', assignments);
-  const [isActiveItem, setIsActiveItem] = useState('');
   const dispatch = useDispatch();
-  const handleItemClick = (e, {name}) => {
-    setIsActiveItem(name);
-  };
 
   useEffect(() => {
     dispatch(fetchAssignments());
@@ -21,8 +16,18 @@ export const Assignments = props => {
     props.history.push('/dashboard');
   };
 
+  const redirectToPractice = (e, {name}) => {
+    let nameArr = name.split(' ');
+    let selectedTeamId = +nameArr[0];
+    let selectedRoutineId = +nameArr[1];
+
+    props.history.push(
+      `/team/${selectedTeamId}/routine/${selectedRoutineId}/add`
+    );
+  };
+
   return !assignments.length ? (
-    <Segment placeholder color="orange">
+    <Segment placeholder color="orange" textAlign="center">
       <Header>
         Your tasks are done. Go you!{' '}
         <Image
@@ -36,27 +41,28 @@ export const Assignments = props => {
     </Segment>
   ) : (
     <div>
-      {/* SHOWS UP IF THERE ARE ASSIGNMENTS: CONFIRM THAT WE WANT {} VS [] */}
-      {/*
-        {assignments.map(assignment => {
-          return ( */}
-      <Item
-      // name={assignments.routine.id}
-      // active={isActiveItem === name}
-      // onClick={handleItemClick}
-      >
-        {/* THIS WILL BE THE ROUTINE SPLASH IMAGE? */}
-        {/* INCLUDE TEAM NAME? */}
-        <Image
-          size="mini"
-          src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
-        />
-        {assignments.completed ? (
-          <Label color="olive" />
-        ) : (
-          <Label color="pink" />
-        )}
-      </Item>
+      {assignments.map(assignment => {
+        let {id, title, url, teamId} = assignment.routine;
+        if (assignment.completed !== true) {
+          return (
+            <Card key={assignment.id}>
+              <Card.Header>{title}</Card.Header>
+              <Card.Content>
+                {/* NEED TO GET TEAM NAME IN HERE! */}
+                {teamId}
+                <video id={title} width="200" controls src={url} />
+                <Button
+                  name={`${teamId} ${id}`}
+                  primary
+                  onClick={redirectToPractice}
+                >
+                  Practice Routine
+                </Button>
+              </Card.Content>
+            </Card>
+          );
+        }
+      })}
     </div>
   );
 };
