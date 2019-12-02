@@ -5,6 +5,7 @@ import {addRoutineThunk} from '../store';
 
 import setupCamera from '../../utils/setupCamera';
 import videoJsOptions from '../../utils/videoJsOptions';
+import {stopWebcam} from '../../frontUtils/workarounds';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
@@ -20,7 +21,7 @@ class RecordRoutine extends React.Component {
   constructor(props) {
     super(props);
     this.recordedData = {name: 'empty'};
-    this.videoNode = document.querySelector('#video');
+    this.videoNode = React.createRef();
     this.player = '';
     this.state = {
       calibration: {},
@@ -33,7 +34,6 @@ class RecordRoutine extends React.Component {
   }
 
   componentDidMount() {
-    setupCamera(this.videoNode);
     this.player = videojs(this.videoNode, videoJsOptions, () => {
       // print version information at startup
       var msg =
@@ -85,11 +85,16 @@ class RecordRoutine extends React.Component {
       });
     });
 
+    this.player.record().getDevice();
     // this.player.on('startConvert', () => {});
     // this.player.on('finishConvert', () => {
     //   console.log('convert completed!', this.player.convertedData)
     // }); //player.convertedData
     // return player.dispose();
+  }
+
+  componentWillUnmount() {
+    this.player.dispose();
   }
 
   handleDelete(e, {name}) {
@@ -117,7 +122,7 @@ class RecordRoutine extends React.Component {
           </Modal>
         </div>
         <Header as="h2">Record Your Routine</Header>
-        <div id="recording">
+        <div id="recording" data-vjs-player>
           <video
             id="video"
             ref={node => (this.videoNode = node)}

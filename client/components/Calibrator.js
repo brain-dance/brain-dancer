@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import videojs from 'video.js';
 
 import webrtc_adapter from 'webrtc-adapter';
@@ -11,10 +11,12 @@ import 'videojs-record/dist/css/videojs.record.min.css';
 
 import {Button, Image, Header} from 'semantic-ui-react';
 
+import {stopWebcam} from '../../frontUtils/workarounds';
+
 const Calibrator = props => {
   const [camera, setCamera] = useState({});
   const [count, setCount] = useState(0);
-  let videoPlayer = React.createRef();
+  const videoNode = useRef(null);
 
   const options = {
     controls: true,
@@ -37,7 +39,7 @@ const Calibrator = props => {
   };
 
   useEffect(() => {
-    const player = videojs(videoPlayer, options, () => {
+    const player = videojs(videoNode.current, options, () => {
       let msg =
         'Using video.js ' +
         videojs.VERSION +
@@ -47,7 +49,6 @@ const Calibrator = props => {
     });
 
     // error handling
-    // console.log(player);
     player.on('deviceError', function() {
       console.warn('device error:', player.deviceErrorCode);
     });
@@ -60,11 +61,12 @@ const Calibrator = props => {
       props.setCalibration(player.recordedData);
     });
 
-    player.on('retry', function() {
-      console.log('retry');
-    });
     player.record().getDevice();
     setCamera(player);
+
+    return () => {
+      stopWebcam(videoNode.current);
+    };
   }, []);
 
   const handleCapture = () => {
@@ -85,7 +87,7 @@ const Calibrator = props => {
     <div id="calibrator">
       <video
         id="myImage"
-        ref={node => (videoPlayer = node)}
+        ref={videoNode}
         className="video-js vjs-default-skin"
       />
       <div>
