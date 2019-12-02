@@ -9,7 +9,8 @@ import {
   AddTeamForm,
   Choreo,
   RecordRoutine,
-  RecordPractice
+  RecordPractice,
+  Assignments
 } from './components';
 import {WatchRoutine} from './components/watchvideo';
 import {me} from './store';
@@ -49,7 +50,7 @@ class Routes extends Component {
             <Route path="/team/:teamId" component={Dashboard} />
             <Route exact path="/new-routine" component={RecordRoutine} />
             <Route exact path="/new-practice" component={RecordPractice} />
-            <Route exact path="/assignments" component={Assignments} />
+            <Route exact path="/my-assignments" component={Assignments} />
             <Route component={Dashboard} />
           </Switch>
         )}

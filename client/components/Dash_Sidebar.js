@@ -15,7 +15,7 @@ export const DashSidebar = props => {
     <Menu vertical id="sidebar">
       <Menu.Item>
         {/* ARE WE PICTURING THIS AS A SEPARATE PAGE? */}
-        <Menu.Header as={Link} to="/assignments">
+        <Menu.Header as={Link} to="/my-assignments">
           Assignments
         </Menu.Header>
       </Menu.Item>

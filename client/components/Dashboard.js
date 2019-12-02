@@ -4,7 +4,6 @@ import {Grid, Modal} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
 import {fetchUserTeams} from '../store';
-import {fetchAssignments} from '../store/assignment';
 import AddTeamForm from './AddTeamForm';
 import AddMemberForm from './AddMemberForm';
 
@@ -13,7 +12,6 @@ import AddMemberForm from './AddMemberForm';
  */
 export const Dashboard = props => {
   const teams = useSelector(state => state.teams);
-  const assignments = useSelector(state => state.assignment);
   const dispatch = useDispatch();
 
   //TK: Identify which team displays when user logs in (currently first one)
@@ -24,10 +22,6 @@ export const Dashboard = props => {
   useEffect(() => {
     dispatch(fetchUserTeams());
   }, []);
-
-  useEffect(() => {
-    dispatch(fetchAssignments);
-  });
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
@@ -44,7 +38,6 @@ export const Dashboard = props => {
             selectedTeam={selectedTeam}
             setSelectedTeam={setSelectedTeam}
             handleSelectTeam={handleSelectTeam}
-            assignments={assignments}
             setModalOpen={setModalOpen}
           />
         </Grid.Column>
