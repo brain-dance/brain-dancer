@@ -5,7 +5,7 @@ const db = require('../db');
 //Note: currently, timestamps are assuming an integer number of milliseconds.
 //That could very easily be incorrect, but is pretty trivial to change.
 const VideoFrame = db.define('videoframe', {
-  framejson: {
+  pose: {
     type: Sequelize.TEXT,
     allowNull: false,
     validate: {
@@ -13,12 +13,12 @@ const VideoFrame = db.define('videoframe', {
     },
     ///CAN RESTORE IF WE ARE USING JSONs; FOR NOW, USING STRINGS
     get: function() {
-      // console.log('Data Value:', this.getDataValue('framejson'));
-      return JSON.parse(this.getDataValue('framejson'));
+      // console.log('Data Value:', this.getDataValue('pose'));
+      return JSON.parse(this.getDataValue('pose'));
     },
     set: function(obj) {
       console.log('DATAVALUE IN SET: ', obj);
-      this.setDataValue('framejson', JSON.stringify(obj));
+      this.setDataValue('pose', JSON.stringify(obj));
     }
   },
 

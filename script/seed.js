@@ -92,19 +92,19 @@ const finnDance = {
 //TEST ACCOUNTS - Video frames
 // const testVideoFrames = [
 //   {
-//     framejson: 'JSON string of videoframe 1 for performance',
+//     pose: 'JSON string of videoframe 1 for performance',
 //     frameNumber: 10
 //   },
 //   {
-//     framejson: 'JSON string of videoframe 2 for performance',
+//     pose: 'JSON string of videoframe 2 for performance',
 //     frameNumber: 100
 //   },
 //   {
-//     framejson: 'JSON string of videoframe 1 for practice',
+//     pose: 'JSON string of videoframe 1 for practice',
 //     frameNumber: 89
 //   },
 //   {
-//     framejson: 'JSON string of videoframe 2 for practice',
+//     pose: 'JSON string of videoframe 2 for practice',
 //     frameNumber: 1489
 //   }
 // ];
@@ -112,10 +112,10 @@ const finnDance = {
 //TEST ACCOUNTS - Calibration frame
 const testCalibrations = [
   {
-    framejson: `choreo calibration frame for performance video`
+    pose: `choreo calibration frame for performance video`
   },
   {
-    framejson: 'dancer calibration frame for practice video'
+    pose: 'dancer calibration frame for practice video'
   }
 ];
 
@@ -146,7 +146,7 @@ async function createTestUsers() {
   await Promise.all(
     generatedSkellies.map((skelly, i) => {
       return VideoFrame.create({
-        framejson: skelly,
+        pose: skelly,
         routineId: chickenRoutine.id,
         frameNumber: i
       });
@@ -156,7 +156,7 @@ async function createTestUsers() {
   await Promise.all(
     gorillaSkellies.map((skelly, i) => {
       return VideoFrame.create({
-        framejson: skelly,
+        pose: skelly,
         routineId: gorillaRoutine.id,
         frameNumber: i
       });
@@ -166,7 +166,7 @@ async function createTestUsers() {
   await Promise.all(
     idkSkellies.map((skelly, i) => {
       return VideoFrame.create({
-        framejson: skelly,
+        pose: skelly,
         routineId: idkRoutine.id,
         frameNumber: i
       });
@@ -176,7 +176,7 @@ async function createTestUsers() {
   await Promise.all(
     finnSkellies.map((skelly, i) => {
       return VideoFrame.create({
-        framejson: skelly,
+        pose: skelly,
         routineId: finn.id,
         frameNumber: i
       });
@@ -292,12 +292,12 @@ async function createFakeUsers() {
     };
 
     // const videoFrame = {
-    //   framejson: faker.lorem.sentence(),
+    //   pose: faker.lorem.sentence(),
     //   frameNumber: Math.round(Math.random() * 10000)
     // };
 
     const calibration = {
-      framejson: faker.lorem.sentence()
+      pose: faker.lorem.sentence()
     };
 
     await Promise.all([

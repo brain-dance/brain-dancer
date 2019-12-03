@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
-import {addPracticeThunk} from '../store';
+import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
 
 import videoJsOptions from '../../utils/videoJsOptions';
 
@@ -11,19 +11,10 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {
-  Button,
-  Segment,
-  Card,
-  Form,
-  Message,
-  Modal,
-  Item,
-  Grid,
-  Header
-} from 'semantic-ui-react';
+import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
+import PrevAttempts from './PrevAttempts';
 
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
@@ -100,99 +91,105 @@ class RecordPractice extends React.Component {
       cameraCanvas: '',
       context: '',
       worker: null,
-      LTU: 0
+      LTU: 0,
+      recording: []
     };
 
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
-
-    this.upload = this.upload.bind(this);
-    this.download = this.download.bind(this);
-    this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
   }
 
   componentDidMount() {
-    this.playbackPlayer = videojs(
-      this.playback,
-      {
-        controls: true,
-        width: 630,
-        height: 360,
-        playbackRates: [0.5, 1, 1.5, 2]
-      },
-      () => {
-        videojs.log('playback screen is live!');
-      }
-    );
-    this.playbackPlayer.on('timestamp', event => {
-      console.log('PLAYBACK PLAYER TIME IS UPDATING');
-      console.log(event);
-    });
-    this.player = videojs(this.videoNode, videoJsOptions, () => {
-      // print version information at startup
-      var msg =
-        'Using video.js ' +
-        videojs.VERSION +
-        ' with videojs-record ' +
-        videojs.getPluginVersion('record') +
-        ' and recordrtc ' +
-        RecordRTC.version;
-      videojs.log(msg);
-    });
-
-    const temp1 = document.querySelector('.vjs-record-canvas canvas');
-    const temp2 = temp1.getContext('2d');
-    // yeah... it's the canvas
-    this.setState({
-      cameraCanvas: temp1,
-      context: temp2
-    });
-
-    // error handling
-    this.player.on('deviceError', function() {
-      console.warn('device error:', this.player.deviceErrorCode);
-    });
-
-    this.player.on('error', (element, error) => {
-      console.error(error);
-    });
-
-    // device is ready
-    this.player.on('deviceReady', () => {
-      console.log('device is ready!');
-    });
-
-    // user clicked the record button and started recording
-    this.player.on('startRecord', () => {
-      console.log('started recording!');
-    });
-
-    this.player.on('timestamp', function(evt) {
-      tGS.sendFrame(
-        document.querySelector('#video_html5_api'),
-        this.currentTimestamp
+    this.props.fetchRoutine(this.routineId).then(() => {
+      this.playbackPlayer = videojs(
+        this.playback,
+        {
+          controls: true,
+          width: 640,
+          height: 360,
+          playbackRates: [0.5, 1, 1.5, 2]
+        },
+        () => {
+          videojs.log('playback screen is live!');
+        }
       );
-    });
-    // user completed recording and stream is available
-    this.player.on('finishRecord', () => {
-      // the blob object contains the recorded data that
-      // can be downloaded by the user, stored on server etc.
+      this.player = videojs(this.videoNode, videoJsOptions, () => {
+        // print version information at startup
+        var msg =
+          'Using video.js ' +
+          videojs.VERSION +
+          ' with videojs-record ' +
+          videojs.getPluginVersion('record') +
+          ' and recordrtc ' +
+          RecordRTC.version;
+        videojs.log(msg);
+      });
 
-      tGS.worker.postMessage({type: 'finished'});
-      tGS.recording = false;
-      console.log('finished recording: ', this.player.recordedData);
-      this.recordedData = this.player.recordedData;
-    });
-    // return player.dispose();
+      const temp1 = document.querySelector('.vjs-record-canvas canvas');
+      const temp2 = temp1.getContext('2d');
+      // yeah... it's the canvas
+      this.setState({
+        cameraCanvas: temp1,
+        context: temp2
+      });
+      // this.setState({context: this.state.cameraCanvas.getContext('2d')});
 
-    this.player.record().getDevice();
+      // error handling
+      this.player.on('deviceError', function() {
+        console.warn('device error:', this.player.deviceErrorCode);
+      });
+
+      this.player.on('error', (element, error) => {
+        console.error(error);
+      });
+
+      // device is ready
+      this.player.on('deviceReady', () => {
+        console.log('device is ready!');
+      });
+
+      // user clicked the record button and started recording
+      this.player.on('startRecord', () => {
+        console.log('started recording!');
+      });
+
+      // this.player.on('progressRecord', function() {
+      //   console.log('currently recording', this.player.record().getDuration());
+      // });
+
+      this.player.on('timestamp', function() {
+        tGS.sendFrame(
+          document.querySelector('#video_html5_api'),
+          this.currentTimestamp
+        );
+      });
+
+      // user completed recording and stream is available
+      this.player.on('finishRecord', () => {
+        // the blob object contains the recorded data that
+        // can be downloaded by the user, stored on server etc.
+        tGS.worker.postMessage({type: 'finished'});
+        tGS.recording = false;
+
+        console.log('finished recording: ', this.player.recordedData);
+        this.recordedData = this.player.recordedData;
+        this.setState(state => {
+          return {recording: [...state.recording, this.recordedData]};
+        });
+      });
+      // return player.dispose();
+
+      this.player.record().getDevice();
+    });
   }
 
   componentWillUnmount() {
     this.player.dispose();
+    this.props.clearRoutine();
   }
   componentDidUpdate() {
     if (this.props.routineFrames) {
@@ -219,6 +216,12 @@ class RecordPractice extends React.Component {
     this.setState({...this.state, visible: false});
   }
 
+  handleDelete(e, {name}) {
+    this.setState(state => {
+      return {recording: state.recording.filter(blob => blob.name !== name)};
+    });
+  }
+
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
   }
@@ -243,16 +246,20 @@ class RecordPractice extends React.Component {
   render() {
     return (
       <Segment>
+        <Button
+          primary
+          as={Link}
+          to={`/team/${this.teamId}/routine/${this.routineId}`}
+          floated="left"
+          //Do we want a left chevron icon here?
+          labelPosition="left"
+          icon="left chevron"
+          content="Back to Routine"
+        />
         <Header as="h2" floated="left">
-          <Button
-            primary
-            as={Link}
-            to={`/team/${this.teamId}/routine/${this.routineId}`}
-            floated="left"
-          >
-            Back to Routine
-          </Button>
+          Record a Practice
         </Header>
+        <br />
         <div>
           <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
@@ -263,7 +270,7 @@ class RecordPractice extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
-
+        <br />
         <div id="recording">
           <video
             id="routine"
@@ -280,7 +287,7 @@ class RecordPractice extends React.Component {
             controls={true}
             autoPlay
             className="video-js vjs-default-skin"
-          ></video>
+          />
         </div>
         <Grid column={1} centered>
           <Segment basic compact padded="very">
@@ -300,9 +307,15 @@ class RecordPractice extends React.Component {
             </Item>
           </Segment>
         </Grid>
-        <Segment id="gallery">
-          <p>Video list could be here, maybe as cards?</p>
-        </Segment>
+        <div id="gallery">
+          <PrevAttempts
+            recording={this.state.recording}
+            handleDelete={this.handleDelete}
+            teamId={this.teamId}
+            userId={this.props.userId}
+            calibration={this.state.calibration}
+          />
+        </div>
       </Segment>
     );
   }
@@ -323,6 +336,12 @@ const mapDispatchToProps = dispatch => {
   return {
     addPractice(recordedData, title, teamId, userId) {
       dispatch(addPracticeThunk(recordedData, title, teamId, userId));
+    },
+    async fetchRoutine(routineId) {
+      await dispatch(getSingleRoutine(routineId));
+    },
+    clearRoutine() {
+      dispatch(setSingleRoutine({}));
     }
   };
 };

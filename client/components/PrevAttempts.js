@@ -4,6 +4,7 @@ import UploadVideoForm from './UploadVideoForm';
 
 const PrevAttempts = props => {
   let {recording, handleDelete, teamId, userId} = props;
+  console.log('TCL: recording', recording);
 
   const [isSelected, setIsSelected] = useState({});
   let attempt = 0;

@@ -37,15 +37,15 @@ router.get('/:id', async (req, res, next) => {
         },
         {
           model: Practice
+        },
+        {
+          model: Assignment,
+          include: [
+            {
+              model: User
+            }
+          ]
         }
-        // {
-        //   model: Assignment,
-        //   include: [
-        //     {
-        //       model: User //this isn't quite right, need models
-        //     }
-        //   ]
-        // }
       ],
       order: [[{model: VideoFrame}, 'frameNumber']]
     });
@@ -68,7 +68,7 @@ router.post('/', async (req, res, next) => {
     await Promise.all(
       generatedSkellies.map((skelly, i) => {
         return VideoFrame.create({
-          framejson: skelly,
+          pose: skelly,
           routineId: newRoutine.id,
           frameNumber: i
         });
