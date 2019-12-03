@@ -27,15 +27,22 @@ body {
 
 #gallery {
   display: flex;
-  overflow: scroll;
-}
-
-.ui.card {
-  display: flex;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 #previous-attempt {
   background-color: black;
+  display: inline-block;
+  padding: 0;
+}
+
+/* Style for assignments on /my-assignments */
+#assgn {
+  /* background-color: black; */
+  display: inline-block;
+  padding: 0;
+  /* Typeface color won't update */
 }
 
 #skeleton {

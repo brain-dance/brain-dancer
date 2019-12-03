@@ -1,4 +1,5 @@
 const faker = require('faker');
+const {generateWireframes} = require('../utils/videoProcessing');
 const {
   User,
   UserTeam,
@@ -6,7 +7,8 @@ const {
   Routine,
   Practice,
   CalibrationFrame,
-  VideoFrame
+  VideoFrame,
+  Assignment
 } = require('../server/db/models');
 const db = require('../server/db/db');
 const {green, red} = require('chalk');
@@ -53,20 +55,38 @@ const testTeams = [
 //TEST ACCOUNTS - Video
 const practiceVideo = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mkv',
+    'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mp4',
   title: 'how do i clap'
 };
 
-const routineVideo = {
+const chickenDance = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mkv',
+    'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mp4',
   title: 'chicken dance'
 };
 
-const routine2 = {
+const testVideo = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mkv',
+    'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mp4',
   title: 'testy test'
+};
+
+const gorillaDansu = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
+  title: 'Gorilla Dansu'
+};
+
+const idkDance = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1574881747/dduo3i3txavwqwx4y8ad.mp4',
+  title: 'IDK'
+};
+
+const finnDance = {
+  url:
+    'https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mp4',
+  title: 'The Finn Dance'
 };
 
 //TEST ACCOUNTS - Video frames
@@ -115,14 +135,64 @@ async function createTestUsers() {
 
   const seededPractice = await Practice.create(practiceVideo);
 
-  const seededRoutine = await Routine.create(routineVideo);
-  const anotherRoutine = await Routine.create(routine2);
+  const chickenRoutine = await Routine.create(chickenDance);
+  const testRoutine = await Routine.create(testVideo);
+  const gorillaRoutine = await Routine.create(gorillaDansu);
+  const idkRoutine = await Routine.create(idkDance);
+  const finn = await Routine.create(finnDance);
+
+  // generate lots of wireframes - comment out if this takes too long :)
+  const generatedSkellies = await generateWireframes(chickenRoutine.url);
+  await Promise.all(
+    generatedSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: chickenRoutine.id,
+        frameNumber: i
+      });
+    })
+  );
+  const gorillaSkellies = await generateWireframes(gorillaRoutine.url);
+  await Promise.all(
+    gorillaSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: gorillaRoutine.id,
+        frameNumber: i
+      });
+    })
+  );
+  const idkSkellies = await generateWireframes(idkRoutine.url);
+  await Promise.all(
+    idkSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: idkRoutine.id,
+        frameNumber: i
+      });
+    })
+  );
+  const finnSkellies = await generateWireframes(finn.url);
+  await Promise.all(
+    finnSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        framejson: skelly,
+        routineId: finn.id,
+        frameNumber: i
+      });
+    })
+  );
 
   // routine belongs to team
-  await seededRoutine.setTeam(1);
-  await anotherRoutine.setTeam(1);
+  await chickenRoutine.setTeam(1);
+  await testRoutine.setTeam(1);
+  await gorillaRoutine.setTeam(2);
+  await idkRoutine.setTeam(2);
+  await finn.setTeam(1);
   // practice belongsto routine
   await seededPractice.setRoutine(1);
+
+  //
 
   // const seededVideoFrames = await Promise.all(
   //   testVideoFrames.map(videoFrame => {
@@ -159,8 +229,14 @@ async function createTestUsers() {
   });
 
   //Video belongsTo User
-  await seededRoutine.setUser(choreographer);
+  await chickenRoutine.setUser(choreographer);
   await seededPractice.setUser(dancer);
+
+  //Assignment belongsTo User + belongsTo Routine; assign 2 routines to Fred Astaire, one of which is completed
+  await seededAssignmentDone.setRoutine(1);
+  await seededAssignmentDone.setUser(2);
+  await seededAssignmentUndone.setRoutine(2);
+  await seededAssignmentUndone.setUser(2);
 
   //Routine / Practice hasMany VideoFrames
   // let [
@@ -170,14 +246,14 @@ async function createTestUsers() {
   //   practiceFrame2
   // ] = seededVideoFrames;
 
-  // await seededRoutine.setVideoframes([performanceFrame1, performanceFrame2]);
+  // await chickenRoutine.setVideoframes([performanceFrame1, performanceFrame2]);
 
   // await seededPractice.setVideoframes([practiceFrame1, practiceFrame2]);
 
   //Video hasOne CalibrationFrame
   let [routineCalibration, practiceCalibration] = seededCalibrationFrame;
 
-  await routineCalibration.setRoutine(seededRoutine);
+  await routineCalibration.setRoutine(chickenRoutine);
 
   await practiceCalibration.setPractice(seededPractice);
 }

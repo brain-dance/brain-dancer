@@ -2,25 +2,24 @@ import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {List, Icon} from 'semantic-ui-react';
-import {deleteTeamMemberThunk} from '../store';
+// import {deleteTeamMemberThunk} from '../store';
 
 const Member = props => {
   const {member} = props;
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   //team info for checking if user is choreographer in this team
   const teamId = +props.match.params.teamId;
   const teams = useSelector(state => state.teams);
-  const thisTeam = teams.filter(team => team.id === teamId);
-
+  const thisTeam = teams.find(team => team.id === teamId);
   return (
     <List.Item>
-      {thisTeam[0].role === 'choreographer' && (
+      {thisTeam && thisTeam.role === 'choreographer' && (
         <List.Content floated="right">
           <Icon
             name="trash"
-            onClick={() => dispatch(deleteTeamMemberThunk(teamId, member.id))}
+            onClick={() => props.handleUpdateTeam(teamId, member.id)}
           />
         </List.Content>
       )}

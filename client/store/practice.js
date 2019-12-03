@@ -28,7 +28,7 @@ export const addPracticeThunk = (
   title,
   routineId,
   userId,
-  score
+  grade
 ) => async dispatch => {
   const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
   var recording = recordedData;
@@ -48,7 +48,7 @@ export const addPracticeThunk = (
       title,
       routineId,
       userId,
-      score
+      grade
     };
 
     const {data} = await axios.post('/api/practices', newPractice);

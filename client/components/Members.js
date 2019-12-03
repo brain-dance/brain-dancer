@@ -10,7 +10,11 @@ const Members = props => {
       <Header as="h3">Members</Header>
       <List divided verticalAlign="middle">
         {members.map(member => (
-          <Member member={member} key={member.id} />
+          <Member
+            member={member}
+            key={member.id}
+            handleUpdateTeam={props.handleUpdateTeam}
+          />
         ))}
       </List>
     </Segment>

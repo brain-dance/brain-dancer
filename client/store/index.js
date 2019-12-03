@@ -4,7 +4,7 @@ import thunkMiddleware from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import user from './user';
 import teams from './teams';
-import assignment from './assignment';
+import assignments from './assignment';
 import singleRoutine from './singleRoutine';
 import practice from './practice';
 import users from './users';
@@ -12,7 +12,7 @@ import users from './users';
 const reducer = combineReducers({
   user,
   teams,
-  assignment,
+  assignments,
   singleRoutine,
   practice,
   users

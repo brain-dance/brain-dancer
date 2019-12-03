@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {Button, Form, Icon, Message, Modal} from 'semantic-ui-react';
+import {Button, Form, Icon, Modal} from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
+import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
   const {blob, teamId, userId} = props;
@@ -9,30 +10,32 @@ const UploadVideoForm = props => {
   const [title, setTitle] = useState('');
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
   const [isClickedClose, setIsClickedClose] = useState(false);
+  const [isClickedUpload, setIsClickedUpload] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleSelectVid = e => {
+  const handleSelectVid = () => {
     setOpen(!open);
     setIsClickedSelectVid(!isClickedSelectVid);
-  };
-
-  const addRoutine = () => {
-    dispatch(addRoutineThunk(blob, title, teamId, userId));
-  };
-
-  const upload = () => {
-    addRoutine(blob, title, teamId, userId);
-  };
-
-  const handleUpload = () => {
-    upload();
-    setIsUploaded(true);
   };
 
   const handleClickClose = () => {
     setOpen(!open);
     setIsClickedClose(!isClickedClose);
+  };
+
+  const addRoutine = () => {
+    dispatch(addRoutineThunk(blob, title, teamId, userId, props.calibration));
+  };
+
+  const upload = () => {
+    addRoutine(blob, title, teamId, userId, props.calibration);
+  };
+
+  const handleUpload = () => {
+    setIsClickedUpload(true);
+    upload();
   };
 
   return (
@@ -54,8 +57,10 @@ const UploadVideoForm = props => {
       <Button floated="right" type="icon" onClick={handleClickClose}>
         <Icon name="window close" />
       </Button>
-      <Modal.Header>Submit Your Routine</Modal.Header>
-      {!isUploaded ? (
+      <Modal.Header>
+        {!isClickedUpload ? 'Submit Your Routine' : 'Please Wait'}
+      </Modal.Header>
+      {!isClickedUpload ? (
         <div>
           <Form>
             <Form.Field>
@@ -77,9 +82,9 @@ const UploadVideoForm = props => {
         </div>
       ) : (
         <div>
-          <Message
-            header="Video submitted!"
-            content="Video processing. Check back soon :)"
+          <LoadingScreen
+            isUploaded={isUploaded}
+            setIsUploaded={setIsUploaded}
           />
         </div>
       )}

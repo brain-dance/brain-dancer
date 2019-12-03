@@ -1,11 +1,11 @@
 import React from 'react';
 import {withRouter, Link} from 'react-router-dom';
-import {useSelector} from 'react-redux';
 import {Routines, Members} from './index';
 import {Segment, Header, Button, Icon} from 'semantic-ui-react';
 
 const Team = props => {
   const team = props.team;
+
   const myRole = team.role;
   return (
     <Segment raised id="team">
@@ -28,7 +28,10 @@ const Team = props => {
       </Header>
 
       <Routines routines={team.routines} />
-      <Members members={team.members} />
+      <Members
+        members={team.members}
+        handleUpdateTeam={props.handleUpdateTeam}
+      />
     </Segment>
   );
 };
