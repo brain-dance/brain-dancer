@@ -16,7 +16,13 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     //So, what do these wireframes actually look like?
     //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
     
-    const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
+    //const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
+    const costarr=[];
+    for(let i=0; i<playerwfs.length; i++){
+        costarr[i]=new Array(choreowfs.length);
+    }
+    const illegalRepCheck=deepCopy(costarr).map(row=>row.fill(0));
+
     console.log("cost arr initialized to: ", deepCopy(costarr));
     let count=0;
     const minCostDynamic=(playerwfs, choreowfs, playerind=0, choreoind=0)=>{
@@ -24,22 +30,24 @@ const minCostPairings=(playerwfs, choreowfs)=>{
             count++;
             if(playerind===playerwfs.length) return 0;
             //console.log("Here?")
-            if(typeof costarr[playerind][choreoind]=='number'){
+            if(typeof costarr[playerind][choreoind]==='number'){
                 //console.log("This is being reached?");
                 //console.log("IF so, ")
                 return costarr[playerind][choreoind]}
            // console.log("Or here?");
             if(playerwfs.length-playerind>choreowfs.length-choreoind){ 
+                illegalRepCheck[playerind][choreoind]++;
                 costarr[playerind][choreoind]=Infinity
                 return Infinity;}
-            let thistemp=errCost(playerwfs[playerind], choreowfs[choreoind])
-            let currcost=thistemp+minCostDynamic(playerwfs, choreowfs, playerind+1, choreoind);
+            let paircost=errCost(playerwfs[playerind], choreowfs[choreoind])
+            let currcost=Infinity;//paircost+minCostDynamic(playerwfs, choreowfs, playerind+1, choreoind+1);
             for(let j=choreoind; j<choreowfs.length; j++){
-                let jcost=thistemp+minCostDynamic(playerwfs, choreowfs, playerind+1, j);
+                let jcost=paircost+minCostDynamic(playerwfs, choreowfs, playerind+1, j);
                 //costarr[playerind][j]=jcost;
                 if(jcost<currcost) currcost=jcost;			
                 
             }
+            illegalRepCheck[playerind][choreoind]++;
             costarr[playerind][choreoind]=currcost;
             //console.log(currcost);
             return currcost;
@@ -48,6 +56,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         let pairs=[];
         let currj=0;
         console.log("Cost Array: ", costarr);
+        console.log("Reps?", illegalRepCheck)
         for(let i=0; i<costarr.length; i++){
             let currcost=Infinity;
             for(let j=currj; j<choreowfs.length; j++){
