@@ -11,17 +11,7 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {
-  Button,
-  Segment,
-  Card,
-  Form,
-  Message,
-  Modal,
-  Item,
-  Grid,
-  Header
-} from 'semantic-ui-react';
+import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 
