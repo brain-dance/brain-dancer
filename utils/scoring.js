@@ -163,12 +163,29 @@ const parseForReplay = (
         const source = labelPose(pair[1]); //routine
         const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
 
-        const routineCopy = {...pair[1]}
-        const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
-          point.position.x = scaledRoutine[point.part].x
-        })
+        // const routineCopy = {...pair[1]}
+        // const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
+        //   point.position.x = scaledRoutine[point.part].x
+        // })
         // const unlabeledScaledRoutine = unLabelPose(scaledRoutine);
-        return [pair[0], unlabeledScaledRoutine];
+        return [
+          pair[0],
+          {
+            ...pair[1],
+            keypoints: pair[1].keypoints.map(point => ({
+              part: point.part,
+              score: point.score,
+              position: {
+                x: scaledRoutine[point.part]
+                  ? scaledRoutine[point.part].x
+                  : scaledRoutine['head'].x,
+                y: scaledRoutine[point.part]
+                  ? scaledRoutine[point.part].y
+                  : scaledRoutine['head'].y
+              }
+            }))
+          }
+        ];
       })
       .map(pair => {
         //    console.log("In pfr, first map statement, pair is: ", pair);
