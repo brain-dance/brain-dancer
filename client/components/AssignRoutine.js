@@ -1,10 +1,15 @@
 import React from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Button} from 'semantic-ui-react';
+import {postAssignment, deleteAssignment} from '../store';
 
 const AssignRoutine = props => {
   const dispatch = useDispatch();
-
+  const routine = useSelector(state => state.singleRoutine);
+  let assignedUsers = [];
+  if (routine.assignments) {
+    assignedUsers = routine.assignments.map(assignment => assignment.userId);
+  }
   return (
     <React.Fragment>
       <Button
@@ -18,7 +23,25 @@ const AssignRoutine = props => {
         return (
           <div key={member.id}>
             {member.name}
-            <Button type="button" onClick={() => console.log(member)} />
+            <Button
+              type="button"
+              content={
+                assignedUsers.includes(member.id) ? 'Unassign' : 'Assign'
+              }
+              onClick={() => {
+                if (assignedUsers.includes(member.id)) {
+                  dispatch(
+                    deleteAssignment(
+                      routine.assignments.find(
+                        assignment => assignment.userId === member.id
+                      ).id
+                    )
+                  );
+                } else {
+                  dispatch(postAssignment(member.id, routine.id));
+                }
+              }}
+            />
           </div>
         );
       })}

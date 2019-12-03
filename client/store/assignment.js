@@ -2,20 +2,12 @@ import axios from 'axios';
 
 // action constants
 const GET_ASSIGNMENTS = 'GET_ASSIGNMENTS';
-export const ADD_ASSIGNMENT = 'ADD_ASSIGNMENT';
 
 // action creators
 const getAssignments = assignments => ({
   type: GET_ASSIGNMENTS,
   assignments
 });
-
-const addAssignment = assignment => ({type: ADD_ASSIGNMENT, assignment});
-
-export const postAssignment = assignment => async dispatch => {
-  const {data} = await axios.post('/api/assignments', assignment);
-  dispatch(addAssignment(data));
-};
 
 // thunks
 export const fetchAssignments = () => async dispatch => {
