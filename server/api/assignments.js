@@ -48,11 +48,6 @@ router.put('/:routineId', async (req, res, next) => {
     const updatedAssignment = await Assignment.findOne({
       where: {userId: id, routineId: req.params.routineId}
     });
-
-    //SEND TITLE, URL, GRADE
-    // await Practice.create({title, url, grade, routineId, userId});
-
-    //QUERY: what do we send back (if anything?)
     res.status(201).send(updatedAssignment);
   } catch (err) {
     next(err);
