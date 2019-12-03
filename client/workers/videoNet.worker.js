@@ -1,5 +1,5 @@
 const posenet = require('@tensorflow-models/posenet');
-let allProcessed=[];
+let allProcessed = [];
 let poseNetConfig = {};
 let net = {};
 
@@ -10,7 +10,7 @@ self.onmessage = set => {
       input: {
         architecture: 'MobileNetV1',
         outputStride: 16,
-        inputResolution: set.data.resolution,
+        inputResolution: set.resolution,
         multiplier: 0.75,
         quantBytes: 2
       },
@@ -27,10 +27,10 @@ self.onmessage = set => {
       net = newNet;
       self.onmessage = event => {
         //console.log("In Worker, message received: ", event);
-        if(event.data.type==="finished"){
-          console.log("Finishing?");
-          postMessage({type: "All processed", data: allProcessed});
-          allProcessed=[];
+        if (event.data.type === 'finished') {
+          console.log('Finishing?');
+          postMessage({type: 'All processed', data: allProcessed});
+          allProcessed = [];
           return;
         }
         try {
@@ -40,8 +40,11 @@ self.onmessage = set => {
               decodingMethod: 'single-person'
             })
             .then(result => {
-              allProcessed.push({pose: result, timestamp: event.data.timestamp});
-             // console.log(allProcessed.length);
+              allProcessed.push({
+                pose: result,
+                timestamp: event.data.timestamp
+              });
+              // console.log(allProcessed.length);
             })
             .catch(err =>
               console.log('Inside estimate single pose, error occurred: ', err)
