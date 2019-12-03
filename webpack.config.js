@@ -14,7 +14,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      videojs: 'video.js'
+      videojs: 'video.js',
+      RecordRTC: 'recordrtc'
     }
   },
   devtool: 'source-map',
@@ -47,7 +48,7 @@ module.exports = {
       }
     ]
   },
-  target: 'node',
+  target: 'node'
   /*node: {
     fs: 'empty'
   },

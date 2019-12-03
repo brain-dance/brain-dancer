@@ -18,14 +18,16 @@ import PrevAttempts from './PrevAttempts';
 
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
+
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
 import scoringUtils from '../../utils/scoring';
+
 console.log('TCC: ', scoringUtils);
 const tGS = {};
 tGS.LTU = -Infinity;
 tGS.worker = new MyWorker();
 tGS.worker.postMessage({resolution: {width: 1260, height: 720}});
-tGS.messages = [];
+// tGS.messages = [];
 tGS.recording = true;
 tGS.worker.onmessage = event => {
   console.log('Message received from worker: ', event);
@@ -34,10 +36,12 @@ tGS.worker.onmessage = event => {
     tGS.routineFrames || event.data.data /*should be cws, but scope issue*/,
     {x: 315, y: 300}, //midpoint
     -1,
-    1000,
+    200,
     num => {
       tGS.score = num;
-    }
+    },
+    event.data.calibration,
+    tGS.routineCalibration.pose
   );
   const video = document.querySelector('#video_html5_api');
   video.addEventListener('play', () => {
@@ -54,7 +58,7 @@ tGS.worker.onmessage = event => {
       ctx,
       630,
       360,
-      1000,
+      200,
       tGS.LTU
     );
     tGS.LTU = Date.now() - tGS.replayStart;
@@ -181,7 +185,6 @@ class RecordPractice extends React.Component {
           return {recording: [...state.recording, this.recordedData]};
         });
       });
-      // return player.dispose();
 
       this.player.record().getDevice();
     });
@@ -194,6 +197,9 @@ class RecordPractice extends React.Component {
   componentDidUpdate() {
     if (this.props.routineFrames) {
       tGS.routineFrames = this.props.routineFrames;
+    }
+    if (this.props.routine.calibrationframe) {
+      tGS.routineCalibration = this.props.routine.calibrationframe;
     }
   }
   upload() {
@@ -224,6 +230,20 @@ class RecordPractice extends React.Component {
 
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
+    // worker send msg to worker
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = 630;
+    tempCanvas.height = 360;
+    const tempContext = tempCanvas.getContext('2d');
+    const newImage = document.createElement('img');
+    newImage.src = calibration;
+    newImage.decode().then(() => {
+      tempContext.drawImage(newImage, 0, 0);
+      tGS.worker.postMessage({
+        type: 'calibration',
+        image: tempContext.getImageData(0, 0, 630, 360)
+      });
+    });
   }
 
   playboth() {
@@ -277,7 +297,7 @@ class RecordPractice extends React.Component {
             ref={node => (this.playback = node)}
             controls={true}
             className="video-js"
-            onTimeUpdate={this.drawBoth}
+            // onTimeUpdate={this.drawBoth}
           >
             <source src={this.props.routine.url} type="video/mp4" />
           </video>

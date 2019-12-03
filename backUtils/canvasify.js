@@ -9,6 +9,7 @@ const getPose = async input => {
 
 const {createCanvas, loadImage} = require('canvas');
 const sizeOf = require('image-size');
+
 const canvasify = async imagePath => {
   const dim = sizeOf(imagePath);
   const canvas = await createCanvas(dim.width, dim.height);

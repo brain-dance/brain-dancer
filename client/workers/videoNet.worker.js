@@ -2,6 +2,7 @@ const posenet = require('@tensorflow-models/posenet');
 let allProcessed = [];
 let poseNetConfig = {};
 let net = {};
+let calibration = {};
 
 self.onmessage = set => {
   if (set.data.resolution) {
@@ -29,9 +30,26 @@ self.onmessage = set => {
         //console.log("In Worker, message received: ", event);
         if (event.data.type === 'finished') {
           console.log('Finishing?');
-          postMessage({type: 'All processed', data: allProcessed});
+          postMessage({
+            type: 'All processed',
+            data: allProcessed,
+            calibration: calibration
+          });
           allProcessed = [];
           return;
+        }
+        if (event.data.type === 'calibration') {
+          console.log('calibrating');
+          net
+            .estimateSinglePose(event.data.image, {
+              flipHorizontal: false,
+              decodingMethod: 'single-person'
+            })
+            .then(result => {
+              calibration = result;
+            })
+            .catch(err => console.log('error while calibrating!', err));
+            return;
         }
         try {
           net

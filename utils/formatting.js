@@ -173,12 +173,12 @@ const angleDifferences = (pose, targetPose) => {
   return differences;
 };
 
-//module.exports.getPose=getPose;
 module.exports.labelPose = labelPose;
 module.exports.getAngles = getAngles;
 module.exports.angleDifferences = angleDifferences;
 module.exports.ANGLES = ANGLES;
 module.exports.unlabelPose = unlabelPose;
+// module.exports.canvasify = canvasify;
 /*module.exports = {
   getPose,
   canvasify,
