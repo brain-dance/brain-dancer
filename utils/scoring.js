@@ -1,11 +1,12 @@
 const {angleDifferences} =require('./formatting');
-const {translate, centroid} =require('./scaling');
-const {drawSkeleton} =require('../brain/posenet2');
+const {translate, centroid, deepCopy} =require('./scaling');
+const {drawSkeleton} =require('../frontUtils/draw');
 const errCost=(wfOne, wfTwo)=>{
     let errs=angleDifferences(wfOne.pose, wfTwo.pose);
     let temp=Object.keys(errs);
     //let count = 0;
     const toRet=((temp.reduce((acc, curr)=>acc+(errs[curr]**2), 0))**0.5)/temp.length;
+    
     //console.log("In errCost, cost is: ", toRet);
     return toRet;
 
@@ -16,14 +17,26 @@ const minCostPairings=(playerwfs, choreowfs)=>{
     //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
     
     const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
+    console.log("cost arr initialized to: ", deepCopy(costarr));
+    let count=0;
     const minCostDynamic=(playerwfs, choreowfs, playerind=0, choreoind=0)=>{
-       
-            if(playerind==playerwfs.length) return 0;
-            if(costarr[playerind][choreoind]!==undefined) return costarr[playerind][choreoind]
-            if(playerwfs.length-playerind>choreowfs.length-choreoind) return Infinity;
-            let currcost=errCost(playerwfs[playerind], choreowfs[choreoind])+minCostDynamic(playerwfs, choreowfs, playerind+1, choreoind);
+            console.log("IN MCD, count, playerind, choreoind: ", count, playerind, choreoind);
+            count++;
+            if(playerind===playerwfs.length) return 0;
+            //console.log("Here?")
+            if(typeof costarr[playerind][choreoind]=='number'){
+                //console.log("This is being reached?");
+                //console.log("IF so, ")
+                return costarr[playerind][choreoind]}
+           // console.log("Or here?");
+            if(playerwfs.length-playerind>choreowfs.length-choreoind){ 
+                costarr[playerind][choreoind]=Infinity
+                return Infinity;}
+            let thistemp=errCost(playerwfs[playerind], choreowfs[choreoind])
+            let currcost=thistemp+minCostDynamic(playerwfs, choreowfs, playerind+1, choreoind);
             for(let j=choreoind; j<choreowfs.length; j++){
-                let jcost=errCost(playerwfs[playerind], choreowfs[j])+minCostDynamic(playerwfs, choreowfs, playerind+1, j);
+                let jcost=thistemp+minCostDynamic(playerwfs, choreowfs, playerind+1, j);
+                //costarr[playerind][j]=jcost;
                 if(jcost<currcost) currcost=jcost;			
                 
             }
@@ -34,7 +47,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         const cost=minCostDynamic(playerwfs, choreowfs);
         let pairs=[];
         let currj=0;
-        
+        console.log("Cost Array: ", costarr);
         for(let i=0; i<costarr.length; i++){
             let currcost=Infinity;
             for(let j=currj; j<choreowfs.length; j++){
@@ -96,7 +109,10 @@ const minCostPairings=(playerwfs, choreowfs)=>{
                 return [{...pair[0], pose: {...pair[0].pose, keypoints: translator(pair[0].pose.keypoints)}}, {...pair[1], pose: {...pair[1].pose, keypoints: translator(pair[1].pose.keypoints)}}]
             }
         ).map(pair=>{
+            //Theoretically, render mistakes should be the only time it's even possible to get deviation; everything else is equivalent
+            console.log("We expect the pairs to be the same here: ", pair);
            let toReturn=[pair[0], rendermistakes(pair[0], pair[1], errbound)]
+           console.log("We expect them to be different here: ", toReturn);
          //  console.log("In pfr, map statement two, toReturn is", toReturn);
          //  console.log("IPFRMS2, pair is : ", pair);
             return toReturn;
