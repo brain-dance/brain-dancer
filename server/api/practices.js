@@ -31,7 +31,6 @@ router.post('/', async (req, res, next) => {
       userId,
       grade
     });
-    console.log('TCL: newPractice', newPractice);
     // ^ not super secure - any way to make this secure while staying dry?
 
     // (( skellies are generated client side ))

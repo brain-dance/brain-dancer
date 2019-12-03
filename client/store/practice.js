@@ -51,7 +51,7 @@ export const addPracticeThunk = (
       grade
     };
 
-    //grade seems to make payload too large => Image
+    //SETTING GRADE TO ZERO FOR NOW
     const {data} = await axios.post('/api/practices', newPractice);
     dispatch(addPractice(data));
   } catch (err) {
