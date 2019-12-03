@@ -14,6 +14,19 @@ const labelPose = pose => {
 
   return labeled;
 };
+
+const unlabelPose = labeledPose => {
+  return {
+    keypoints: Object.keys(labeledPose).map(part => {
+      if (part === 'head') return {part: 'nose', position: labelPose[part]};
+      return {
+        part,
+        position: labeledPose[part]
+      };
+    })
+  };
+};
+
 //Note - functions in scoring.js depend on these label names.  If label names change, be sure to update scoring as well.
 const ANGLES = {
   leftKnee: {
@@ -165,6 +178,7 @@ module.exports.labelPose = labelPose;
 module.exports.getAngles = getAngles;
 module.exports.angleDifferences = angleDifferences;
 module.exports.ANGLES = ANGLES;
+module.exports.unlabelPose = unlabelPose;
 /*module.exports = {
   getPose,
   canvasify,
