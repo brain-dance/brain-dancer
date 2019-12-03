@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Button, Form, Icon, Modal} from 'semantic-ui-react';
-import {addRoutineThunk} from '../store';
+import {addRoutineThunk, submitAssignmentThunk} from '../store';
 import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
@@ -14,7 +14,7 @@ const UploadVideoForm = props => {
   const [isClickedUpload, setIsClickedUpload] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const dispatch = useDispatch();
-  const isPractice = props.match.params.hasOwnProperty('routineId');
+  const isAssignedPractice = props.match.params.hasOwnProperty('routineId');
 
   const handleSelectVid = () => {
     setOpen(!open);
@@ -31,12 +31,14 @@ const UploadVideoForm = props => {
   };
 
   const upload = () => {
-    //WILL BE DIFFERENT BASED ON IF ISPRACTICE
-    if (isPractice) {
-      addRoutine(blob, title, teamId, userId, props.calibration);
+    //add assigned practices (submitted by dancers) upon upload
+    if (isAssignedPractice) {
+      let routineId = +props.match.params.routineId;
+      submitAssignmentThunk(blob, routineId, userId);
     } else {
-      //WHAT TO SUBMIT TO THUNK?
-      submitAssignment(assignment);
+      //add routines submitted by choreographers
+      console.log('Uploading routine ... from if block');
+      addRoutine(blob, title, teamId, userId, props.calibration);
     }
   };
 
@@ -65,13 +67,13 @@ const UploadVideoForm = props => {
         <Icon name="window close" />
       </Button>
       <Modal.Header>
-        {!isPractice ? 'Submit Routine' : 'Submit Practice Video'}
+        {!isAssignedPractice ? 'Submit Routine' : 'Submit Practice Video'}
       </Modal.Header>
       {!isClickedUpload ? (
         <div>
           <Form>
             <Form.Field>
-              {isPractice ? (
+              {isAssignedPractice ? (
                 <label>Give your practice a title.</label>
               ) : (
                 <label> Give your routine a title.</label>
