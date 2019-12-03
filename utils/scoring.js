@@ -2,19 +2,14 @@ const {angleDifferences} = require('./formatting');
 const {translate, centroid, deepCopy} = require('./scaling');
 const {drawSkeleton} = require('../frontUtils/draw');
 const errCost = (wfOne, wfTwo) => {
-  try {
-    let errs = angleDifferences(wfOne.pose, wfTwo.pose);
-    let temp = Object.keys(errs);
-    //let count = 0;
-    const toRet =
-      temp.reduce((acc, curr) => acc + errs[curr] ** 2, 0) ** 0.5 / temp.length;
+  let errs = angleDifferences(wfOne.pose, wfTwo.pose);
+  let temp = Object.keys(errs);
+  //let count = 0;
+  const toRet =
+    temp.reduce((acc, curr) => acc + errs[curr] ** 2, 0) ** 0.5 / temp.length;
 
-    //console.log("In errCost, cost is: ", toRet);
-    return toRet;
-  } catch (err) {
-    console.log(err, wfOne, wfTwo);
-    return Infinity;
-  }
+  //console.log("In errCost, cost is: ", toRet);
+  return toRet;
 };
 const costToScore = (errcost, framecount) =>
   Math.round(10000 - (10000 * errcost) / (2 * Math.PI * framecount));
