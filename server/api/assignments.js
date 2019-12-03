@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Assignment, Routine, Team, User} = require('../db/models');
+const {Assignment, Practice, Routine, Team} = require('../db/models');
 module.exports = router;
 
 router.get('/', async (req, res, next) => {
@@ -34,16 +34,26 @@ router.post('/', async (req, res, next) => {
 
 router.put('/:routineId', async (req, res, next) => {
   try {
+    const {id} = req.user;
     await Assignment.update(
       {completed: true},
       {
         where: {
-          userId: req.user.id,
+          userId: id,
           routineId: req.params.routineId
         }
       }
     );
-    res.status(201).end();
+
+    const updatedAssignment = await Assignment.findOne({
+      where: {userId: id, routineId: req.params.routineId}
+    });
+
+    //SEND TITLE, URL, GRADE
+    // await Practice.create({title, url, grade, routineId, userId});
+
+    //QUERY: what do we send back (if anything?)
+    res.status(201).send(updatedAssignment);
   } catch (err) {
     next(err);
   }
