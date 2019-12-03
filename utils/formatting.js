@@ -1,6 +1,5 @@
 const {angle, getMidpoint} = require('./geometry');
 
-
 const labelPose = pose => {
   const labeled = pose.keypoints.reduce((all, point) => {
     all[point.part] = point.position;
@@ -173,7 +172,6 @@ const angleDifferences = (pose, targetPose) => {
 
   return differences;
 };
-
 
 module.exports.labelPose = labelPose;
 module.exports.getAngles = getAngles;

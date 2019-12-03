@@ -7,15 +7,6 @@ const getPose = async input => {
   });
 };
 
-/*const isBrowser=()=>{
-  console.log("IN IS BROWSER, this context is: ", this);
-  return this===this.window
-}*/
-// console.log("In module, this is: ", this);
-// (()=>{
-//   if(!(this===this.window)){
-//     console.log(this);
-//     console.log("HYPOTHESIS: THINGS ARE BEING RUN ?")
 const {createCanvas, loadImage} = require('canvas');
 const sizeOf = require('image-size');
 
@@ -28,8 +19,6 @@ const canvasify = async imagePath => {
     return canvas;
   });
 };
-module.exports.canvasify = canvasify;
-//   }
-// })()
 
+module.exports.canvasify = canvasify;
 module.exports.getPose = getPose;

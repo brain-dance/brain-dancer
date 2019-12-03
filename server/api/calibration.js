@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {CalibrationFrame} = require('../db/models');
-const {getPose} = require('../../backendutils/poseFormatter');
+const {getPose} = require('../../backUtils/canvasify');
 const {createCanvas, loadImage} = require('canvas');
 
 module.exports = router;

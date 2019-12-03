@@ -6,6 +6,9 @@ import {fetchAssignments} from '../store/assignment';
 
 export const Assignments = props => {
   const assignments = useSelector(state => state.assignments);
+  const pendingAssignments = assignments.filter(
+    assignment => assignment.completed === false
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ export const Assignments = props => {
     );
   };
 
-  return !assignments.length ? (
+  return !pendingAssignments.length ? (
     <Segment placeholder color="orange" textAlign="center">
       <Header>
         Your tasks are done. Go you!{' '}
@@ -43,9 +46,8 @@ export const Assignments = props => {
     <div>
       <Header as="h3">Assignments</Header>
       <Card.Group itemsPerRow={3}>
-        {assignments.map(assignment => {
+        {pendingAssignments.map(assignment => {
           let {id, title, url, teamId, team} = assignment.routine;
-
           if (assignment.completed !== true) {
             return (
               <Card id="assgn" key={assignment.id} raised>
