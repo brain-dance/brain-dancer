@@ -1,40 +1,5 @@
 const {angle, getMidpoint} = require('./geometry');
 
-//const {singlePoseNet} = require('./posenet');
-
-/*const getPose = async input => {
-  const net = await singlePoseNet();
-  return net.estimateSinglePose(input, {
-    flipHorizontal: true
-  });
-};*/
-
-/*const isBrowser=()=>{
-  console.log("IN IS BROWSER, this context is: ", this);
-  return this===this.window
-}*/
-/*console.log("In module, this is: ", this);
-(()=>{
-  if(!(this===this.window)){
-    console.log(this);
-    console.log("HYPOTHESIS: THINGS ARE BEING RUN ?")
-    const {createCanvas, loadImage} = require('canvas');
-    const sizeOf = require('image-size');
-    const canvasify = async imagePath => {
-      const dim = sizeOf(imagePath);
-      const canvas = await createCanvas(dim.width, dim.height);
-      const ctx = await canvas.getContext('2d');
-      return loadImage(imagePath).then(img => {
-        ctx.drawImage(img, 0, 0);
-        return canvas;
-      });
-    };
-    module.exports.canvasify=canvasify;
-  }
-})()
-*/
-
-
 const labelPose = pose => {
   const labeled = pose.keypoints.reduce((all, point) => {
     all[point.part] = point.position;
@@ -196,10 +161,10 @@ const angleDifferences = (pose, targetPose) => {
 };
 
 //module.exports.getPose=getPose;
-module.exports.labelPose=labelPose;
-module.exports.getAngles=getAngles;
-module.exports.angleDifferences=angleDifferences;
-module.exports.ANGLES=ANGLES;
+module.exports.labelPose = labelPose;
+module.exports.getAngles = getAngles;
+module.exports.angleDifferences = angleDifferences;
+module.exports.ANGLES = ANGLES;
 /*module.exports = {
   getPose,
   canvasify,
