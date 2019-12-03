@@ -1,24 +1,39 @@
 const {angle, getMidpoint} = require('./geometry');
-const {createCanvas, loadImage} = require('canvas');
-const {singlePoseNet} = require('./posenet');
-const sizeOf = require('image-size');
 
-const getPose = async input => {
+//const {singlePoseNet} = require('./posenet');
+
+/*const getPose = async input => {
   const net = await singlePoseNet();
   return net.estimateSinglePose(input, {
     flipHorizontal: true
   });
-};
+};*/
 
-const canvasify = async imagePath => {
-  const dim = sizeOf(imagePath);
-  const canvas = await createCanvas(dim.width, dim.height);
-  const ctx = await canvas.getContext('2d');
-  return loadImage(imagePath).then(img => {
-    ctx.drawImage(img, 0, 0);
-    return canvas;
-  });
-};
+/*const isBrowser=()=>{
+  console.log("IN IS BROWSER, this context is: ", this);
+  return this===this.window
+}*/
+/*console.log("In module, this is: ", this);
+(()=>{
+  if(!(this===this.window)){
+    console.log(this);
+    console.log("HYPOTHESIS: THINGS ARE BEING RUN ?")
+    const {createCanvas, loadImage} = require('canvas');
+    const sizeOf = require('image-size');
+    const canvasify = async imagePath => {
+      const dim = sizeOf(imagePath);
+      const canvas = await createCanvas(dim.width, dim.height);
+      const ctx = await canvas.getContext('2d');
+      return loadImage(imagePath).then(img => {
+        ctx.drawImage(img, 0, 0);
+        return canvas;
+      });
+    };
+    module.exports.canvasify=canvasify;
+  }
+})()
+*/
+
 
 const labelPose = pose => {
   const labeled = pose.keypoints.reduce((all, point) => {
@@ -169,9 +184,9 @@ const angleDifferences = (pose, targetPose) => {
   //let count=0;
   for (const angleName in poseAngles) {
     if (Object.prototype.hasOwnProperty.call(poseAngles, angleName)) {
-      count++;
+      //count++;
       differences[angleName] = poseAngles[angleName] - targetAngles[angleName];
-      differences.cost += differences[angleName] ** 2;
+      //differences.cost+=differences[angleName]**2;
     }
   }
   //differences.cost=differences.cost**0.5;
@@ -180,9 +195,16 @@ const angleDifferences = (pose, targetPose) => {
   return differences;
 };
 
-module.exports.getPose = getPose;
-module.exports.canvasify = canvasify;
-module.exports.labelPose = labelPose;
-module.exports.getAngles = getAngles;
-module.exports.angleDifferences = angleDifferences;
-module.exports.ANGLES = ANGLES;
+//module.exports.getPose=getPose;
+module.exports.labelPose=labelPose;
+module.exports.getAngles=getAngles;
+module.exports.angleDifferences=angleDifferences;
+module.exports.ANGLES=ANGLES;
+/*module.exports = {
+  getPose,
+  canvasify,
+  labelPose,
+  getAngles,
+  angleDifferences,
+  ANGLES
+};*/

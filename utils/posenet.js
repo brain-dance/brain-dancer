@@ -30,5 +30,5 @@ const singlePoseNet = (stride = 16) => {
     })
     .then(net => net);
 };
-
-module.exports = {singlePoseNet};
+module.exports.singlePoseNet=singlePoseNet;
+//module.exports = {singlePoseNet};

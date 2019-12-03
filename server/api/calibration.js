@@ -25,7 +25,7 @@ router.post('/', async (req, res, next) => {
     // const calibrationSkelly = await getPose(fetchedSkelly);
     console.log('calib', fetchedSkelly);
     const cFrame = await CalibrationFrame.create({
-      framejson: fetchedSkelly,
+      pose: fetchedSkelly,
       routineId: req.body.routineId
     });
     res.json(cFrame);
