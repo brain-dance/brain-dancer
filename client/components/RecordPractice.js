@@ -277,7 +277,7 @@ class RecordPractice extends React.Component {
             ref={node => (this.playback = node)}
             controls={true}
             className="video-js"
-            onTimeUpdate={this.drawBoth}
+            // onTimeUpdate={this.drawBoth}
           >
             <source src={this.props.routine.url} type="video/mp4" />
           </video>
