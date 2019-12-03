@@ -42,7 +42,7 @@ tGS.worker.onmessage = event => {
   tGS.allProcessedFrames = scoringUtils.parseForReplay(
     event.data.data,
     event.data.data /*should be cws, but scope issue*/,
-    {x: 315, y: 300}, //midpoint
+    {x: 315, y: 360}, //midpoint
     -1,
     1000
   );
@@ -84,7 +84,7 @@ tGS.worker.onmessage = event => {
 // const workerCanv = document.getElementById('skeleton');
 
 const workerCanv = document.createElement('canvas');
-workerCanv.width = 480 * 2;
+workerCanv.width = 630 * 2;
 workerCanv.height = 360 * 2;
 const wcContext = workerCanv.getContext('2d');
 tGS.sendFrame = (video, timestamp) => {
@@ -135,7 +135,7 @@ class RecordPractice extends React.Component {
       this.playback,
       {
         controls: true,
-        width: 640,
+        width: 630,
         height: 360,
         playbackRates: [0.5, 1, 1.5, 2]
       },
@@ -244,7 +244,7 @@ class RecordPractice extends React.Component {
   drawBoth() {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, 640, 360);
+    ctx.clearRect(0, 0, 630, 360);
     // console.log('draw!');
     // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
