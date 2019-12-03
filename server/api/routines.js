@@ -68,7 +68,7 @@ router.post('/', async (req, res, next) => {
     await Promise.all(
       generatedSkellies.map((skelly, i) => {
         return VideoFrame.create({
-          framejson: skelly,
+          pose: skelly,
           routineId: newRoutine.id,
           frameNumber: i
         });
