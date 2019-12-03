@@ -40,7 +40,8 @@ tGS.worker.onmessage = event => {
     num => {
       tGS.score = num;
     },
-    event.data.calibration, tGS.routineCalibration
+    event.data.calibration,
+    tGS.routineCalibration.pose
   );
   const video = document.querySelector('#video_html5_api');
   video.addEventListener('play', () => {
@@ -108,9 +109,6 @@ class RecordPractice extends React.Component {
 
   componentDidMount() {
     this.props.fetchRoutine(this.routineId).then(() => {
-      if (this.state.routine.calibrationframe) {
-        tGS.routineCalibration = this.state.routine.calibrationframe;
-      }
       this.playbackPlayer = videojs(
         this.playback,
         {
@@ -200,6 +198,9 @@ class RecordPractice extends React.Component {
     if (this.props.routineFrames) {
       tGS.routineFrames = this.props.routineFrames;
     }
+    if (this.props.routine.calibrationframe) {
+      tGS.routineCalibration = this.props.routine.calibrationframe;
+    }
   }
   upload() {
     this.props.addPractice(
@@ -230,8 +231,19 @@ class RecordPractice extends React.Component {
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
     // worker send msg to worker
-    // type: calibration, image: calibration
-    tGS.worker.postMessage({type: 'calibration', image: calibration});
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = 630;
+    tempCanvas.height = 360;
+    const tempContext = tempCanvas.getContext('2d');
+    const newImage = document.createElement('img');
+    newImage.src = calibration;
+    newImage.decode().then(() => {
+      tempContext.drawImage(newImage, 0, 0);
+      tGS.worker.postMessage({
+        type: 'calibration',
+        image: tempContext.getImageData(0, 0, 630, 360)
+      });
+    });
   }
 
   playboth() {

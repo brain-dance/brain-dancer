@@ -1,4 +1,5 @@
-const {canvasify, getPose, getAngles, angleDifferences} = require('../utils');
+const {getAngles, angleDifferences} = require('../utils');
+const {canvasify, getPose} = require('../backendutils/poseFormatter');
 const path = require('path');
 
 const init = async () => {

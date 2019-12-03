@@ -159,8 +159,8 @@ const parseForReplay = (
       .pairs.map(pair => {
         //pairs: first elem = dancer; second elem = choreographer
         //this is scaling the choreographer to match the dancer
-        const target = labelPose(pair[0]); // practice
-        const source = labelPose(pair[1]); //routine
+        const target = labelPose(pair[0].pose); // practice
+        const source = labelPose(pair[1].pose); //routine
         const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
 
         // const routineCopy = {...pair[1]}
@@ -172,18 +172,21 @@ const parseForReplay = (
           pair[0],
           {
             ...pair[1],
-            keypoints: pair[1].keypoints.map(point => ({
-              part: point.part,
-              score: point.score,
-              position: {
-                x: scaledRoutine[point.part]
-                  ? scaledRoutine[point.part].x
-                  : scaledRoutine['head'].x,
-                y: scaledRoutine[point.part]
-                  ? scaledRoutine[point.part].y
-                  : scaledRoutine['head'].y
-              }
-            }))
+            pose: {
+              ...pair[1].pose,
+              keypoints: pair[1].pose.keypoints.map(point => ({
+                part: point.part,
+                score: point.score,
+                position: {
+                  x: scaledRoutine[point.part]
+                    ? scaledRoutine[point.part].x
+                    : scaledRoutine['head'].x,
+                  y: scaledRoutine[point.part]
+                    ? scaledRoutine[point.part].y
+                    : scaledRoutine['head'].y
+                }
+              }))
+            }
           }
         ];
       })

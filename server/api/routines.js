@@ -64,6 +64,8 @@ router.post('/', async (req, res, next) => {
     const newRoutine = await Routine.create(req.body);
     // ^ not super secure - any way to make this secure while staying dry?
 
+    res.json(newRoutine);
+
     // initiate server side skelly processor
     const generatedSkellies = await generateWireframes(req.body.url);
 
@@ -76,8 +78,6 @@ router.post('/', async (req, res, next) => {
         });
       })
     );
-
-    res.json(newRoutine);
   } catch (err) {
     next(err);
   }
