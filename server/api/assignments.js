@@ -21,14 +21,11 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const {userId, routineId} = req.body;
-    const temp = await Assignment.create({
-      userId,
-      routineId,
-      completed: false
+    const assignment = await Assignment.findOrCreate({
+      where: {userId, routineId},
+      defaults: {completed: false}
     });
-    const assignment = await Assignment.findByPk(temp.id, {
-      include: {model: User}
-    });
+
     res.send(assignment);
   } catch (err) {
     next(err);
@@ -47,6 +44,19 @@ router.put('/:id', async (req, res, next) => {
       }
     );
     res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/:id', async (req, res, next) => {
+  try {
+    await Assignment.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }
