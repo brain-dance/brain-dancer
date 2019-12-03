@@ -35,7 +35,8 @@ const UploadVideoForm = props => {
   };
 
   const addPractice = () => {
-    dispatch(addPracticeThunk(blob, title, teamId, userId, props.calibration));
+    let grade = 0;
+    dispatch(addPracticeThunk(blob, title, teamId, userId, grade));
   };
 
   const upload = () => {
@@ -46,7 +47,8 @@ const UploadVideoForm = props => {
       addPractice(blob, title, teamId, userId, props.calibration);
     } else {
       //add routines submitted by choreographers
-      addRoutine(blob, title, teamId, userId, props.calibration);
+      //NOTE SETTING GRADE TO ZERO FOR NOW
+      addRoutine(blob, title, teamId, userId, 0);
     }
   };
 
