@@ -18,14 +18,16 @@ import PrevAttempts from './PrevAttempts';
 
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
+
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
 import scoringUtils from '../../utils/scoring';
+
 console.log('TCC: ', scoringUtils);
 const tGS = {};
 tGS.LTU = -Infinity;
 tGS.worker = new MyWorker();
 tGS.worker.postMessage({resolution: {width: 1260, height: 720}});
-tGS.messages = [];
+// tGS.messages = [];
 tGS.recording = true;
 tGS.worker.onmessage = event => {
   console.log('Message received from worker: ', event);
@@ -34,10 +36,11 @@ tGS.worker.onmessage = event => {
     tGS.routineFrames || event.data.data /*should be cws, but scope issue*/,
     {x: 315, y: 300}, //midpoint
     -1,
-    1000,
+    200,
     num => {
       tGS.score = num;
-    }
+    },
+    event.data.calibration, tGS.routineCalibration
   );
   const video = document.querySelector('#video_html5_api');
   video.addEventListener('play', () => {
@@ -54,7 +57,7 @@ tGS.worker.onmessage = event => {
       ctx,
       630,
       360,
-      1000,
+      200,
       tGS.LTU
     );
     tGS.LTU = Date.now() - tGS.replayStart;
@@ -105,6 +108,9 @@ class RecordPractice extends React.Component {
 
   componentDidMount() {
     this.props.fetchRoutine(this.routineId).then(() => {
+      if (this.state.routine.calibrationframe) {
+        tGS.routineCalibration = this.state.routine.calibrationframe;
+      }
       this.playbackPlayer = videojs(
         this.playback,
         {
@@ -181,7 +187,6 @@ class RecordPractice extends React.Component {
           return {recording: [...state.recording, this.recordedData]};
         });
       });
-      // return player.dispose();
 
       this.player.record().getDevice();
     });
@@ -224,6 +229,9 @@ class RecordPractice extends React.Component {
 
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});
+    // worker send msg to worker
+    // type: calibration, image: calibration
+    tGS.worker.postMessage({type: 'calibration', image: calibration});
   }
 
   playboth() {

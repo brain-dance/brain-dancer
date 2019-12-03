@@ -45,7 +45,7 @@ const translate = (wireframe, newCenter) => {
   shifts.x = newCenter.x - shifts.x;
   shifts.y = newCenter.y - shifts.y;
   let toReturn = deepCopy(wireframe);
-  
+
   Object.keys(toReturn).forEach(el => {
     toReturn[el].position.x += shifts.x;
     toReturn[el].position.y += shifts.y;

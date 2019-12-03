@@ -4,7 +4,8 @@ const {
   User,
   Assignment,
   Practice,
-  VideoFrame
+  VideoFrame,
+  CalibrationFrame
 } = require('../db/models');
 module.exports = router;
 
@@ -45,7 +46,8 @@ router.get('/:id', async (req, res, next) => {
               model: User
             }
           ]
-        }
+        },
+        {model: CalibrationFrame}
       ],
       order: [[{model: VideoFrame}, 'frameNumber']]
     });

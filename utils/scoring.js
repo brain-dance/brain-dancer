@@ -1,6 +1,12 @@
-const {angleDifferences} = require('./formatting');
-const {translate, centroid, deepCopy} = require('./scaling');
-const {drawSkeleton} = require('../frontUtils/draw');
+const {angleDifferences, labelPose} = require('./formatting');
+const {
+  translate,
+  centroid,
+  deepCopy,
+  scaler,
+  getCalibration
+} = require('./scaling');
+const {drawSkeleton, drawKeypoints} = require('../frontUtils/draw');
 const errCost = (wfOne, wfTwo) => {
   let errs = angleDifferences(wfOne.pose, wfTwo.pose);
   let temp = Object.keys(errs);
@@ -110,12 +116,29 @@ const rendermistakes = (playerwf, choreowf, errbound) => {
   //return toDisplay.map(path);
 };
 
-const parseForReplay = (pwfs, cws, center, errbound, refreshrate, callback) => {
+const parseForReplay = (
+  pwfs,
+  cws,
+  center,
+  errbound,
+  refreshrate,
+  callback,
+  practiceCalibration,
+  routineCalibration
+) => {
   //Start with an array of player wireframes and choreographer wireframes
   //Map to player wireframes paired with the mistake set of the choreo wireframes
   //Center in the canvas
   //Transform into the lookup map
   //Return the new arr, which then gets interacted with by an event handler
+
+  const labeledPracticeCalibration = labelPose(practiceCalibration);
+  const labeledRoutineCalibration = labelPose(routineCalibration);
+  const calibrator = getCalibration(
+    labeledRoutineCalibration,
+    labeledPracticeCalibration
+  );
+
   let globalTranslate = {
     x: centroid(pwfs[0].pose.keypoints).x - center.x,
     y: centroid(pwfs[0].pose.keypoints).y - center.y
@@ -134,6 +157,20 @@ const parseForReplay = (pwfs, cws, center, errbound, refreshrate, callback) => {
   const toReturn = new Map(
     minCostPairings(pwfs, cws, callback)
       .pairs.map(pair => {
+        //pairs: first elem = dancer; second elem = choreographer
+        //this is scaling the choreographer to match the dancer
+        const target = labelPose(pair[0]); // practice
+        const source = labelPose(pair[1]); //routine
+        const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
+
+        const routineCopy = {...pair[1]}
+        const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
+          point.position.x = scaledRoutine[point.part].x
+        })
+        // const unlabeledScaledRoutine = unLabelPose(scaledRoutine);
+        return [pair[0], unlabeledScaledRoutine];
+      })
+      .map(pair => {
         //    console.log("In pfr, first map statement, pair is: ", pair);
         return [
           {
@@ -185,8 +222,14 @@ const timeChangeCallback = (
   if (temp !== lastupdate && newDraws) {
     // console.log("Context, width, height: ", ctx, width, height);
     ctx.clearRect(0, 0, width, height);
+
+    // dancer
     drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.4);
-    drawSkeleton(newDraws[1], 0, ctx, 0.4);
+    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.4);
+
+    // choreographer
+    drawSkeleton(newDraws[1], 0, ctx, 0.4, 'green');
+    drawKeypoints(newDraws[1], 0, ctx, 0.4, 'green');
     //newDraws[1] contains the error path, which should also be drawn.
   }
 };
