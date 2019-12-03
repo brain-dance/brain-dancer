@@ -31,6 +31,7 @@ const Choreo = props => {
   const playback = useRef(null);
   let playbackPlayer;
   let members = [];
+  let role;
 
   //set up video
   useEffect(() => {
@@ -60,6 +61,7 @@ const Choreo = props => {
 
   if (teamInfo.length > 0 && routine.teamId) {
     members = teamInfo.find(team => team.id === routine.teamId).members;
+    role = teamInfo.find(team => team.id === routine.teamId).role;
   }
   return (
     <Segment id="choreo">
@@ -84,10 +86,12 @@ const Choreo = props => {
           <Icon name="add" />
           <Icon name="record" />
         </Button>
-        <Button color="blue" onClick={() => setModal(true)} floated="right">
-          <Icon name="add" />
-          <Icon name="user plus" />
-        </Button>
+        {role === 'choreographer' && (
+          <Button color="blue" onClick={() => setModal(true)} floated="right">
+            <Icon name="add" />
+            <Icon name="user plus" />
+          </Button>
+        )}
         {/* )} */}
       </Header>
       <Divider />
