@@ -11,17 +11,7 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {
-  Button,
-  Segment,
-  Card,
-  Form,
-  Message,
-  Modal,
-  Item,
-  Grid,
-  Header
-} from 'semantic-ui-react';
+import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 import PrevAttempts from './PrevAttempts';
@@ -78,11 +68,6 @@ class RecordPractice extends React.Component {
 
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
-
-    //JMM - MIGHT NEED TO REFACTOR TO MOVE UPLOAD/DOWNLOAD TO UPLOADVIDEOFORM
-    // this.upload = this.upload.bind(this);
-    // this.download = this.download.bind(this);
-    // this.handleDismiss = this.handleDismiss.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
@@ -185,26 +170,6 @@ class RecordPractice extends React.Component {
       return {recording: state.recording.filter(blob => blob.name !== name)};
     });
   }
-
-  //JMM - MIGHT ALL MOVE TO UPLOADVIDEOFORM
-  // upload() {
-  //   this.props.addPractice(
-  //     this.recordedData,
-  //     this.state.title,
-  //     this.routineId,
-  //     this.props.userId
-  //   );
-
-  //   this.setState({...this.state, visible: true});
-  // }
-
-  // download() {
-  //   this.player.record().saveAs({video: 'video-name.webm'});
-  // }
-
-  // handleDismiss() {
-  //   this.setState({...this.state, visible: false});
-  // }
 
   setCalibration(calibration) {
     this.setState({...this.state, calibration, modalOpen: false});

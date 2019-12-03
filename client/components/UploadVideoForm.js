@@ -39,8 +39,7 @@ const UploadVideoForm = props => {
     upload();
   };
 
-  ///UploadVideoForm will be *SLIGHTLY* DIFFERENT IF ISPRACTICE
-  return
+  return (
     <Modal
       trigger={
         <Button
@@ -60,13 +59,17 @@ const UploadVideoForm = props => {
         <Icon name="window close" />
       </Button>
       <Modal.Header>
-        {!isClickedUpload ? 'Submit Your Routine' : 'Please Wait'}
+        {!isPractice ? 'Submit Routine' : 'Submit Practice Video'}
       </Modal.Header>
       {!isClickedUpload ? (
         <div>
           <Form>
             <Form.Field>
-              <label> Give your routine a title.</label>
+              {isPractice ? (
+                <label>Give your practice a title.</label>
+              ) : (
+                <label> Give your routine a title.</label>
+              )}
               <input
                 value={title}
                 onChange={evt => {

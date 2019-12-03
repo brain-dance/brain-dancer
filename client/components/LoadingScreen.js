@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Dimmer, Loader, Message, Segment} from 'semantic-ui-react';
+import {Loader, Message} from 'semantic-ui-react';
 
 const LoadingScreen = props => {
   const {isUploaded, setIsUploaded} = props;
@@ -7,19 +7,21 @@ const LoadingScreen = props => {
   useEffect(() => {
     setTimeout(function() {
       setIsUploaded(true);
-    }, 10000);
+    }, 4000);
   });
 
   return !isUploaded ? (
-    <div>
-      <Loader>
-        <h3>Please wait while we upload your video.</h3>
-      </Loader>
-    </div>
+    <Message>
+      <Message.Content>
+        <Message.Header>Just one second</Message.Header>
+        <Loader />
+        We are uploading your video.
+      </Message.Content>
+    </Message>
   ) : (
     <Message
       header="Success!"
-      content="Your video has been uploaded, but it will take a few minutes to process that 5-star routine. We'll email you a link when it's done! [Or something like that....]"
+      content="Your video has been uploaded, but it will take a few minutes to process that 5-star routine. We'll email you a link when it's done!"
     />
   );
 };
