@@ -1,6 +1,5 @@
 const router = require('express').Router();
-const {Routine, Practice, VideoFrame} = require('../db/models');
-const {generateWireframes} = require('../../utils/videoProcessing');
+const {Routine, Practice} = require('../db/models');
 
 module.exports = router;
 
