@@ -32,14 +32,14 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:routineId', async (req, res, next) => {
   try {
     await Assignment.update(
       {completed: true},
       {
         where: {
           userId: req.user.id,
-          routineId: req.params.id
+          routineId: req.params.routineId
         }
       }
     );
