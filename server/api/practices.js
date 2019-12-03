@@ -23,7 +23,15 @@ router.get('/:routineId', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     // add row in Practices table
-    const newPractice = await Practice.create(req.body);
+    const {url, title, routineId, userId, grade} = req.body;
+    const newPractice = await Practice.create({
+      url,
+      title,
+      routineId,
+      userId,
+      grade
+    });
+    console.log('TCL: newPractice', newPractice);
     // ^ not super secure - any way to make this secure while staying dry?
 
     // (( skellies are generated client side ))
@@ -37,7 +45,7 @@ router.post('/', async (req, res, next) => {
     //   })
     // );
 
-    res.json(newPractice);
+    res.status(200).json(newPractice);
   } catch (err) {
     next(err);
   }
