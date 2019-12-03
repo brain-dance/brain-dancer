@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
-// import {useDispatch, useSelector} from 'react-redux';
 import {Link, withRouter} from 'react-router-dom';
-import {Image, Label, Menu} from 'semantic-ui-react';
+import {Image, Menu} from 'semantic-ui-react';
 
 export const TeamList = props => {
   const {teams, handleSelectTeam} = props;
@@ -16,6 +15,11 @@ export const TeamList = props => {
         }
       });
       handleSelectTeam(selected[0]);
+    } else {
+      //if /dashboard + no teams selected yet, first team shows up by default
+      let defaultSelected = teams[0];
+      setIsActiveItem(defaultSelected);
+      handleSelectTeam(defaultSelected);
     }
   }, []);
 
@@ -50,7 +54,6 @@ export const TeamList = props => {
               avatar
               src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
             />
-            {/* <Label color="teal">#Routines</Label> */}
             {team.name}
           </Menu.Item>
         );
