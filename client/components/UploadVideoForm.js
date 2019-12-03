@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
+import {withRouter} from 'react-router-dom';
 import {Button, Form, Icon, Modal} from 'semantic-ui-react';
 import {addRoutineThunk} from '../store';
 import LoadingScreen from './LoadingScreen';
@@ -12,8 +13,8 @@ const UploadVideoForm = props => {
   const [isClickedClose, setIsClickedClose] = useState(false);
   const [isClickedUpload, setIsClickedUpload] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const isPractice = props.match.params.hasOwnProperty('routineId');
 
   const handleSelectVid = () => {
     setOpen(!open);
@@ -64,13 +65,17 @@ const UploadVideoForm = props => {
         <Icon name="window close" />
       </Button>
       <Modal.Header>
-        {!isClickedUpload ? 'Submit Your Routine' : 'Please Wait'}
+        {!isPractice ? 'Submit Routine' : 'Submit Practice Video'}
       </Modal.Header>
       {!isClickedUpload ? (
         <div>
           <Form>
             <Form.Field>
-              <label> Give your routine a title.</label>
+              {isPractice ? (
+                <label>Give your practice a title.</label>
+              ) : (
+                <label> Give your routine a title.</label>
+              )}
               <input
                 value={title}
                 onChange={evt => {
@@ -98,4 +103,4 @@ const UploadVideoForm = props => {
   );
 };
 
-export default UploadVideoForm;
+export default withRouter(UploadVideoForm);
