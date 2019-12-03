@@ -34,7 +34,9 @@ const UploadVideoForm = props => {
     //add assigned practices (submitted by dancers) upon upload
     if (isAssignedPractice) {
       let routineId = +props.match.params.routineId;
-      dispatch(submitAssignmentThunk(blob, routineId, userId));
+      dispatch(submitAssignmentThunk(blob, routineId));
+      //ALSO NEEDS TO BE ADDED TO PRACTICE DB
+      //COPY *SOME* LOGIC RECORD PRACTICE CALIBRATION -> No longer uploading image; need that to be saved .... pass dataURL...
     } else {
       //add routines submitted by choreographers
       addRoutine(blob, title, teamId, userId, props.calibration);
