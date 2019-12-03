@@ -29,33 +29,48 @@ import Calibrator from './Calibrator';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-import scoringUtils from '../../utils/scoring'
-console.log("TCC: ", scoringUtils)
-const tGS={};
-tGS.LTU=-Infinity;
+import scoringUtils from '../../utils/scoring';
+console.log('TCC: ', scoringUtils);
+const tGS = {};
+tGS.LTU = -Infinity;
 tGS.worker = new MyWorker();
-tGS.worker.postMessage({resolution: {width: 320, height: 240}});
-tGS.messages=[];
-tGS.recording=true;
+tGS.worker.postMessage({resolution: {width: 1260, height: 720}});
+tGS.messages = [];
+tGS.recording = true;
 tGS.worker.onmessage = event => {
-  console.log("Message received from worker: ", event);
-  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 320, y:180},-1, 1000);
-  const video=document.querySelector('#video_html5_api');
-  video.addEventListener('play', ()=>{
-    console.log("IS PLAY EVENT OCCURRING?");
-    tGS.replayStart=Date.now()});
-  
-  video.addEventListener('timeupdate', (event)=>{
+  console.log('Message received from worker: ', event);
+  tGS.allProcessedFrames = scoringUtils.parseForReplay(
+    event.data.data,
+    event.data.data /*should be cws, but scope issue*/,
+    {x: 315, y: 180}, //midpoint
+    -1,
+    1000
+  );
+  const video = document.querySelector('#video_html5_api');
+  video.addEventListener('play', () => {
+    // console.log('IS PLAY EVENT OCCURRING?');
+    tGS.replayStart = Date.now();
+  });
+
+  video.addEventListener('timeupdate', event => {
     //console.log("ARE WE PRESENT?");
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
-        //this.setState({LTU: this.player.currentTimestamp});
-        
-        //console.log(timeChangeCallback);
-        console.log("Start time is", tGS.replayStart)
-        scoringUtils.timeChangeCallback(Date.now()-tGS.replayStart, tGS.allProcessedFrames, ctx, 640, 360, 1000, tGS.LTU)
-        tGS.LTU=Date.now()-tGS.replayStart;
-  })
+    //this.setState({LTU: this.player.currentTimestamp});
+
+    //console.log(timeChangeCallback);
+    // console.log('Start time is', tGS.replayStart);
+    scoringUtils.timeChangeCallback(
+      Date.now() - tGS.replayStart,
+      tGS.allProcessedFrames,
+      ctx,
+      630,
+      360,
+      1000,
+      tGS.LTU
+    );
+    tGS.LTU = Date.now() - tGS.replayStart;
+  });
   /*const canvas = document.querySelector('#skeleton');
   const ctx = canvas.getContext('2d');
   console.log('got message', event.data);
@@ -68,7 +83,6 @@ tGS.worker.onmessage = event => {
 
 // const workerCanv = document.getElementById('skeleton');
 
-
 const workerCanv = document.createElement('canvas');
 workerCanv.width = 480 * 2;
 workerCanv.height = 360 * 2;
@@ -79,9 +93,9 @@ tGS.sendFrame = (video, timestamp) => {
   //console.log(workerCanv.toDataURL());
   tGS.worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
-     timestamp: timestamp
+    timestamp: timestamp
   });
-}
+};
 
 class RecordPractice extends React.Component {
   constructor(props) {
@@ -89,7 +103,7 @@ class RecordPractice extends React.Component {
     this.recordedData = {name: 'empty'};
     this.videoNode = document.querySelector('#video');
     this.playback = document.querySelector('#routine');
-    this.replayCanv=React.createRef();
+    this.replayCanv = React.createRef();
     this.player = '';
     this.state = {
       title: '',
@@ -98,7 +112,7 @@ class RecordPractice extends React.Component {
       modalOpen: true,
       cameraCanvas: '',
       context: '',
-     // recording: true,
+      // recording: true,
       worker: null,
       //allProcessedFrames: [],
       LTU: 0
@@ -113,9 +127,7 @@ class RecordPractice extends React.Component {
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
-    
   }
-  
 
   componentDidMount() {
     setupCamera(this.videoNode);
@@ -131,10 +143,10 @@ class RecordPractice extends React.Component {
         videojs.log('playback screen is live!');
       }
     );
-    this.playbackPlayer.on('timestamp', (event)=>{
-      console.log("PLAYBACK PLAYER TIME IS UPDATING");
+    this.playbackPlayer.on('timestamp', event => {
+      console.log('PLAYBACK PLAYER TIME IS UPDATING');
       console.log(event);
-    })
+    });
     this.player = videojs(this.videoNode, videoJsOptions, () => {
       // print version information at startup
       var msg =
@@ -172,8 +184,6 @@ class RecordPractice extends React.Component {
 
     // user clicked the record button and started recording
     this.player.on('startRecord', () => {
-      
-      
       console.log('started recording!');
     });
 
@@ -182,22 +192,24 @@ class RecordPractice extends React.Component {
     // });
 
     this.player.on('timestamp', function(evt) {
-      tGS.sendFrame(document.querySelector('#video_html5_api'), this.currentTimestamp);
+      tGS.sendFrame(
+        document.querySelector('#video_html5_api'),
+        this.currentTimestamp
+      );
     });
-    this.player.on('timeupdate', ()=>{
-      console.log("THIS.PLAYER.TIMEUPDATE");
-    })
+    this.player.on('timeupdate', () => {
+      console.log('THIS.PLAYER.TIMEUPDATE');
+    });
     // user completed recording and stream is available
     this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
-      
-      tGS.worker.postMessage({type: "finished"})
-      tGS.recording=false;
+
+      tGS.worker.postMessage({type: 'finished'});
+      tGS.recording = false;
       console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
     });
-    
   }
 
   upload() {
@@ -233,7 +245,7 @@ class RecordPractice extends React.Component {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 640, 360);
-    console.log('draw!');
+    // console.log('draw!');
     // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
     // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
