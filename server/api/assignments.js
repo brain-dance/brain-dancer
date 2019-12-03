@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Assignment, Routine, Team} = require('../db/models');
+const {Assignment, Routine, Team, User} = require('../db/models');
 module.exports = router;
 
 router.get('/', async (req, res, next) => {
@@ -13,6 +13,50 @@ router.get('/', async (req, res, next) => {
       });
       res.send(userAssignments);
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/', async (req, res, next) => {
+  try {
+    const {userId, routineId} = req.body;
+    const assignment = await Assignment.findOrCreate({
+      where: {userId, routineId},
+      defaults: {completed: false}
+    });
+
+    res.send(assignment);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put('/:id', async (req, res, next) => {
+  try {
+    await Assignment.update(
+      {completed: true},
+      {
+        where: {
+          userId: req.user.id,
+          routineId: req.params.id
+        }
+      }
+    );
+    res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/:id', async (req, res, next) => {
+  try {
+    await Assignment.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }

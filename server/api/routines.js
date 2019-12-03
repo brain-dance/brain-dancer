@@ -37,15 +37,15 @@ router.get('/:id', async (req, res, next) => {
         },
         {
           model: Practice
+        },
+        {
+          model: Assignment,
+          include: [
+            {
+              model: User
+            }
+          ]
         }
-        // {
-        //   model: Assignment,
-        //   include: [
-        //     {
-        //       model: User //this isn't quite right, need models
-        //     }
-        //   ]
-        // }
       ],
       order: [[{model: VideoFrame}, 'frameNumber']]
     });

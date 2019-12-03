@@ -13,7 +13,7 @@ import {
   Assignments
 } from './components';
 import {WatchRoutine} from './components/watchvideo';
-import {me} from './store';
+import {me, fetchUserTeams} from './store';
 import WireframeTest from './components/WireframeTest';
 
 /**
@@ -76,6 +76,7 @@ const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(me());
+      dispatch(fetchUserTeams());
     }
   };
 };

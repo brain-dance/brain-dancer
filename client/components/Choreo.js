@@ -1,12 +1,21 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter, Link} from 'react-router-dom';
 import {setSingleRoutine, getSingleRoutine} from '../store';
-import {Card, Segment, Header, Button, Icon, Divider} from 'semantic-ui-react';
+import {
+  Card,
+  Segment,
+  Header,
+  Button,
+  Icon,
+  Divider,
+  Modal
+} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import 'webrtc-adapter';
 import {stopWebcam} from '../../frontUtils/workarounds';
+import AssignRoutine from './AssignRoutine';
 
 const Choreo = props => {
   const routineId = props.match.params.routineId;
@@ -21,7 +30,10 @@ const Choreo = props => {
 
   const playback = useRef(null);
   let playbackPlayer;
+  let members = [];
+  let role;
 
+  //set up video
   useEffect(() => {
     playbackPlayer = videojs(
       playback.current,
@@ -44,8 +56,22 @@ const Choreo = props => {
     };
   }, []);
 
+  //set up assignment modal
+  const [modalOpen, setModal] = useState(false);
+
+  if (teamInfo.length > 0 && routine.teamId) {
+    members = teamInfo.find(team => team.id === routine.teamId).members;
+    role = teamInfo.find(team => team.id === routine.teamId).role;
+  }
   return (
     <Segment id="choreo">
+      <div>
+        <Modal open={modalOpen} dimmer="inverted">
+          <Modal.Content>
+            <AssignRoutine setModal={setModal} members={members} />
+          </Modal.Content>
+        </Modal>
+      </div>
       <Header as="h2">
         <Button color="blue" as={Link} to={`/team/${teamId}`} floated="left">
           <Icon name="backward" /> Back to Team
@@ -60,6 +86,12 @@ const Choreo = props => {
           <Icon name="add" />
           <Icon name="record" />
         </Button>
+        {role === 'choreographer' && (
+          <Button color="blue" onClick={() => setModal(true)} floated="right">
+            <Icon name="add" />
+            <Icon name="user plus" />
+          </Button>
+        )}
         {/* )} */}
       </Header>
       <Divider />
