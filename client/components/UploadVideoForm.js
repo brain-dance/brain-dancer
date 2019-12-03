@@ -34,10 +34,9 @@ const UploadVideoForm = props => {
     //add assigned practices (submitted by dancers) upon upload
     if (isAssignedPractice) {
       let routineId = +props.match.params.routineId;
-      submitAssignmentThunk(blob, routineId, userId);
+      dispatch(submitAssignmentThunk(blob, routineId, userId));
     } else {
       //add routines submitted by choreographers
-      console.log('Uploading routine ... from if block');
       addRoutine(blob, title, teamId, userId, props.calibration);
     }
   };

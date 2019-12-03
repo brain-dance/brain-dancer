@@ -21,9 +21,21 @@ export const fetchAssignments = () => async dispatch => {
   dispatch(getAssignments(data));
 };
 
-export const completeAssignment = () => async dispatch => {
+export const submitAssignmentThunk = (
+  blob,
+  routineId,
+  userId
+) => async dispatch => {
   console.log('MADE IT TO THIS THUNK!');
-  const {data} = await axios.post('/api/assignments/:routineId');
+  console.log('TCL: userId', userId);
+  console.log('TCL: routineId', routineId);
+  console.log('TCL: blob', blob);
+
+  const {data} = await axios.post('/api/assignments/:routineId', {
+    assignment: blob,
+    routineId: routineId,
+    userId: userId
+  });
   console.log('TCL: data', data);
   dispatch(submitAssignment(data));
 };
