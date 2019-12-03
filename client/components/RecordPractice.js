@@ -34,39 +34,28 @@ console.log("TCC: ", scoringUtils)
 const tGS={};
 tGS.LTU=-Infinity;
 tGS.worker = new MyWorker();
-tGS.worker.postMessage({resolution: {width: 320, height: 240}});
+tGS.worker.postMessage({resolution: {width: 300, height: 150}});
 tGS.messages=[];
 tGS.recording=true;
 tGS.worker.onmessage = event => {
   console.log("Message received from worker: ", event);
-  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, event.data.data/*should be cws, but scope issue*/, {x: 320, y:180},-1, 1000);
+  tGS.allProcessedFrames=scoringUtils.parseForReplay(event.data.data, tGS.routineFrames||event.data.data/*should be cws, but scope issue*/, {x: 150, y:75},-1, 1000, (num)=>{tGS.score=num});
   const video=document.querySelector('#video_html5_api');
   video.addEventListener('play', ()=>{
-    console.log("IS PLAY EVENT OCCURRING?");
+  
     tGS.replayStart=Date.now()});
   
   video.addEventListener('timeupdate', (event)=>{
-    //console.log("ARE WE PRESENT?");
+    
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
-        //this.setState({LTU: this.player.currentTimestamp});
-        
-        //console.log(timeChangeCallback);
-        console.log("Start time is", tGS.replayStart)
-        scoringUtils.timeChangeCallback(Date.now()-tGS.replayStart, tGS.allProcessedFrames, ctx, 640, 360, 1000, tGS.LTU)
+         console.log("Start time is", tGS.replayStart)
+        scoringUtils.timeChangeCallback(Date.now()-tGS.replayStart, tGS.allProcessedFrames, ctx, 300, 150, 1000, tGS.LTU)
         tGS.LTU=Date.now()-tGS.replayStart;
   })
-  /*const canvas = document.querySelector('#skeleton');
-  const ctx = canvas.getContext('2d');
-  console.log('got message', event.data);
-  tGS.messages.push(event.data);
-  //drawSkeleton(event.data.keypoints, 0, ctx);
-  ctx.clearRect(0, 0, 360, 240);
-  drawSkeleton(event.data.keypoints, 0, ctx, 0.4);
-  drawKeypoints(event.data.keypoints, 0, ctx, 0.4);*/
+  
 };
 
-// const workerCanv = document.getElementById('skeleton');
 
 
 const workerCanv = document.createElement('canvas');
@@ -76,7 +65,7 @@ const wcContext = workerCanv.getContext('2d');
 tGS.sendFrame = (video, timestamp) => {
   wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
   wcContext.drawImage(video, 0, 0);
-  //console.log(workerCanv.toDataURL());
+  
   tGS.worker.postMessage({
     image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
      timestamp: timestamp
@@ -98,9 +87,9 @@ class RecordPractice extends React.Component {
       modalOpen: true,
       cameraCanvas: '',
       context: '',
-     // recording: true,
+     
       worker: null,
-      //allProcessedFrames: [],
+      
       LTU: 0
     };
 
@@ -154,7 +143,6 @@ class RecordPractice extends React.Component {
       cameraCanvas: temp1,
       context: temp2
     });
-    // this.setState({context: this.state.cameraCanvas.getContext('2d')});
 
     // error handling
     this.player.on('deviceError', function() {
@@ -177,16 +165,9 @@ class RecordPractice extends React.Component {
       console.log('started recording!');
     });
 
-    // this.player.on('progressRecord', function() {
-    //   console.log('currently recording', this.player.record().getDuration());
-    // });
-
     this.player.on('timestamp', function(evt) {
       tGS.sendFrame(document.querySelector('#video_html5_api'), this.currentTimestamp);
     });
-    this.player.on('timeupdate', ()=>{
-      console.log("THIS.PLAYER.TIMEUPDATE");
-    })
     // user completed recording and stream is available
     this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
@@ -199,13 +180,18 @@ class RecordPractice extends React.Component {
     });
     
   }
-
+  componentDidUpdate(){
+    if(this.props.routineFrames){
+      tGS.routineFrames=this.props.routineFrames;
+    }
+  }
   upload() {
     this.props.addPractice(
       this.recordedData,
       this.state.title,
       this.routineId,
-      this.props.userId
+      this.props.userId,
+      tGS.score
     );
 
     this.setState({...this.state, visible: true});
@@ -224,7 +210,7 @@ class RecordPractice extends React.Component {
   }
 
   playboth() {
-    console.log('hi');
+   
     this.player.play();
     this.playbackPlayer.play();
   }

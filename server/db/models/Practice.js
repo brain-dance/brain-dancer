@@ -12,7 +12,8 @@ const Practice = db.define('practice', {
   },
   title: {
     type: Sequelize.STRING
-  }
+  },
+  score: {type: Sequelize.INTEGER}
 });
 
 module.exports = Practice;

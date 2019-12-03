@@ -12,7 +12,8 @@ const errCost=(wfOne, wfTwo)=>{
 
 
 }
-const minCostPairings=(playerwfs, choreowfs)=>{
+const costToScore=(errcost, framecount)=>Math.round(10000-((10000*errcost)/(2*Math.PI*framecount)))
+const minCostPairings=(playerwfs, choreowfs, callback)=>{
     //So, what do these wireframes actually look like?
     //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
     
@@ -68,7 +69,8 @@ const minCostPairings=(playerwfs, choreowfs)=>{
             pairs.push([playerwfs[i], choreowfs[currj]]);
         }
         console.log("Minimized cost pairings are:", {pairs, cost});
-        return {pairs, cost};
+        if(callback) callback(costToScore(cost, playerwfs.length));
+        return {pairs, cost: costToScore(cost, playerwfs.length)};
     }
 
     const rendermistakes=(playerwf, choreowf, errbound)=>{
@@ -98,7 +100,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
 
     }
 
-    const parseForReplay=(pwfs, cws, center, errbound, refreshrate)=>{
+    const parseForReplay=(pwfs, cws, center, errbound, refreshrate, callback)=>{
         //Start with an array of player wireframes and choreographer wireframes
         //Map to player wireframes paired with the mistake set of the choreo wireframes
         //Center in the canvas
@@ -112,7 +114,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         //Note - optimal implementation does all the transformations in a single map
         //No reason not to do that, except that this approach is easier to reason about
         //May be worth changing if we run into performance issues
-        const toReturn=new Map(minCostPairings(pwfs, cws).pairs.map(
+        const toReturn=new Map(minCostPairings(pwfs, cws, callback).pairs.map(
             pair=>{
             //    console.log("In pfr, first map statement, pair is: ", pair);
                 return [{...pair[0], pose: {...pair[0].pose, keypoints: translator(pair[0].pose.keypoints)}}, {...pair[1], pose: {...pair[1].pose, keypoints: translator(pair[1].pose.keypoints)}}]
