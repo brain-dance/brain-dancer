@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Grid, Modal} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
-import {fetchUserTeams, deleteTeamMemberThunk} from '../store';
+import {deleteTeamMemberThunk} from '../store';
 import AddTeamForm from './AddTeamForm';
 import AddMemberForm from './AddMemberForm';
 
@@ -16,10 +16,6 @@ export const Dashboard = props => {
   const [selectedTeam, setSelectedTeam] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchUserTeams());
-  }, []);
 
   const handleSelectTeam = team => {
     setSelectedTeam(team);
