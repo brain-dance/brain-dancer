@@ -30,7 +30,13 @@ const UploadVideoForm = props => {
   };
 
   const upload = () => {
-    addRoutine(blob, title, teamId, userId, props.calibration);
+    //WILL BE DIFFERENT BASED ON IF ISPRACTICE
+    if (isPractice) {
+      addRoutine(blob, title, teamId, userId, props.calibration);
+    } else {
+      //WHAT TO SUBMIT TO THUNK?
+      submitAssignment(assignment);
+    }
   };
 
   const handleUpload = () => {
