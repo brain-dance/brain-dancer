@@ -60,7 +60,7 @@ const minCostPairings=(playerwfs, choreowfs)=>{
         for(let i=0; i<costarr.length; i++){
             let currcost=Infinity;
             for(let j=currj; j<choreowfs.length; j++){
-                if(costarr[i][j]&&costarr[i][j]<currcost){
+                if(typeof costarr[i][j]=='number'&&costarr[i][j]<currcost){
                     currcost=costarr[i][j];
                     currj=j;
                 }
