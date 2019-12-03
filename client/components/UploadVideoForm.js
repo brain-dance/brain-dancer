@@ -2,7 +2,11 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Button, Form, Icon, Modal} from 'semantic-ui-react';
-import {addRoutineThunk} from '../store';
+import {
+  addRoutineThunk,
+  submitAssignmentThunk,
+  addPracticeThunk
+} from '../store';
 import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
@@ -14,7 +18,7 @@ const UploadVideoForm = props => {
   const [isClickedUpload, setIsClickedUpload] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const dispatch = useDispatch();
-  const isPractice = props.match.params.hasOwnProperty('routineId');
+  const isAssignedPractice = props.match.params.hasOwnProperty('routineId');
 
   const handleSelectVid = () => {
     setOpen(!open);
@@ -30,8 +34,22 @@ const UploadVideoForm = props => {
     dispatch(addRoutineThunk(blob, title, teamId, userId, props.calibration));
   };
 
+  const addPractice = () => {
+    let grade = 0;
+    dispatch(addPracticeThunk(blob, title, teamId, userId, grade));
+  };
+
   const upload = () => {
-    addRoutine(blob, title, teamId, userId, props.calibration);
+    //add assigned practices submitted by dancers; mark assignment complete
+    if (isAssignedPractice) {
+      let routineId = +props.match.params.routineId;
+      dispatch(submitAssignmentThunk(blob, routineId));
+      addPractice(blob, title, teamId, userId, props.calibration);
+    } else {
+      //add routines submitted by choreographers
+      //NOTE SETTING GRADE TO ZERO FOR NOW
+      addRoutine(blob, title, teamId, userId, 0);
+    }
   };
 
   const handleUpload = () => {
@@ -59,13 +77,13 @@ const UploadVideoForm = props => {
         <Icon name="window close" />
       </Button>
       <Modal.Header>
-        {!isPractice ? 'Submit Routine' : 'Submit Practice Video'}
+        {!isAssignedPractice ? 'Submit Routine' : 'Submit Practice Video'}
       </Modal.Header>
       {!isClickedUpload ? (
         <div>
           <Form>
             <Form.Field>
-              {isPractice ? (
+              {isAssignedPractice ? (
                 <label>Give your practice a title.</label>
               ) : (
                 <label> Give your routine a title.</label>

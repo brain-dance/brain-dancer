@@ -13,12 +13,6 @@ const Navbar = ({handleClick, isLoggedIn}) => (
         <Menu.Item name="home" as={Link} to="/home">
           <Image src="/coreo.png" size="small" />
         </Menu.Item>
-        <Menu.Item name="recordRoutine" as={Link} to="/team/1/add">
-          <Icon name="record" /> Routine
-        </Menu.Item>
-        <Menu.Item name="recordPractice" as={Link} to="/team/1/routine/1/add">
-          <Icon name="record" /> Practice
-        </Menu.Item>
         <Menu.Item position="right" name="logout" onClick={handleClick}>
           Logout
         </Menu.Item>

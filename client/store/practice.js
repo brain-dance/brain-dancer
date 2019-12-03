@@ -22,7 +22,6 @@ const addPractice = practice => ({
 });
 
 // thunks
-
 export const addPracticeThunk = (
   recordedData,
   title,
@@ -43,6 +42,7 @@ export const addPracticeThunk = (
     const upload = await axios.post(serverUrl, formData);
     console.log('upload', upload);
     // Docs: https://cloudinary.com/documentation/upload_videos
+
     const newPractice = {
       url: upload.data.url,
       title,
@@ -51,8 +51,8 @@ export const addPracticeThunk = (
       grade
     };
 
+    //SETTING GRADE TO ZERO FOR NOW
     const {data} = await axios.post('/api/practices', newPractice);
-
     dispatch(addPractice(data));
   } catch (err) {
     console.log(err);

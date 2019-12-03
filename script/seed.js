@@ -119,6 +119,8 @@ const testCalibrations = [
   }
 ];
 
+const testAssignments = [{completed: true}, {completed: false}];
+
 //CREATE TEST USERS
 async function createTestUsers() {
   const seededUsers = await Promise.all(
@@ -134,6 +136,10 @@ async function createTestUsers() {
   );
 
   const seededPractice = await Practice.create(practiceVideo);
+
+  const seededAssignments = await Promise.all(
+    testAssignments.map(assignment => Assignment.create(assignment))
+  );
 
   const chickenRoutine = await Routine.create(chickenDance);
   const testRoutine = await Routine.create(testVideo);
@@ -228,15 +234,17 @@ async function createTestUsers() {
     teamId: 3
   });
 
+  let [finishedAssignment, pendingAssignment] = seededAssignments;
+
   //Video belongsTo User
   await chickenRoutine.setUser(choreographer);
   await seededPractice.setUser(dancer);
 
   //Assignment belongsTo User + belongsTo Routine; assign 2 routines to Fred Astaire, one of which is completed
-  await seededAssignmentDone.setRoutine(1);
-  await seededAssignmentDone.setUser(2);
-  await seededAssignmentUndone.setRoutine(2);
-  await seededAssignmentUndone.setUser(2);
+  await finishedAssignment.setRoutine(1);
+  await finishedAssignment.setUser(2);
+  await pendingAssignment.setRoutine(2);
+  await pendingAssignment.setUser(2);
 
   //Routine / Practice hasMany VideoFrames
   // let [
