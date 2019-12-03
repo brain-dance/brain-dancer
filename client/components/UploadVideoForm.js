@@ -2,7 +2,11 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Button, Form, Icon, Modal} from 'semantic-ui-react';
-import {addRoutineThunk, submitAssignmentThunk} from '../store';
+import {
+  addRoutineThunk,
+  submitAssignmentThunk,
+  addPracticeThunk
+} from '../store';
 import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
@@ -30,13 +34,16 @@ const UploadVideoForm = props => {
     dispatch(addRoutineThunk(blob, title, teamId, userId, props.calibration));
   };
 
+  const addPractice = () => {
+    dispatch(addPracticeThunk(blob, title, teamId, userId, props.calibration));
+  };
+
   const upload = () => {
-    //add assigned practices (submitted by dancers) upon upload
+    //add assigned practices submitted by dancers; mark assignment complete
     if (isAssignedPractice) {
       let routineId = +props.match.params.routineId;
       dispatch(submitAssignmentThunk(blob, routineId));
-      //ALSO NEEDS TO BE ADDED TO PRACTICE DB
-      //COPY *SOME* LOGIC RECORD PRACTICE CALIBRATION -> No longer uploading image; need that to be saved .... pass dataURL...
+      addPractice(blob, title, teamId, userId, props.calibration);
     } else {
       //add routines submitted by choreographers
       addRoutine(blob, title, teamId, userId, props.calibration);
