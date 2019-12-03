@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
-import {addPracticeThunk} from '../store';
+import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
 
 import videoJsOptions from '../../utils/videoJsOptions';
 
@@ -88,88 +88,91 @@ class RecordPractice extends React.Component {
   }
 
   componentDidMount() {
-    this.playbackPlayer = videojs(
-      this.playback,
-      {
-        controls: true,
-        width: 640,
-        height: 360,
-        playbackRates: [0.5, 1, 1.5, 2]
-      },
-      () => {
-        videojs.log('playback screen is live!');
-      }
-    );
-    this.player = videojs(this.videoNode, videoJsOptions, () => {
-      // print version information at startup
-      var msg =
-        'Using video.js ' +
-        videojs.VERSION +
-        ' with videojs-record ' +
-        videojs.getPluginVersion('record') +
-        ' and recordrtc ' +
-        RecordRTC.version;
-      videojs.log(msg);
-    });
+    this.props.fetchRoutine(this.routineId).then(() => {
+      this.playbackPlayer = videojs(
+        this.playback,
+        {
+          controls: true,
+          width: 640,
+          height: 360,
+          playbackRates: [0.5, 1, 1.5, 2]
+        },
+        () => {
+          videojs.log('playback screen is live!');
+        }
+      );
+      this.player = videojs(this.videoNode, videoJsOptions, () => {
+        // print version information at startup
+        var msg =
+          'Using video.js ' +
+          videojs.VERSION +
+          ' with videojs-record ' +
+          videojs.getPluginVersion('record') +
+          ' and recordrtc ' +
+          RecordRTC.version;
+        videojs.log(msg);
+      });
 
-    const temp1 = document.querySelector('.vjs-record-canvas canvas');
-    const temp2 = temp1.getContext('2d');
-    // yeah... it's the canvas
-    this.setState({
-      cameraCanvas: temp1,
-      context: temp2
-    });
-    // this.setState({context: this.state.cameraCanvas.getContext('2d')});
+      const temp1 = document.querySelector('.vjs-record-canvas canvas');
+      const temp2 = temp1.getContext('2d');
+      // yeah... it's the canvas
+      this.setState({
+        cameraCanvas: temp1,
+        context: temp2
+      });
+      // this.setState({context: this.state.cameraCanvas.getContext('2d')});
 
-    // error handling
-    this.player.on('deviceError', function() {
-      console.warn('device error:', this.player.deviceErrorCode);
-    });
+      // error handling
+      this.player.on('deviceError', function() {
+        console.warn('device error:', this.player.deviceErrorCode);
+      });
 
-    this.player.on('error', (element, error) => {
-      console.error(error);
-    });
+      this.player.on('error', (element, error) => {
+        console.error(error);
+      });
 
-    // device is ready
-    this.player.on('deviceReady', () => {
-      console.log('device is ready!');
-    });
+      // device is ready
+      this.player.on('deviceReady', () => {
+        console.log('device is ready!');
+      });
 
-    // user clicked the record button and started recording
-    this.player.on('startRecord', () => {
-      console.log('started recording!');
-    });
+      // user clicked the record button and started recording
+      this.player.on('startRecord', () => {
+        console.log('started recording!');
+      });
 
-    // this.player.on('progressRecord', function() {
-    //   console.log('currently recording', this.player.record().getDuration());
-    // });
-
-    this.player.on('timestamp', function() {
-      // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
-      console.log('timestamp!');
-      sendFrame(document.querySelector('#video_html5_api'));
-      // worker.postMessage({
-      //   image: document
-      //     .querySelector('.vjs-record-canvas canvas')
-      //     .getContext('2d')
-      //     .getImageData(0, 0, 320, 240)
+      // this.player.on('progressRecord', function() {
+      //   console.log('currently recording', this.player.record().getDuration());
       // });
-    });
 
-    // user completed recording and stream is available
-    this.player.on('finishRecord', () => {
-      // the blob object contains the recorded data that
-      // can be downloaded by the user, stored on server etc.
-      console.log('finished recording: ', this.player.recordedData);
-      this.recordedData = this.player.recordedData;
-    });
-    // return player.dispose();
+      this.player.on('timestamp', function() {
+        // console.log('currently recording', this.player.currentTimestamp); // *** timestamp doesn't show up but the interval seems correct
+        console.log('timestamp!');
+        sendFrame(document.querySelector('#video_html5_api'));
+        // worker.postMessage({
+        //   image: document
+        //     .querySelector('.vjs-record-canvas canvas')
+        //     .getContext('2d')
+        //     .getImageData(0, 0, 320, 240)
+        // });
+      });
 
-    this.player.record().getDevice();
+      // user completed recording and stream is available
+      this.player.on('finishRecord', () => {
+        // the blob object contains the recorded data that
+        // can be downloaded by the user, stored on server etc.
+        console.log('finished recording: ', this.player.recordedData);
+        this.recordedData = this.player.recordedData;
+      });
+      // return player.dispose();
+
+      this.player.record().getDevice();
+    });
   }
 
   componentWillUnmount() {
     this.player.dispose();
+    this.props.clearRoutine();
   }
 
   upload() {
@@ -296,6 +299,12 @@ const mapDispatchToProps = dispatch => {
   return {
     addPractice(recordedData, title, teamId, userId) {
       dispatch(addPracticeThunk(recordedData, title, teamId, userId));
+    },
+    async fetchRoutine(routineId) {
+      await dispatch(getSingleRoutine(routineId));
+    },
+    clearRoutine() {
+      dispatch(setSingleRoutine({}));
     }
   };
 };
