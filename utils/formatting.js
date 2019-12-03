@@ -34,7 +34,6 @@ const {angle, getMidpoint} = require('./geometry');
 })()
 */
 
-
 const labelPose = pose => {
   const labeled = pose.keypoints.reduce((all, point) => {
     all[point.part] = point.position;
@@ -49,6 +48,19 @@ const labelPose = pose => {
 
   return labeled;
 };
+
+const unlabelPose = labeledPose => {
+  return {
+    keypoints: Object.keys(labeledPose).map(part => {
+      if (part === 'head') return {part: 'nose', position: labelPose[part]};
+      return {
+        part,
+        position: labeledPose[part]
+      };
+    })
+  };
+};
+
 //Note - functions in scoring.js depend on these label names.  If label names change, be sure to update scoring as well.
 const ANGLES = {
   leftKnee: {
@@ -196,10 +208,11 @@ const angleDifferences = (pose, targetPose) => {
 };
 
 //module.exports.getPose=getPose;
-module.exports.labelPose=labelPose;
-module.exports.getAngles=getAngles;
-module.exports.angleDifferences=angleDifferences;
-module.exports.ANGLES=ANGLES;
+module.exports.labelPose = labelPose;
+module.exports.getAngles = getAngles;
+module.exports.angleDifferences = angleDifferences;
+module.exports.ANGLES = ANGLES;
+module.exports.unlabelPose = unlabelPose;
 /*module.exports = {
   getPose,
   canvasify,
