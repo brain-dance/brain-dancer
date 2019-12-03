@@ -6,37 +6,41 @@ module.exports = router;
 
 //get all teams a user belongs to
 router.get('/', async (req, res, next) => {
-  try {
-    let {id} = req.user;
+  if (req.user) {
+    try {
+      let {id} = req.user;
 
-    //get user's teams
-    const teamIds = await User.findByPk(id, {
-      include: {model: Team}
-    }).then(user => user.teams.map(team => team.id));
+      //get user's teams
+      const teamIds = await User.findByPk(id, {
+        include: {model: Team}
+      }).then(user => user.teams.map(team => team.id));
 
-    //load teams with eager-loaded data
-    let allTeams = await Team.findAll({
-      include: [{model: User}, {model: Routine}],
-      where: {
-        id: teamIds
-      }
-    });
+      //load teams with eager-loaded data
+      let allTeams = await Team.findAll({
+        include: [{model: User}, {model: Routine}],
+        where: {
+          id: teamIds
+        }
+      });
 
-    //unwrap sequelize object
-    allTeams = allTeams.map(team => team.toJSON());
+      //unwrap sequelize object
+      allTeams = allTeams.map(team => team.toJSON());
 
-    //format and return teams
-    res.json(
-      allTeams.map(team => {
-        const thisUser = team.users.find(user => user.id === +id);
-        team.members = team.users;
-        delete team.users;
-        team.role = thisUser.userteams.role;
-        return team;
-      })
-    );
-  } catch (err) {
-    next(err);
+      //format and return teams
+      res.json(
+        allTeams.map(team => {
+          const thisUser = team.users.find(user => user.id === +id);
+          team.members = team.users;
+          delete team.users;
+          team.role = thisUser.userteams.role;
+          return team;
+        })
+      );
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    res.end();
   }
 });
 
