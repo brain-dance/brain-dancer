@@ -8,8 +8,8 @@ const {getMidpoint, distance, angle, extrapolate} = require('./geometry');
 
 const deepCopy = obj => {
   //console.log(obj.prototype);
-  if(Array.isArray(obj)){
-    return obj.map(el=>typeof el=='object' ? deepCopy(el) : el)
+  if (Array.isArray(obj)) {
+    return obj.map(el => (typeof el == 'object' ? deepCopy(el) : el));
   }
   const toReturn = Object.assign(
     Object.create(Object.getPrototypeOf(obj)),
@@ -173,12 +173,12 @@ const scaler = (source, target, calibration) => {
   const scaled = {};
 
   //find new waist points (uses known waist midpoint and scaled waist length)
-  scaled.rightHip = {
+  scaled.leftHip = {
     x: targetPelvis.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
     y: targetPelvis.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
-  scaled.leftHip = {
+  scaled.rightHip = {
     x: targetPelvis.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
     y: targetPelvis.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
