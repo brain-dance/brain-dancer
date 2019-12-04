@@ -39,7 +39,7 @@ export const TeamList = props => {
       <p>No team? Join a team to get dancing!</p>
     </div>
   ) : (
-    <div>
+    <div id="team-names">
       {teams.map(team => {
         return (
           <Menu.Item
@@ -50,10 +50,10 @@ export const TeamList = props => {
             as={Link}
             to={`/team/${team.id}`}
           >
-            <Image
+            {/* <Image
               avatar
               src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
-            />
+            /> */}
             {team.name}
           </Menu.Item>
         );

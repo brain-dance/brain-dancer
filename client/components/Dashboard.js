@@ -3,9 +3,18 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Grid, Modal} from 'semantic-ui-react';
 import DashSidebar from './Dash_Sidebar';
 import Team from './Team';
+import {
+  RecordPractice,
+  RecordRoutine,
+  Choreo,
+  Assignments,
+  WatchRoutine
+} from './index';
 import {deleteTeamMemberThunk} from '../store';
 import AddTeamForm from './AddTeamForm';
 import AddMemberForm from './AddMemberForm';
+
+import {Route, Switch} from 'react-router-dom';
 
 /**
  * COMPONENT
@@ -34,8 +43,8 @@ export const Dashboard = props => {
     return <h3>Unexpected error! You do not exist!</h3>;
   } else {
     return (
-      <Grid>
-        <Grid.Column width={5}>
+      <Grid id="container">
+        <Grid.Column width={3} id="sidebar-container">
           <DashSidebar
             teams={teams}
             selectedTeam={selectedTeam}
@@ -44,26 +53,39 @@ export const Dashboard = props => {
             setModalOpen={setModalOpen}
           />
         </Grid.Column>
-        <Grid.Column width={11}>
-          <div>
-            <Modal dimmer="inverted" open={modalOpen}>
-              <Modal.Content>
-                <AddTeamForm setModalOpen={setModalOpen} />
-              </Modal.Content>
-            </Modal>
-          </div>
-          <div>
-            <Modal dimmer="inverted" open={memberModalOpen}>
-              <Modal.Content>
-                <AddMemberForm setMemberModalOpen={setMemberModalOpen} />
-              </Modal.Content>
-            </Modal>
-          </div>
-          <Team
-            team={selectedTeam}
-            setMemberModalOpen={setMemberModalOpen}
-            handleUpdateTeam={handleUpdateTeam}
-          />
+        <Grid.Column width={13}>
+          <Modal dimmer="inverted" open={modalOpen}>
+            <Modal.Content>
+              <AddTeamForm setModalOpen={setModalOpen} />
+            </Modal.Content>
+          </Modal>
+
+          <Modal dimmer="inverted" open={memberModalOpen}>
+            <Modal.Content>
+              <AddMemberForm setMemberModalOpen={setMemberModalOpen} />
+            </Modal.Content>
+          </Modal>
+
+          <Switch>
+            <Route path="/watch/routines/:id" component={WatchRoutine} />
+            <Route
+              path="/team/:teamId/routine/:routineId/add"
+              component={RecordPractice}
+            />
+            <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
+            <Route path="/team/:teamId/add" component={RecordRoutine} />
+            <Route exact path="/my-assignments" component={Assignments} />
+            <Route
+              path="/team/:teamId"
+              render={() => (
+                <Team
+                  setMemberModalOpen={setMemberModalOpen}
+                  handleUpdateTeam={handleUpdateTeam}
+                />
+              )}
+            />
+            <Route component={Assignments} />
+          </Switch>
         </Grid.Column>
       </Grid>
     );
