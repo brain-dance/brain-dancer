@@ -37,8 +37,7 @@ const UploadVideoForm = props => {
     dispatch(addRoutineThunk(blob, title, teamId, userId, props.calibration));
   };
 
-  const addPractice = () => {
-    let grade = 0;
+  const addPractice = grade => {
     dispatch(
       addPracticeThunk(blob, title, teamId, userId, props.calibration, grade)
     );
@@ -49,8 +48,9 @@ const UploadVideoForm = props => {
     if (isAssignedPractice) {
       let routineId = +props.match.params.routineId;
       dispatch(submitAssignmentThunk(routineId));
-      //NOTE SETTING GRADE TO ZERO FOR NOW
-      addPractice();
+      //NOTE SETTING GRADE TO ZERO FOR NOW -- will probably hand down grade from props/recordPractice via web worker
+      let grade = 0;
+      addPractice(grade);
     } else {
       //add routines submitted by choreographers
       addRoutine();

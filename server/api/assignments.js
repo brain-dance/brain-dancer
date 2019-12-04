@@ -35,15 +35,15 @@ router.post('/', async (req, res, next) => {
 router.put('/:routineId', async (req, res, next) => {
   try {
     const {id} = req.user;
-    await Assignment.update(
-      {completed: true},
-      {
-        where: {
-          userId: id,
-          routineId: req.params.routineId
-        }
+    // checks if assignment exists - if not, one is created and then completed
+    const userAssignment = await Assignment.findOrCreate({
+      where: {
+        userId: id,
+        routineId: req.params.routineId
       }
-    );
+    });
+
+    await userAssignment.update({completed: true});
 
     const updatedAssignment = await Assignment.findOne({
       where: {userId: id, routineId: req.params.routineId}
