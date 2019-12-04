@@ -24,13 +24,16 @@ const generateWireframes = async videoPath => {
 
   const frameList = await glob.sync('./utils/frame*');
 
-  const wireframes = await Promise.all(
-    frameList.map(frame =>
-      canvasify(frame).then(canvas => net.estimateSinglePose(canvas), {
-        flipHorizontal: true
-      })
-    )
-  );
+  const wireframes = [];
+
+  let i = 0;
+  while (i < frameList.length) {
+    canvasify(frameList[i]).then(canvas => {
+      net.estimateSinglePose(canvas, {flipHorizontal: true}).then(wireframe => {
+        wireframes.push(wireframe);
+      });
+    });
+  }
 
   removeFrames(frameList);
 
