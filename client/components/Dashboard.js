@@ -22,25 +22,28 @@ import {Route, Switch, useLocation} from 'react-router-dom';
 export const Dashboard = props => {
   const teams = useSelector(state => state.teams);
   const dispatch = useDispatch();
-  const [selectedTeam, setSelectedTeam] = useState([]);
+  const [selectedTeamId, setSelectedTeamId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
 
-  const handleSelectTeam = team => {
-    setSelectedTeam(team);
-  };
-
   const handleUpdateTeam = (teamId, memberId) => {
     dispatch(deleteTeamMemberThunk(teamId, memberId));
+    const selectedTeam = teams.find(team => team.id === teamId);
     const updatedSelectedTeam = {
       ...selectedTeam,
       members: selectedTeam.members.filter(member => member.id !== memberId)
     };
-    setSelectedTeam(updatedSelectedTeam);
+    setSelectedTeamId(updatedSelectedTeam.id);
   };
-  console.log(useLocation());
+
+  const location = useLocation().pathname.split('/');
   useEffect(() => {
-    // setSelectedTeam(teams.find(team => team.id === 1));
+    if (
+      typeof +location[location.length - 1] === 'number' &&
+      location[location.length - 2] === 'team'
+    ) {
+      setSelectedTeamId(+location[2]);
+    }
   }, []);
 
   if (!teams || !teams.length) {
@@ -51,9 +54,8 @@ export const Dashboard = props => {
         <Grid.Column width={3} id="sidebar-container">
           <DashSidebar
             teams={teams}
-            selectedTeam={selectedTeam}
-            setSelectedTeam={setSelectedTeam}
-            handleSelectTeam={handleSelectTeam}
+            selectedTeamId={selectedTeamId}
+            setSelectedTeamId={setSelectedTeamId}
             setModalOpen={setModalOpen}
           />
         </Grid.Column>

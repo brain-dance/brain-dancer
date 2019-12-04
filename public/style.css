@@ -137,6 +137,11 @@ body,
   position: fixed;
 }
 
+#sidebar .item {
+  font-size: 17px !important;
+  padding: 1.5rem;
+}
+
 #sidebar > div {
   padding: 0px;
 }
@@ -144,6 +149,10 @@ body,
 #team-names {
   font-size: 20px;
   padding: 0px;
+}
+
+#add-team {
+  padding: 0.5em;
 }
 
 #record-button {

@@ -3,21 +3,10 @@ import {Link, withRouter} from 'react-router-dom';
 import {Image, Menu} from 'semantic-ui-react';
 
 export const TeamList = props => {
-  const {teams, handleSelectTeam, selectedTeam} = props;
-  const [activeTeamId, setActiveTeamId] = useState(0);
+  const {teams, setSelectedTeamId, selectedTeamId} = props;
 
-  useEffect(() => {
-    //if no team selected yet, but URL includes teamId
-
-    //if /dashboard + no teams selected yet, first team shows up by default
-    setActiveTeamId(selectedTeam.id);
-    handleSelectTeam(selectedTeam);
-  }, []);
-
-  const handleItemClick = (e, {name}) => {
-    setActiveTeamId(name);
-    const selected = teams.find(team => team.name === name);
-    handleSelectTeam(selected);
+  const handleItemClick = teamId => {
+    setSelectedTeamId(teamId);
   };
 
   return !teams.length ? (
@@ -35,9 +24,8 @@ export const TeamList = props => {
         return (
           <Menu.Item
             key={team.id}
-            name={team.id}
-            active={+activeTeamId === team.id}
-            onClick={handleItemClick}
+            active={+selectedTeamId === team.id}
+            onClick={() => handleItemClick(team.id)}
             as={Link}
             to={`/team/${team.id}`}
           >
@@ -49,4 +37,4 @@ export const TeamList = props => {
   );
 };
 
-export default withRouter(TeamList);
+export default TeamList;
