@@ -79,6 +79,7 @@ body,
   top: 0;
   left: 0;
   width: 100%;
+  height: 100%;
   padding: 0px !important;
 }
 
@@ -95,6 +96,7 @@ body,
 
 #container {
   background-color: #fff;
+  margin: 0px;
   margin-top: 75px;
   padding-top: 0px;
   height: 100%;
@@ -122,22 +124,26 @@ body,
 }
 
 #sidebar-container {
-  width: 100%;
   padding: 0px;
 }
 
 #sidebar {
   margin-top: 25px;
   height: 100%;
-  width: inherit;
+  width: 18.75%;
   border: none;
   box-shadow: none;
-  padding: 0px !important;
+  padding: 0 !important;
   position: fixed;
+}
+
+#sidebar > div {
+  padding: 0px;
 }
 
 #team-names {
   font-size: 20px;
+  padding: 0px;
 }
 
 #record-button {

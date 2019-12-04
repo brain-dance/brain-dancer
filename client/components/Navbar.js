@@ -8,7 +8,7 @@ import {Menu, Header, Icon, Image} from 'semantic-ui-react';
 const Navbar = ({handleClick, isLoggedIn}) => (
   <div id="navbar">
     {isLoggedIn ? (
-      <Menu secondary>
+      <Menu secondary className="item-container">
         {/* The Menubar will show these links after you log in */}
         <Menu.Item name="home" as={Link} to="/home">
           <Image src="/coreo.png" size="small" />

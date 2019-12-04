@@ -53,7 +53,7 @@ export const Dashboard = props => {
             setModalOpen={setModalOpen}
           />
         </Grid.Column>
-        <Grid.Column width={13}>
+        <Grid.Column width={13} id="view-container">
           <Modal dimmer="inverted" open={modalOpen}>
             <Modal.Content>
               <AddTeamForm setModalOpen={setModalOpen} />

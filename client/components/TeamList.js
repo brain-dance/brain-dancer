@@ -50,10 +50,6 @@ export const TeamList = props => {
             as={Link}
             to={`/team/${team.id}`}
           >
-            {/* <Image
-              avatar
-              src="https://cnjballet.com/files/2019/05/ballerina_3502865_1280.png"
-            /> */}
             {team.name}
           </Menu.Item>
         );
