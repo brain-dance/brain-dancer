@@ -42,7 +42,10 @@ class RecordPractice extends React.Component {
       //worker: null,
       //LTU: 0,
       recording: [],
-      score: 0
+      selected: '',
+      attempts: {},
+      //score: 0,
+     // allProcessedFrames: []
     };
 
     this.teamId = props.match.params.teamId;
@@ -53,54 +56,56 @@ class RecordPractice extends React.Component {
     this.drawBoth = this.drawBoth.bind(this);
   }
   componentDidMount() {
-    this.worker = (thisCont => {
-      let LTU = Infinity;
-      let replayStart = 0;
-      const worker = new MyWorker();
-      worker.postMessage({resolution: {width: 1260, height: 720}});
-      // tGS.messages = [];
+    this.worker=((thisCont)=>{
+      let LTU=Infinity;
+      let replayStart=0;
+    const worker = new MyWorker();
+    worker.postMessage({resolution: {width: 1260, height: 720}});
+    // tGS.messages = [];
+    
+    worker.onmessage = event => {
+      console.log('Message received from worker: ', event);
+      const toSet={};
+      toSet.allProcessedFrames=scoringUtils.parseForReplay(
+        event.data.data,
+        thisCont.props.routineFrames || event.data.data,
+        {x: 415, y: 200}, //midpoint
+        -1,
+        200,
+        num => {
+          //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
+          toSet.score=num;
+        },
+        event.data.calibration,
+        thisCont.props.routine.calibrationframe.pose
+      );
+      thisCont.setState({attempts:{...thisCont.state.attempts, [event.data.name]:toSet}})
+      const video = document.querySelector('#video_html5_api');
+      video.addEventListener('play', () => {
 
-      worker.onmessage = event => {
-        console.log('Message received from worker: ', event);
-        thisCont.setState({
-          allProcessedFrames: scoringUtils.parseForReplay(
-            event.data.data,
-            thisCont.props.routineFrames || event.data.data,
-            {x: 415, y: 200}, //midpoint
-            -1,
-            200,
-            num => {
-              thisCont.setState({score: num});
-            },
-            event.data.calibration,
-            thisCont.props.routine.calibrationframe.pose
-          )
-        });
-        const video = document.querySelector('#video_html5_api');
-        video.addEventListener('play', () => {
-          //console.log("HELLO");
-          replayStart = Date.now();
-        });
-
-        video.addEventListener('timeupdate', event => {
-          const canvas = document.querySelector('#skeleton');
-          const ctx = canvas.getContext('2d');
-          // console.log('Start time is', tGS.replayStart);
-          // console.log("In time update event, thisCont is: ", thisCont);
-          scoringUtils.timeChangeCallback(
-            Date.now() - replayStart,
-            thisCont.state.allProcessedFrames,
-            ctx,
-            630,
-            360,
-            200,
-            LTU
-          );
-          LTU = Date.now() - replayStart;
-        });
-      };
-      return worker;
-    })(this);
+        //console.log("HELLO");
+        replayStart=Date.now();
+      });
+    
+      video.addEventListener('timeupdate', () => {
+        if(thisCont.state.selected==event.data.name){
+        const canvas = document.querySelector('#skeleton');
+        const ctx = canvas.getContext('2d');
+        // console.log('Start time is', tGS.replayStart);
+       // console.log("In time update event, thisCont is: ", thisCont);
+        scoringUtils.timeChangeCallback(
+          Date.now() - replayStart,
+          thisCont.state.attempts[event.data.name].allProcessedFrames,
+          ctx,
+          630,
+          360,
+          200,
+          LTU
+        );
+        LTU = Date.now() - replayStart;
+      }});
+    };
+    return worker;})(this)
     this.props.fetchRoutine(this.routineId).then(() => {
       this.playbackPlayer = videojs(
         this.playback,
@@ -150,7 +155,10 @@ class RecordPractice extends React.Component {
       });
 
       // user clicked the record button and started recording
+      
+      const forStart=((tC)=>{return ()=>tC.setState({selected: ''})})(this)
       this.player.on('startRecord', () => {
+        forStart();
         console.log('started recording!');
       });
 
@@ -185,17 +193,18 @@ class RecordPractice extends React.Component {
       });
 
       // user completed recording and stream is available
-      const forFinish = (worker => {
-        return () => {
-          worker.postMessage({type: 'finished'});
-        };
-      })(this.worker);
+      const forFinish=((worker, tC)=>{
+        return (name)=>{
+          worker.postMessage({type: 'finished', name});
+          tC.setState({selected: name})
+        }
+      })(this.worker, this)
       this.player.on('finishRecord', () => {
         // the blob object contains the recorded data that
         // can be downloaded by the user, stored on server etc.
-
-        // tGS.recording = false;
-        forFinish();
+       
+       // tGS.recording = false;
+        forFinish(this.player.recordedData.name);
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
         this.setState(state => {
