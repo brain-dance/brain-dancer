@@ -4,6 +4,7 @@ import {Header, Segment} from 'semantic-ui-react';
 
 const Routines = props => {
   const routines = props.routines || [];
+  const team = props.team;
 
   return (
     <Segment basic id="routines" color="orange">
@@ -16,7 +17,7 @@ const Routines = props => {
       ) : (
         <div>
           {routines.map(routine => (
-            <Routine key={routine.id} routine={routine} />
+            <Routine key={routine.id} routine={routine} team={team} />
           ))}
         </div>
       )}
