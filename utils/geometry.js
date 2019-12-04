@@ -12,7 +12,7 @@ const angle = (centerX, centerY, x2, y2, x3, y3) => {
   if (theta1 < 0) theta1 = 2 * Math.PI + theta1;
   if (theta2 < 0) theta2 = 2 * Math.PI + theta2;
 
-  return 2 * Math.PI - theta2 + theta1;
+  return theta2 - theta1;
 
   // return Math.acos(
   //   ((x2 - centerX) * (x3 - centerX) + (y2 - centerY) * (y3 - centerY)) /
