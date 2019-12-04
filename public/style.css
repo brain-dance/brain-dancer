@@ -52,13 +52,20 @@ body {
   border-radius: 5px;
 }
 
-#nav {
+#navbar {
   background-color: white;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  height: 75px;
   /* margin-bottom: 5rem; */
+}
+
+#sidebar {
+  margin-top: 75px;
+  padding: 0px;
+  position: fixed;
 }
 
 /* .top {
