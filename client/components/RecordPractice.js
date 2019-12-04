@@ -45,8 +45,7 @@ class RecordPractice extends React.Component {
       //worker: null,
       //LTU: 0,
       recording: [],
-      //JM - CHANGED SCORE TO GRADE; ASSUMING GRADE OBJECT WILL BE AVAILABLE
-      //Attempts will be an object of objects {blobName: {wireframes: [{}, {}, {}], grade: #}}
+      //JM - Attempts = obj of objs {blobName: {wireframes: [{}, {}, {}], grade: #}}
       attempts: {}
     };
 
@@ -75,8 +74,8 @@ class RecordPractice extends React.Component {
             -1,
             200,
             num => {
-              //JM CHANGED FROM {SCORE: NUM}; THIS MIGHT CHANGE WITH RB
-              thisCont.setState({attempts: {grade: num}});
+              //JM CHANGED FROM {SCORE: NUM}; THIS WILL PROBS CHANGE WITH RB
+              thisCont.setState({...attempts, {blobName: blob.name, wireframes: wireframes, grade: num});
             },
             event.data.calibration,
             thisCont.props.routine.calibrationframe.pose

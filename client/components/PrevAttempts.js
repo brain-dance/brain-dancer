@@ -3,7 +3,7 @@ import {Button, Card, Header, Icon} from 'semantic-ui-react';
 import UploadVideoForm from './UploadVideoForm';
 
 const PrevAttempts = props => {
-  let {recording, handleDelete, teamId, userId} = props;
+  let {recording, handleDelete, teamId, userId, attempts} = props;
   const [isSelected, setIsSelected] = useState({});
 
   const handleSelect = (e, {name}) => {
@@ -28,10 +28,14 @@ const PrevAttempts = props => {
       <Header as="h3">Recorded Attempts</Header>
       {recording.map(blob => {
         let blobSrc = URL.createObjectURL(blob);
+        let blobInfo = attempts[blob.name];
+        let {grade} = blobInfo;
+        console.log('TCL: grade', grade);
 
         return (
           <div className="vidCard" id="previous-attempt" key={blob.name}>
             <Card name={blob.name} onClick={handleSelect}>
+              <Card.Meta>{grade}</Card.Meta>
               <video id={blob.name} width="200" src={blobSrc} />
               <Button.Group>
                 <Button name={blob.name} icon onClick={handlePlay}>
