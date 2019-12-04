@@ -7,9 +7,11 @@ import {Segment, Header, Button, Icon, Sidebar} from 'semantic-ui-react';
 
 const Team = props => {
   const team = props.team;
+  // const myRole = team.role;
 
-  const myRole = team.role;
-  return (
+  return !team || !team.role ? (
+    <Segment color="orange">You are no longer on this team.</Segment>
+  ) : (
     <Sidebar.Pushable as={Segment}>
       <MembersSidebar
         members={team.members}
@@ -19,7 +21,7 @@ const Team = props => {
         <Segment raised id="team">
           <Header as="h1">
             {team.name}{' '}
-            {myRole === 'choreographer' && (
+            {team.role === 'choreographer' && (
               <Button.Group floated="right">
                 <Button
                   color="orange"
