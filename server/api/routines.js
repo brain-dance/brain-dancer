@@ -60,12 +60,14 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
+    const {url, title, teamId, userId} = req.body;
+
     // add row in Routines table
     const newRoutine = await Routine.create({
-      url: req.body.url,
-      title: req.body.title,
-      teamId: req.body.teamId,
-      userId: req.body.userId
+      url,
+      title,
+      teamId,
+      userId
     });
 
     res.json(newRoutine);

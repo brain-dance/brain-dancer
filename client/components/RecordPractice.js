@@ -1,32 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
-
-import videoJsOptions from '../../utils/videoJsOptions';
+import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
-
 import Calibrator from './Calibrator';
 import PrevAttempts from './PrevAttempts';
 
+import videoJsOptions from '../../utils/videoJsOptions';
+import scoringUtils from '../../utils/scoring';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-import scoringUtils from '../../utils/scoring';
 
 // console.log('TCC: ', scoringUtils);
 
 //const tGS = {};
 //tGS.LTU = -Infinity;
-
 
 class RecordPractice extends React.Component {
   constructor(props) {
@@ -57,52 +53,54 @@ class RecordPractice extends React.Component {
     this.drawBoth = this.drawBoth.bind(this);
   }
   componentDidMount() {
-    this.worker=((thisCont)=>{
-      let LTU=Infinity;
-      let replayStart=0;
-    const worker = new MyWorker();
-    worker.postMessage({resolution: {width: 1260, height: 720}});
-    // tGS.messages = [];
+    this.worker = (thisCont => {
+      let LTU = Infinity;
+      let replayStart = 0;
+      const worker = new MyWorker();
+      worker.postMessage({resolution: {width: 1260, height: 720}});
+      // tGS.messages = [];
 
-    worker.onmessage = event => {
-      console.log('Message received from worker: ', event);
-      thisCont.setState({allProcessedFrames : scoringUtils.parseForReplay(
-        event.data.data,
-        thisCont.props.routineFrames || event.data.data,
-        {x: 415, y: 200}, //midpoint
-        -1,
-        200,
-        num => {
-          thisCont.setState({score:num});
-        },
-        event.data.calibration,
-        thisCont.props.routine.calibrationframe.pose
-      )});
-      const video = document.querySelector('#video_html5_api');
-      video.addEventListener('play', () => {
+      worker.onmessage = event => {
+        console.log('Message received from worker: ', event);
+        thisCont.setState({
+          allProcessedFrames: scoringUtils.parseForReplay(
+            event.data.data,
+            thisCont.props.routineFrames || event.data.data,
+            {x: 415, y: 200}, //midpoint
+            -1,
+            200,
+            num => {
+              thisCont.setState({score: num});
+            },
+            event.data.calibration,
+            thisCont.props.routine.calibrationframe.pose
+          )
+        });
+        const video = document.querySelector('#video_html5_api');
+        video.addEventListener('play', () => {
+          //console.log("HELLO");
+          replayStart = Date.now();
+        });
 
-        //console.log("HELLO");
-        replayStart=Date.now();
-      });
-
-      video.addEventListener('timeupdate', event => {
-        const canvas = document.querySelector('#skeleton');
-        const ctx = canvas.getContext('2d');
-        // console.log('Start time is', tGS.replayStart);
-       // console.log("In time update event, thisCont is: ", thisCont);
-        scoringUtils.timeChangeCallback(
-          Date.now() - replayStart,
-          thisCont.state.allProcessedFrames,
-          ctx,
-          630,
-          360,
-          200,
-          LTU
-        );
-        LTU = Date.now() - replayStart;
-      });
-    };
-    return worker;})(this)
+        video.addEventListener('timeupdate', event => {
+          const canvas = document.querySelector('#skeleton');
+          const ctx = canvas.getContext('2d');
+          // console.log('Start time is', tGS.replayStart);
+          // console.log("In time update event, thisCont is: ", thisCont);
+          scoringUtils.timeChangeCallback(
+            Date.now() - replayStart,
+            thisCont.state.allProcessedFrames,
+            ctx,
+            630,
+            360,
+            200,
+            LTU
+          );
+          LTU = Date.now() - replayStart;
+        });
+      };
+      return worker;
+    })(this);
     this.props.fetchRoutine(this.routineId).then(() => {
       this.playbackPlayer = videojs(
         this.playback,
@@ -159,7 +157,7 @@ class RecordPractice extends React.Component {
       // this.player.on('progressRecord', function() {
       //   console.log('currently recording', this.player.record().getDuration());
       // });
-      const forTimestamp=((worker)=>{
+      const forTimestamp = (worker => {
         const workerCanv = document.createElement('canvas');
         workerCanv.width = 630 * 2;
         workerCanv.height = 360 * 2;
@@ -169,11 +167,16 @@ class RecordPractice extends React.Component {
           wcContext.drawImage(video, 0, 0);
 
           worker.postMessage({
-            image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
+            image: wcContext.getImageData(
+              0,
+              0,
+              workerCanv.width,
+              workerCanv.height
+            ),
             timestamp: timestamp
           });
         };
-        })(this.worker)
+      })(this.worker);
       this.player.on('timestamp', function() {
         forTimestamp(
           document.querySelector('#video_html5_api'),
@@ -182,16 +185,16 @@ class RecordPractice extends React.Component {
       });
 
       // user completed recording and stream is available
-      const forFinish=((worker)=>{
-        return ()=>{
+      const forFinish = (worker => {
+        return () => {
           worker.postMessage({type: 'finished'});
-        }
-      })(this.worker)
+        };
+      })(this.worker);
       this.player.on('finishRecord', () => {
         // the blob object contains the recorded data that
         // can be downloaded by the user, stored on server etc.
 
-       // tGS.recording = false;
+        // tGS.recording = false;
         forFinish();
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
