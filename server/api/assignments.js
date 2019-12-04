@@ -43,7 +43,15 @@ router.put('/:routineId', async (req, res, next) => {
       }
     });
 
-    await userAssignment.update({completed: true});
+    await Assignment.update(
+      {completed: true},
+      {
+        where: {
+          userId: id,
+          routineId: req.params.routineId
+        }
+      }
+    );
 
     const updatedAssignment = await Assignment.findOne({
       where: {userId: id, routineId: req.params.routineId}

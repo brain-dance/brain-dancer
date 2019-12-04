@@ -42,6 +42,7 @@ export const addPracticeThunk = (
       upload_preset: 'acrhvgee'
     };
 
+    // info to upload video
     var formData = new FormData();
     formData.append('file', recording, recording.name);
     formData.append('upload_preset', 'acrhvgee');
