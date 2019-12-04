@@ -28,7 +28,10 @@ const PrevAttempts = props => {
       <Header as="h3">Recorded Attempts</Header>
       {recording.map(blob => {
         let blobSrc = URL.createObjectURL(blob);
-        let blobInfo = attempts[blob.name];
+        let blobInfo;
+        if (attempts) {
+          blobInfo = attempts[blob.name];
+        }
 
         return (
           <div className="vidCard" id="previous-attempt" key={blob.name}>
