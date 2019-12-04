@@ -14,7 +14,7 @@ import {deleteTeamMemberThunk} from '../store';
 import AddTeamForm from './AddTeamForm';
 import AddMemberForm from './AddMemberForm';
 
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, useLocation} from 'react-router-dom';
 
 /**
  * COMPONENT
@@ -38,6 +38,10 @@ export const Dashboard = props => {
     };
     setSelectedTeam(updatedSelectedTeam);
   };
+  console.log(useLocation());
+  useEffect(() => {
+    // setSelectedTeam(teams.find(team => team.id === 1));
+  }, []);
 
   if (!teams || !teams.length) {
     return <h3>Unexpected error! You do not exist!</h3>;
