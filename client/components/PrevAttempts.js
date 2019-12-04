@@ -29,13 +29,11 @@ const PrevAttempts = props => {
       {recording.map(blob => {
         let blobSrc = URL.createObjectURL(blob);
         let blobInfo = attempts[blob.name];
-        // let grade = blobInfo.grade;
-        // if (grade) console.log('TCL: grade', grade);
 
         return (
           <div className="vidCard" id="previous-attempt" key={blob.name}>
             <Card name={blob.name} onClick={handleSelect}>
-              {/* {grade ? <Card.Meta>{grade}</Card.Meta> : ''} */}
+              {blobInfo ? <Card.Meta>{blobInfo.grade / 100}</Card.Meta> : ''}
               <video id={blob.name} width="200" src={blobSrc} />
               <Button.Group>
                 <Button name={blob.name} icon onClick={handlePlay}>
