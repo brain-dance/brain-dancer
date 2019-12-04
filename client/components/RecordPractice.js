@@ -44,7 +44,7 @@ class RecordPractice extends React.Component {
       recording: [],
       selected: '',
       attempts: {}
-      //score: 0,
+      //grade: 0,
       // allProcessedFrames: []
     };
 
@@ -74,7 +74,7 @@ class RecordPractice extends React.Component {
           200,
           num => {
             //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
-            toSet.score = num;
+            toSet.grade = num;
           },
           event.data.calibration,
           thisCont.props.routine.calibrationframe.pose
@@ -83,6 +83,8 @@ class RecordPractice extends React.Component {
           attempts: {...thisCont.state.attempts, [event.data.name]: toSet}
         });
         const video = document.querySelector('#video_html5_api');
+
+        //BUG: SOMETIMES THIS GETS A BUG THAT SAYS CANNOT READ PROEPRTY ADDEVENTLISTENER OF NULL
         video.addEventListener('play', () => {
           //console.log("HELLO");
           replayStart = Date.now();
@@ -212,6 +214,10 @@ class RecordPractice extends React.Component {
         forFinish(this.player.recordedData.name);
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
+
+        //JM TESTING -- DOES THIS MAKE THE CAMERA TURN OFF?
+        // MediaStreamTrack.stop();
+        // console.log('MADE IT HERE');
         this.setState(state => {
           return {recording: [...state.recording, this.recordedData]};
         });
