@@ -70,7 +70,7 @@ class RecordPractice extends React.Component {
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
           thisCont.props.routineFrames || event.data.data,
-          {x: 415, y: 200}, //midpoint
+          {x: 320, y: 240}, //midpoint
           -1,
           200,
           num => {
@@ -115,7 +115,7 @@ class RecordPractice extends React.Component {
         {
           controls: true,
           width: 640,
-          height: 360,
+          height: 480,
           playbackRates: [0.5, 1, 1.5, 2]
         },
         () => {
@@ -172,8 +172,8 @@ class RecordPractice extends React.Component {
       // });
       const forTimestamp = (worker => {
         const workerCanv = document.createElement('canvas');
-        workerCanv.width = 630 * 2;
-        workerCanv.height = 360 * 2;
+        workerCanv.width = 640; //630 * 2;
+        workerCanv.height = 480; //360 * 2;
         const wcContext = workerCanv.getContext('2d');
         return (video, timestamp) => {
           wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
@@ -272,7 +272,7 @@ class RecordPractice extends React.Component {
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
-        image: tempContext.getImageData(0, 0, 630, 360)
+        image: tempContext.getImageData(0, 0, 640, 480)
       });
     });
   }
