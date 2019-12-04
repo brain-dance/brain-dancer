@@ -52,7 +52,7 @@ export const addRoutineThunk = (
 
     // start upload video
     const upload = await axios.post(serverUrl, formData);
-    console.log('upload', upload);
+    console.log('video uploaded', upload);
     const uploadUrl = upload.data.url.split('.');
     uploadUrl[uploadUrl.length - 1] = 'mp4';
     const fixedUrl = uploadUrl.join('.');
