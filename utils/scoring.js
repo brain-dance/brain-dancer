@@ -9,7 +9,6 @@ const {
 
 const {drawSkeleton, drawKeypoints} = require('../frontUtils/draw');
 
-
 const errCost = (wfOne, wfTwo) => {
   let errs = angleDifferences(wfOne.pose, wfTwo.pose);
   let temp = Object.keys(errs);
@@ -135,31 +134,31 @@ const parseForReplay = (
   //Transform into the lookup map
   //Return the new arr, which then gets interacted with by an event handler
 
-  const labeledPracticeCalibration = labelPose(practiceCalibration);
-  const labeledRoutineCalibration = labelPose(routineCalibration);
-  const calibrator = getCalibration(
-    labeledRoutineCalibration,
-    labeledPracticeCalibration
-  );
+  // const labeledPracticeCalibration = labelPose(practiceCalibration);
+  // const labeledRoutineCalibration = labelPose(routineCalibration);
+  // const calibrator = getCalibration(
+  //   labeledRoutineCalibration,
+  //   labeledPracticeCalibration
+  // );
 
-  let globalTranslate = {
-    x: centroid(pwfs[0].pose.keypoints).x - center.x,
-    y: centroid(pwfs[0].pose.keypoints).y - center.y
-  };
-  const translator = wireframe =>
-    wireframe.map(keypoint => ({
-      ...keypoint,
-      position: {
-        x: keypoint.position.x - globalTranslate.x,
-        y: keypoint.position.y - globalTranslate.y
-      }
-    }));
+  // let globalTranslate = {
+  //   x: centroid(pwfs[0].pose.keypoints).x - center.x,
+  //   y: centroid(pwfs[0].pose.keypoints).y - center.y
+  // };
+  // const translator = wireframe =>
+  //   wireframe.map(keypoint => ({
+  //     ...keypoint,
+  //     position: {
+  //       x: keypoint.position.x - globalTranslate.x,
+  //       y: keypoint.position.y - globalTranslate.y
+  //     }
+  //   }));
   //Note - optimal implementation does all the transformations in a single map
   //No reason not to do that, except that this approach is easier to reason about
   //May be worth changing if we run into performance issues
   const toReturn = new Map(
     minCostPairings(pwfs, cws, callback)
-      .pairs// .map(pair => {
+      .pairs // .map(pair => {
       //   //pairs: first elem = dancer; second elem = choreographer
       //   //this is scaling the choreographer to match the dancer
       //   const target = labelPose(pair[0].pose); // practice
@@ -193,25 +192,25 @@ const parseForReplay = (
       //     }
       //   ];
       // })
-      .map(pair => {
-        //    console.log("In pfr, first map statement, pair is: ", pair);
-        return [
-          {
-            ...pair[0],
-            pose: {
-              ...pair[0].pose,
-              keypoints: translator(pair[0].pose.keypoints)
-            }
-          },
-          {
-            ...pair[1],
-            pose: {
-              ...pair[1].pose,
-              keypoints: translator(pair[1].pose.keypoints)
-            }
-          }
-        ];
-      })
+      // .map(pair => {
+      //   //    console.log("In pfr, first map statement, pair is: ", pair);
+      //   return [
+      //     {
+      //       ...pair[0],
+      //       pose: {
+      //         ...pair[0].pose,
+      //         keypoints: translator(pair[0].pose.keypoints)
+      //       }
+      //     },
+      //     {
+      //       ...pair[1],
+      //       pose: {
+      //         ...pair[1].pose,
+      //         keypoints: translator(pair[1].pose.keypoints)
+      //       }
+      //     }
+      //   ];
+      // })
       .map(pair => {
         //Theoretically, render mistakes should be the only time it's even possible to get deviation; everything else is equivalent
         // console.log('We expect the pairs to be the same here: ', pair);

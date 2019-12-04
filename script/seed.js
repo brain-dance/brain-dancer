@@ -135,12 +135,12 @@ async function createTestSeed() {
   // practice video
   const seededPractice = await Practice.create(practiceVideo);
   // generate calibration skelly for practice
-  const canvas = createCanvas(480, 360);
+  const canvas = createCanvas(640, 480);
   const ctx = canvas.getContext('2d');
   loadImage(
     'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
   ).then(image => {
-    ctx.drawImage(image, 0, 0, 480, 360);
+    ctx.drawImage(image, 0, 0, 640, 480);
   });
   const fetchedSkelly = await getPose(canvas);
   // save calibration
@@ -170,8 +170,8 @@ async function createTestSeed() {
   loadImage(
     'https://res.cloudinary.com/braindance/image/upload/v1575476086/Screenshot_2019-12-04_10.10.37_ifjdez.png'
   ).then(image => {
-    ctx.clearRect(0, 0, 480, 360);
-    ctx.drawImage(image, 0, 0, 480, 360);
+    ctx.clearRect(0, 0, 640, 480);
+    ctx.drawImage(image, 0, 0, 640, 480);
   });
   const idkPose = await getPose(canvas);
   // save calibration
@@ -183,8 +183,8 @@ async function createTestSeed() {
   loadImage(
     'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
   ).then(image => {
-    ctx.clearRect(0, 0, 480, 360);
-    ctx.drawImage(image, 0, 0, 480, 360);
+    ctx.clearRect(0, 0, 640, 480);
+    ctx.drawImage(image, 0, 0, 640, 480);
   });
   const armPose = await getPose(canvas);
   // save calibration
@@ -196,8 +196,8 @@ async function createTestSeed() {
   // loadImage(
   //   'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
   // ).then(image => {
-  //   ctx.clearRect(0, 0, 480, 360);
-  //   ctx.drawImage(image, 0, 0, 480, 360);
+  //   ctx.clearRect(0, 0, 640, 480);
+  //   ctx.drawImage(image, 0, 0, 640, 480);
   // });
   // const sumoPose = await getPose(canvas);
   // // save calibration
@@ -209,8 +209,8 @@ async function createTestSeed() {
   loadImage(
     'https://res.cloudinary.com/braindance/image/upload/v1575435963/lraacfy3y0abaafi22ci.png'
   ).then(image => {
-    ctx.clearRect(0, 0, 480, 360);
-    ctx.drawImage(image, 0, 0, 480, 360);
+    ctx.clearRect(0, 0, 640, 480);
+    ctx.drawImage(image, 0, 0, 640, 480);
   });
 
   const jonPose = await getPose(canvas);
@@ -223,8 +223,8 @@ async function createTestSeed() {
   // loadImage(
   //   'https://res.cloudinary.com/braindance/image/upload/v1575435361/rq2g3ijzfvyh4cgxkzji.png'
   // ).then(image => {
-  //   ctx.clearRect(0, 0, 480, 360);
-  //   ctx.drawImage(image, 0, 0, 480, 360);
+  //   ctx.clearRect(0, 0, 640, 480);
+  //   ctx.drawImage(image, 0, 0, 640, 480);
   // });
   // const franticPose = await getPose(canvas);
   // // save calibration
