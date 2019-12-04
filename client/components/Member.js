@@ -16,19 +16,20 @@ const Member = props => {
   console.log('TCL: member.userteams.role', member.userteams.role);
 
   return isChoreo ? (
+    // return (
     <Menu.Item>
-      <Menu.Content>
-        <Icon name="star" /> {member.name}
-      </Menu.Content>
+      {/* <Menu.Content> */}
+      <Icon name="star" /> {member.name}
+      {/* </Menu.Content> */}
     </Menu.Item>
   ) : (
     <Menu.Item>
-      <Menu.Content>
-        <Icon name="male" /> {member.name}
-      </Menu.Content>
+      {/* <Menu.Content> */}
+      <Icon name="male" /> {member.name}
+      {/* </Menu.Content> */}
     </Menu.Item>
   );
-  // </Menu.Item>
+  // // </Menu.Item>
   // );
   // return (
   // <Menu.Item>
