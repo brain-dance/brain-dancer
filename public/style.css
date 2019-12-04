@@ -126,6 +126,17 @@ body,
   border: none;
 }
 
+.card {
+  margin: 20px !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.video-card {
+  width: 100%;
+}
+
 #choreo {
   height: 100vh;
 }
