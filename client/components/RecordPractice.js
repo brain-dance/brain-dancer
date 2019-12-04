@@ -80,7 +80,8 @@ class RecordPractice extends React.Component {
       )});
       const video = document.querySelector('#video_html5_api');
       video.addEventListener('play', () => {
-        //FROM HERE
+
+        //console.log("HELLO");
         replayStart=Date.now();
       });
     
@@ -88,8 +89,9 @@ class RecordPractice extends React.Component {
         const canvas = document.querySelector('#skeleton');
         const ctx = canvas.getContext('2d');
         // console.log('Start time is', tGS.replayStart);
+       // console.log("In time update event, thisCont is: ", thisCont);
         scoringUtils.timeChangeCallback(
-          Date.now() - thisCont.state.replayStart,
+          Date.now() - replayStart,
           thisCont.state.allProcessedFrames,
           ctx,
           630,
@@ -251,7 +253,7 @@ class RecordPractice extends React.Component {
     newImage.src = calibration;
     newImage.decode().then(() => {
       tempContext.drawImage(newImage, 0, 0);
-      tGS.worker.postMessage({
+      this.worker.postMessage({
         type: 'calibration',
         image: tempContext.getImageData(0, 0, 630, 360)
       });
