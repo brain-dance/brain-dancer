@@ -33,7 +33,8 @@ self.onmessage = set => {
           postMessage({
             type: 'All processed',
             data: allProcessed,
-            calibration: calibration
+            calibration: calibration,
+            name: event.data.name
           });
           allProcessed = [];
           return;
