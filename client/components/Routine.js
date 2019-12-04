@@ -16,13 +16,13 @@ const Routine = props => {
   return (
     //COULD ADD CHOREOGRAPHER [EAGER LOAD USERS ON ROUTINE]
     <Card
-      class="vidCard"
+      className="vidCard"
       raised
       name={`${id}`}
       onClick={redirectToWatchRoutine}
     >
       <Card.Content>
-        <video id={title} width="200" controls src={url} />
+        <video id={title} width="200" src={url} />
         <Card.Header>{title}</Card.Header>
         {team && team.name ? (
           <Card.Meta>{team.name}</Card.Meta>
