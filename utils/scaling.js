@@ -184,20 +184,13 @@ const scaler = (source, target, calibration) => {
   };
 
   //find left leg points using source angles
-  scaled.rightKnee = extrapolate(
+  scaled.leftKnee = extrapolate(
     scaled.leftHip,
     scaled.rightHip,
     calibLengths.leftThigh,
     sourceAngles.RightHipLeftHipLeftKnee
   );
 
-  //find right leg points using source angles
-  scaled.leftKnee = extrapolate(
-    scaled.rightHip,
-    scaled.leftHip,
-    calibLengths.rightThigh,
-    sourceAngles.LeftHipRightHipRightKnee
-  );
   scaled.leftAnkle = extrapolate(
     scaled.leftKnee,
     scaled.leftHip,
@@ -205,7 +198,13 @@ const scaler = (source, target, calibration) => {
     sourceAngles.LeftHipLeftKneeLeftAnkle
   );
 
-
+  //find right leg points using source angles
+  scaled.rightKnee = extrapolate(
+    scaled.rightHip,
+    scaled.leftHip,
+    calibLengths.rightThigh,
+    sourceAngles.LeftHipRightHipRightKnee
+  );
 
   scaled.rightAnkle = extrapolate(
     scaled.rightKnee,
