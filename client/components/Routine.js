@@ -1,23 +1,36 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
-
-import {Link} from 'react-router-dom';
+import {Card} from 'semantic-ui-react';
 
 const Routine = props => {
-  const {routine} = props;
+  const {routine, team} = props;
+  let {id, title, url} = routine;
   const teamId = props.match.params.teamId || routine.teamId;
 
-  // const handleClick = id => {
-  //   props.history.push(`/routines/${id}`);
-  // };
+  const redirectToWatchRoutine = (e, {name}) => {
+    let selectedRoutineId = name;
+
+    props.history.push(`/team/${teamId}/routine/${selectedRoutineId}`);
+  };
 
   return (
-    // <div className="routine-card" onClick={() => handleClick(routine.id)}>
-    <Link to={`/team/${teamId}/routine/${routine.id}`}>
-      <div className="routine-card">
-        <p>{routine.title}</p>
-      </div>
-    </Link>
+    //COULD ADD CHOREOGRAPHER [EAGER LOAD USERS ON ROUTINE]
+    <Card
+      class="vidCard"
+      raised
+      name={`${id}`}
+      onClick={redirectToWatchRoutine}
+    >
+      <Card.Content>
+        <video id={title} width="200" controls src={url} />
+        <Card.Header>{title}</Card.Header>
+        {team && team.name ? (
+          <Card.Meta>{team.name}</Card.Meta>
+        ) : (
+          <Card.Meta>Team Name</Card.Meta>
+        )}
+      </Card.Content>
+    </Card>
   );
 };
 

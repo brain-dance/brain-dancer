@@ -27,7 +27,7 @@ const Team = props => {
         )}
       </Header>
 
-      <Routines routines={team.routines} />
+      <Routines team={team} routines={team.routines} />
       <Members
         members={team.members}
         handleUpdateTeam={props.handleUpdateTeam}
