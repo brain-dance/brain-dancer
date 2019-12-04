@@ -23,7 +23,7 @@ const AuthForm = props => {
   return (
     <div id="auth">
       <Segment basic compact padded="very">
-        <Form onSubmit={handleSubmit} name={name} autocomplete="off">
+        <Form onSubmit={handleSubmit} name={name} autoComplete="off">
           <Form.Field>
             <Input
               transparent
