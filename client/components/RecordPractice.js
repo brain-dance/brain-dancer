@@ -83,7 +83,7 @@ class RecordPractice extends React.Component {
         event.data.calibration,
         thisCont.props.routine.calibrationframe.pose
       );
-      thisCont.setState({attempts:{...attempts, [event.data.name]:toSet}})
+      thisCont.setState({attempts:{...thisCont.state.attempts, [event.data.name]:toSet}})
       const video = document.querySelector('#video_html5_api');
       video.addEventListener('play', () => {
 
@@ -159,7 +159,10 @@ class RecordPractice extends React.Component {
       });
 
       // user clicked the record button and started recording
+      
+      const forStart=((tC)=>{return ()=>tC.setState({selected: ''})})(this)
       this.player.on('startRecord', () => {
+        forStart();
         console.log('started recording!');
       });
 
