@@ -49,7 +49,7 @@ self.onmessage = set => {
               calibration = result;
             })
             .catch(err => console.log('error while calibrating!', err));
-            return;
+          return;
         }
         try {
           net

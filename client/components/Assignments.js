@@ -50,24 +50,21 @@ export const Assignments = props => {
           let {id, title, url, teamId, team} = assignment.routine;
           if (assignment.completed !== true) {
             return (
-              <Card id="assgn" key={assignment.id} raised>
+              <Card
+                class="vidCard"
+                name={`${teamId} ${id}`}
+                onClick={redirectToPractice}
+                key={assignment.id}
+                raised
+              >
                 <Card.Content>
+                  <video id={title} width="200" controls src={url} />
                   <Card.Header>{title}</Card.Header>
                   {team && team.name ? (
                     <Card.Meta>{team.name}</Card.Meta>
                   ) : (
                     <Card.Meta>Team Name</Card.Meta>
                   )}
-                  <video id={title} width="200" controls src={url} />
-                  <Button
-                    attached="bottom"
-                    name={`${teamId} ${id}`}
-                    // color="black"
-                    primary
-                    onClick={redirectToPractice}
-                  >
-                    Practice Routine
-                  </Button>
                 </Card.Content>
               </Card>
             );

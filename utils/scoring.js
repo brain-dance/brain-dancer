@@ -244,12 +244,12 @@ const timeChangeCallback = (
     ctx.clearRect(0, 0, width, height);
 
     // dancer
-    drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.4);
-    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.4);
+    drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.35);
+    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
 
     // choreographer
-    drawSkeleton(newDraws[1], 0, ctx, 0.4, 'green');
-    drawKeypoints(newDraws[1], 0, ctx, 0.4, 'green');
+    drawSkeleton(newDraws[1], 0, ctx, 0.35, 'yellow');
+    drawKeypoints(newDraws[1], 0, ctx, 0.35, 'yellow');
     //newDraws[1] contains the error path, which should also be drawn.
   }
 };
