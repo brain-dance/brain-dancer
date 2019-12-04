@@ -42,7 +42,7 @@ self.onmessage = set => {
           console.log('calibrating');
           net
             .estimateSinglePose(event.data.image, {
-              flipHorizontal: true,
+              flipHorizontal: false,
               decodingMethod: 'single-person'
             })
             .then(result => {
@@ -54,7 +54,7 @@ self.onmessage = set => {
         try {
           net
             .estimateSinglePose(event.data.image, {
-              flipHorizontal: true,
+              flipHorizontal: false,
               decodingMethod: 'single-person'
             })
             .then(result => {

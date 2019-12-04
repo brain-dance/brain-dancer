@@ -45,7 +45,7 @@ posenet
         //console.log('nnworker', event.data.image);
         net
           .estimateSinglePose(event.data.image, {
-            flipHorizontal: true,
+            flipHorizontal: false,
             decodingMethod: 'single-person'
           })
           .then(result => {
