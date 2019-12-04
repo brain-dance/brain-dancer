@@ -13,6 +13,9 @@ const {
 const db = require('../server/db/db');
 const {green, red} = require('chalk');
 
+const {getPose} = require('../backUtils/canvasify');
+const {createCanvas, loadImage} = require('canvas');
+
 const totalSeeds = 100;
 
 //TEST ACCOUNTS - Users
@@ -36,13 +39,28 @@ const testTeams = [
     name: "Waltzin' Matildas",
     description:
       'Australian troupe committed to spreading the love of this ballad to the rest of the world.',
-    category: 'Wango'
+    category: 'Contemporary'
   },
   {
     name: 'Twinkle Toes',
     description:
       'Ballerinas with a passion for glitter and adapting Hollywood musicals for the ballet.',
     category: 'Ballet'
+  },
+  {
+    name: 'Boppin 2 Tha Beat',
+    description: 'Dance is life!',
+    category: 'Hip hop'
+  },
+  {
+    name: 'The Left Feet',
+    description: 'Beginners here to bring coordination into our lives',
+    category: 'Line Dance'
+  },
+  {
+    name: 'Country Bumpkins',
+    description: 'Solo square dancing is where it is at!',
+    category: 'Square Dance'
   },
   {
     name: 'TipTop HipHop',
@@ -55,26 +73,8 @@ const testTeams = [
 //TEST ACCOUNTS - Video
 const practiceVideo = {
   url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mp4',
-  title: 'how do i clap'
-};
-
-const chickenDance = {
-  url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574452759/a4pj9pn4fcvujmcchtcr.mp4',
-  title: 'chicken dance'
-};
-
-const testVideo = {
-  url:
-    'https://res.cloudinary.com/braindance/video/upload/v1574880013/rkim8udi1f7g6ln4o385.mp4',
-  title: 'testy test'
-};
-
-const gorillaDansu = {
-  url:
-    'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
-  title: 'Gorilla Dansu'
+    'https://res.cloudinary.com/braindance/video/upload/v1575417318/cgtmrwxvchuy7hwcr9je.mp4',
+  title: 'My practice'
 };
 
 const idkDance = {
@@ -83,46 +83,47 @@ const idkDance = {
   title: 'IDK'
 };
 
+const armDance = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1575416484/fzdfud7ss4yis0you1hm.mp4',
+  title: 'Arm Dance'
+};
+
+const sumoSquat = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1575418342/d5grvawl1kxi08uwt6pz.mp4',
+  title: 'The Sumo Squat'
+};
+
+const jonathan = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1575435105/fbnicwnnlusjsfcrowdm.mp4',
+  title: 'Jonathan'
+};
+
+const frantic = {
+  url:
+    'https://res.cloudinary.com/braindance/video/upload/v1575435362/eetrqr1eucsk5so26pe4.mp4',
+  title: 'Frantic'
+};
+
+// for fun - no calibration exists
 const finnDance = {
   url:
     'https://res.cloudinary.com/braindance/video/upload/v1574713680/yu1eqjego1oi8vajvlmr.mp4',
   title: 'The Finn Dance'
 };
 
-//TEST ACCOUNTS - Video frames
-// const testVideoFrames = [
-//   {
-//     pose: 'JSON string of videoframe 1 for performance',
-//     frameNumber: 10
-//   },
-//   {
-//     pose: 'JSON string of videoframe 2 for performance',
-//     frameNumber: 100
-//   },
-//   {
-//     pose: 'JSON string of videoframe 1 for practice',
-//     frameNumber: 89
-//   },
-//   {
-//     pose: 'JSON string of videoframe 2 for practice',
-//     frameNumber: 1489
-//   }
-// ];
-
-//TEST ACCOUNTS - Calibration frame
-const testCalibrations = [
-  {
-    pose: `choreo calibration frame for performance video`
-  },
-  {
-    pose: 'dancer calibration frame for practice video'
-  }
-];
+const gorillaDansu = {
+  url:
+    'http://res.cloudinary.com/braindance/video/upload/v1574881624/db7tcuvwdxvjly2m4rme.mp4',
+  title: 'Gorilla Dansu'
+};
 
 const testAssignments = [{completed: true}, {completed: false}];
 
 //CREATE TEST USERS
-async function createTestUsers() {
+async function createTestSeed() {
   const seededUsers = await Promise.all(
     testUsers.map(user => User.create(user))
   );
@@ -131,43 +132,108 @@ async function createTestUsers() {
     testTeams.map(team => Team.create(team))
   );
 
-  const seededCalibrationFrame = await Promise.all(
-    testCalibrations.map(calibration => CalibrationFrame.create(calibration))
-  );
-
+  // practice video
   const seededPractice = await Practice.create(practiceVideo);
+  // generate calibration skelly for practice
+  const canvas = createCanvas(480, 360);
+  const ctx = canvas.getContext('2d');
+  loadImage(
+    'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
+  ).then(image => {
+    ctx.drawImage(image, 0, 0, 480, 360);
+  });
+  const fetchedSkelly = await getPose(canvas);
+  // save calibration
+  await CalibrationFrame.create({
+    pose: fetchedSkelly,
+    practiceId: seededPractice.id
+  });
 
   const seededAssignments = await Promise.all(
     testAssignments.map(assignment => Assignment.create(assignment))
   );
 
-  const chickenRoutine = await Routine.create(chickenDance);
-  const testRoutine = await Routine.create(testVideo);
+  //generate non-calibrated videos (for fun)
   const gorillaRoutine = await Routine.create(gorillaDansu);
-  const idkRoutine = await Routine.create(idkDance);
   const finn = await Routine.create(finnDance);
 
-  // generate lots of wireframes - comment out if this takes too long :)
-  const generatedSkellies = await generateWireframes(chickenRoutine.url);
-  await Promise.all(
-    generatedSkellies.map((skelly, i) => {
-      return VideoFrame.create({
-        pose: skelly,
-        routineId: chickenRoutine.id,
-        frameNumber: i
-      });
-    })
-  );
-  const gorillaSkellies = await generateWireframes(gorillaRoutine.url);
-  await Promise.all(
-    gorillaSkellies.map((skelly, i) => {
-      return VideoFrame.create({
-        pose: skelly,
-        routineId: gorillaRoutine.id,
-        frameNumber: i
-      });
-    })
-  );
+  // videos with calibration
+  const idkRoutine = await Routine.create(idkDance);
+  const armRoutine = await Routine.create(armDance);
+  const sumoRoutine = await Routine.create(sumoSquat);
+  const jonRoutine = await Routine.create(jonathan);
+  const franticRoutine = await Routine.create(frantic);
+
+  // -- COMMENT OUT FROM HERE IF YOU WANT YOUR SEED TO BE FASTER :) -- //
+
+  // calibration skellies generated for each dance
+  loadImage(
+    'https://res.cloudinary.com/braindance/image/upload/v1575476086/Screenshot_2019-12-04_10.10.37_ifjdez.png'
+  ).then(image => {
+    ctx.clearRect(0, 0, 480, 360);
+    ctx.drawImage(image, 0, 0, 480, 360);
+  });
+  const idkPose = await getPose(canvas);
+  // save calibration
+  await CalibrationFrame.create({
+    pose: idkPose,
+    routineId: idkRoutine.id
+  });
+
+  loadImage(
+    'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
+  ).then(image => {
+    ctx.clearRect(0, 0, 480, 360);
+    ctx.drawImage(image, 0, 0, 480, 360);
+  });
+  const armPose = await getPose(canvas);
+  // save calibration
+  await CalibrationFrame.create({
+    pose: armPose,
+    routineId: armRoutine.id
+  });
+
+  // loadImage(
+  //   'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
+  // ).then(image => {
+  //   ctx.clearRect(0, 0, 480, 360);
+  //   ctx.drawImage(image, 0, 0, 480, 360);
+  // });
+  // const sumoPose = await getPose(canvas);
+  // // save calibration
+  // await CalibrationFrame.create({
+  //   pose: sumoPose,
+  //   routineId: sumoRoutine.id
+  // });
+
+  loadImage(
+    'https://res.cloudinary.com/braindance/image/upload/v1575435963/lraacfy3y0abaafi22ci.png'
+  ).then(image => {
+    ctx.clearRect(0, 0, 480, 360);
+    ctx.drawImage(image, 0, 0, 480, 360);
+  });
+
+  const jonPose = await getPose(canvas);
+  // save calibration
+  await CalibrationFrame.create({
+    pose: jonPose,
+    routineId: jonRoutine.id
+  });
+
+  // loadImage(
+  //   'https://res.cloudinary.com/braindance/image/upload/v1575435361/rq2g3ijzfvyh4cgxkzji.png'
+  // ).then(image => {
+  //   ctx.clearRect(0, 0, 480, 360);
+  //   ctx.drawImage(image, 0, 0, 480, 360);
+  // });
+  // const franticPose = await getPose(canvas);
+  // // save calibration
+  // await CalibrationFrame.create({
+  //   pose: franticPose,
+  //   routineId: franticRoutine.id
+  // });
+
+  // wireframes generated for each video
   const idkSkellies = await generateWireframes(idkRoutine.url);
   await Promise.all(
     idkSkellies.map((skelly, i) => {
@@ -178,41 +244,78 @@ async function createTestUsers() {
       });
     })
   );
-  const finnSkellies = await generateWireframes(finn.url);
+
+  const armSkellies = await generateWireframes(armRoutine.url);
   await Promise.all(
-    finnSkellies.map((skelly, i) => {
+    armSkellies.map((skelly, i) => {
       return VideoFrame.create({
         pose: skelly,
-        routineId: finn.id,
+        routineId: armRoutine.id,
         frameNumber: i
       });
     })
   );
 
-  // routine belongs to team
-  await chickenRoutine.setTeam(1);
-  await testRoutine.setTeam(1);
-  await gorillaRoutine.setTeam(2);
-  await idkRoutine.setTeam(2);
-  await finn.setTeam(1);
-  // practice belongsto routine
-  await seededPractice.setRoutine(1);
-
-  //
-
-  // const seededVideoFrames = await Promise.all(
-  //   testVideoFrames.map(videoFrame => {
-  //     return VideoFrame.create(videoFrame);
+  // const sumoSkellies = await generateWireframes(sumoRoutine.url);
+  // await Promise.all(
+  //   sumoSkellies.map((skelly, i) => {
+  //     return VideoFrame.create({
+  //       pose: skelly,
+  //       routineId: sumoRoutine.id,
+  //       frameNumber: i
+  //     });
   //   })
   // );
 
-  //Associations
-  //Team belongsToMany User
-  let [waltzinMatildas, twinkleToes, tipTopHipHop] = seededTeams;
+  const jonSkellies = await generateWireframes(jonRoutine.url);
+  await Promise.all(
+    jonSkellies.map((skelly, i) => {
+      return VideoFrame.create({
+        pose: skelly,
+        routineId: jonRoutine.id,
+        frameNumber: i
+      });
+    })
+  );
 
+  // const franticSkellies = await generateWireframes(franticRoutine.url);
+  // await Promise.all(
+  //   franticSkellies.map((skelly, i) => {
+  //     return VideoFrame.create({
+  //       pose: skelly,
+  //       routineId: franticRoutine.id,
+  //       frameNumber: i
+  //     });
+  //   })
+  // );
+
+  // END COMMENT OUT OF THINGS THAT TAKE A LONG TIME //
+
+  //Associations
   let [choreographer, dancer] = seededUsers;
 
-  //add users to
+  // routine belongs to team
+  await gorillaRoutine.setTeam(2);
+  await finn.setTeam(1);
+  await idkRoutine.setTeam(2);
+  await armRoutine.setTeam(1);
+  await sumoRoutine.setTeam(2);
+  await jonRoutine.setTeam(1);
+  await franticRoutine.setTeam(2);
+  // practice belongsto routine
+  await seededPractice.setRoutine(1);
+
+  // routine/practice belongs to user
+  await seededPractice.setUser(dancer);
+  await gorillaRoutine.setUser(dancer);
+  await finn.setUser(dancer);
+  await idkRoutine.setUser(choreographer);
+  await armRoutine.setUser(choreographer);
+  await sumoRoutine.setUser(choreographer);
+  await jonRoutine.setUser(dancer);
+  await franticRoutine.setUser(choreographer);
+
+  //add users to teams
   await UserTeam.create({
     role: 'choreographer',
     userId: 1,
@@ -236,34 +339,11 @@ async function createTestUsers() {
 
   let [finishedAssignment, pendingAssignment] = seededAssignments;
 
-  //Video belongsTo User
-  await chickenRoutine.setUser(choreographer);
-  await seededPractice.setUser(dancer);
-
   //Assignment belongsTo User + belongsTo Routine; assign 2 routines to Fred Astaire, one of which is completed
   await finishedAssignment.setRoutine(1);
   await finishedAssignment.setUser(2);
   await pendingAssignment.setRoutine(2);
   await pendingAssignment.setUser(2);
-
-  //Routine / Practice hasMany VideoFrames
-  // let [
-  //   performanceFrame1,
-  //   performanceFrame2,
-  //   practiceFrame1,
-  //   practiceFrame2
-  // ] = seededVideoFrames;
-
-  // await chickenRoutine.setVideoframes([performanceFrame1, performanceFrame2]);
-
-  // await seededPractice.setVideoframes([practiceFrame1, practiceFrame2]);
-
-  //Video hasOne CalibrationFrame
-  let [routineCalibration, practiceCalibration] = seededCalibrationFrame;
-
-  await routineCalibration.setRoutine(chickenRoutine);
-
-  await practiceCalibration.setPractice(seededPractice);
 }
 
 //CREATE FAKE USERS
@@ -282,40 +362,13 @@ async function createFakeUsers() {
       category: [
         'ballet',
         'hip hop',
-        'waltz',
-        'tango',
-        'wango',
+        'square dance',
+        'line dance',
         'contemporary'
       ][Math.round(Math.random())]
     };
 
-    const routine = {
-      url: faker.internet.url(),
-      title: faker.lorem.word()
-    };
-
-    const practice = {
-      url: faker.internet.url(),
-      title: faker.lorem.word()
-    };
-
-    // const videoFrame = {
-    //   pose: faker.lorem.sentence(),
-    //   frameNumber: Math.round(Math.random() * 10000)
-    // };
-
-    const calibration = {
-      pose: faker.lorem.sentence()
-    };
-
-    await Promise.all([
-      User.create(user),
-      Team.create(team),
-      Routine.create(routine),
-      Practice.create(practice),
-      // VideoFrame.create(videoFrame),
-      CalibrationFrame.create(calibration)
-    ]);
+    await Promise.all([User.create(user), Team.create(team)]);
   }
 }
 
@@ -323,21 +376,17 @@ async function createFakeUsers() {
 const seedDB = async () => {
   try {
     await db.sync({force: true});
-    await createTestUsers();
+    await createTestSeed();
     await createFakeUsers();
     let totalUsers = totalSeeds + testUsers.length;
 
     let totalTeams = totalSeeds + testTeams.length;
 
-    let totalVideos = totalSeeds + 2;
-
-    // let totalVideoFrames = totalSeeds + testVideoFrames.length;
-
-    let totalCalibrations = totalSeeds + testCalibrations.length;
+    let totalVideos = 9;
 
     console.log(
       green(
-        `...5, 6, 7, 8! Database seeded with ${totalUsers} users, ${totalTeams} teams, ${totalVideos} videos, ${'totalVideoFrames'} video frames and ${totalCalibrations} calibrations.`
+        `...5, 6, 7, 8! Database seeded with ${totalUsers} users, ${totalTeams} teams, and eventually ${totalVideos} videos`
       )
     );
   } catch (err) {
