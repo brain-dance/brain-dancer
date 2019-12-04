@@ -4,7 +4,7 @@ import {Icon, Menu} from 'semantic-ui-react';
 import TeamList from './TeamList';
 
 export const DashSidebar = props => {
-  const {teams, selectedTeam, handleSelectTeam} = props;
+  const {teams, selectedTeamId, setSelectedTeamId} = props;
 
   const handleClickAddTeam = () => {
     props.setModalOpen(true);
@@ -12,10 +12,13 @@ export const DashSidebar = props => {
 
   return teams.length ? (
     <Menu vertical id="sidebar">
-      <Menu.Item>
-        <Menu.Header as={Link} to="/my-assignments">
-          Assignments
-        </Menu.Header>
+      <Menu.Item
+        active={selectedTeamId === 0}
+        as={Link}
+        to="/my-assignments"
+        onClick={() => setSelectedTeamId(0)}
+      >
+        Assignments
       </Menu.Item>
       <Menu.Item>
         <Menu.Header>Teams</Menu.Header>
@@ -23,10 +26,10 @@ export const DashSidebar = props => {
       <Menu.Menu>
         <TeamList
           teams={teams}
-          selectedTeam={selectedTeam}
-          handleSelectTeam={handleSelectTeam}
+          selectedTeamId={selectedTeamId}
+          setSelectedTeamId={setSelectedTeamId}
         />
-        <Menu.Item onClick={handleClickAddTeam}>
+        <Menu.Item id="add-team" onClick={handleClickAddTeam}>
           <Icon name="add" /> Add a Team
         </Menu.Item>
       </Menu.Menu>
