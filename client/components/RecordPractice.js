@@ -1,32 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
-
-import videoJsOptions from '../../utils/videoJsOptions';
+import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
-
 import Calibrator from './Calibrator';
 import PrevAttempts from './PrevAttempts';
 
+import videoJsOptions from '../../utils/videoJsOptions';
+import scoringUtils from '../../utils/scoring';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-import scoringUtils from '../../utils/scoring';
 
-console.log('TCC: ', scoringUtils);
+// console.log('TCC: ', scoringUtils);
 
 //const tGS = {};
 //tGS.LTU = -Infinity;
-
 
 class RecordPractice extends React.Component {
   constructor(props) {
@@ -73,7 +69,7 @@ class RecordPractice extends React.Component {
       toSet.allProcessedFrames=scoringUtils.parseForReplay(
         event.data.data,
         thisCont.props.routineFrames || event.data.data,
-        {x: 315, y: 150}, //midpoint
+        {x: 415, y: 200}, //midpoint
         -1,
         200,
         num => {
@@ -169,7 +165,7 @@ class RecordPractice extends React.Component {
       // this.player.on('progressRecord', function() {
       //   console.log('currently recording', this.player.record().getDuration());
       // });
-      const forTimestamp=((worker)=>{
+      const forTimestamp = (worker => {
         const workerCanv = document.createElement('canvas');
         workerCanv.width = 630 * 2;
         workerCanv.height = 360 * 2;
@@ -177,13 +173,18 @@ class RecordPractice extends React.Component {
         return (video, timestamp) => {
           wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
           wcContext.drawImage(video, 0, 0);
-        
+
           worker.postMessage({
-            image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
+            image: wcContext.getImageData(
+              0,
+              0,
+              workerCanv.width,
+              workerCanv.height
+            ),
             timestamp: timestamp
           });
         };
-        })(this.worker)
+      })(this.worker);
       this.player.on('timestamp', function() {
         forTimestamp(
           document.querySelector('#video_html5_api'),

@@ -21,10 +21,8 @@ export const fetchAssignments = () => async dispatch => {
   dispatch(getAssignments(data));
 };
 
-export const submitAssignmentThunk = (blob, routineId) => async dispatch => {
-  const {data} = await axios.put(`/api/assignments/${routineId}`, {
-    assignment: blob
-  });
+export const submitAssignmentThunk = (routineId) => async dispatch => {
+  const {data} = await axios.put(`/api/assignments/${routineId}`);
   dispatch(submitAssignment(data));
 };
 

@@ -60,9 +60,15 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
+    const {url, title, teamId, userId} = req.body;
+
     // add row in Routines table
-    const newRoutine = await Routine.create(req.body);
-    // ^ not super secure - any way to make this secure while staying dry?
+    const newRoutine = await Routine.create({
+      url,
+      title,
+      teamId,
+      userId
+    });
 
     res.json(newRoutine);
 

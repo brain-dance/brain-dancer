@@ -50,6 +50,9 @@ body {
   height: 360px;
   background-color: black;
   border-radius: 5px;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
 }
 
 #nav {
