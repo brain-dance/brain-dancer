@@ -26,6 +26,7 @@ self.onmessage = set => {
     };
     posenet.load(poseNetConfig.input).then(newNet => {
       net = newNet;
+      postMessage({type: 'Ready'});
       self.onmessage = event => {
         //console.log("In Worker, message received: ", event);
         if (event.data.type === 'finished') {
@@ -33,7 +34,8 @@ self.onmessage = set => {
           postMessage({
             type: 'All processed',
             data: allProcessed,
-            calibration: calibration
+            calibration: calibration,
+            name: event.data.name
           });
           allProcessed = [];
           return;

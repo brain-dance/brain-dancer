@@ -7,15 +7,14 @@ const Routines = props => {
   const team = props.team;
 
   return (
-    <Segment basic id="routines" color="orange">
-      <Header as="h2">Routines</Header>
+    <Segment basic>
       {!routines.length ? (
         <div>
           There are no routines yet for this team. Reach out to your
           choreographer for assignments.
         </div>
       ) : (
-        <div>
+        <div id="routines">
           {routines.map(routine => (
             <Routine key={routine.id} routine={routine} team={team} />
           ))}

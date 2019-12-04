@@ -51,7 +51,7 @@ export const Assignments = props => {
           if (assignment.completed !== true) {
             return (
               <Card
-                class="vidCard"
+                className="vidCard"
                 name={`${teamId} ${id}`}
                 onClick={redirectToPractice}
                 key={assignment.id}

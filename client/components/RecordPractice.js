@@ -1,32 +1,36 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
-
-import videoJsOptions from '../../utils/videoJsOptions';
+import {
+  Button,
+  Segment,
+  Message,
+  Modal,
+  Item,
+  Grid,
+  Header
+} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
-
 import Calibrator from './Calibrator';
 import PrevAttempts from './PrevAttempts';
 
+import videoJsOptions from '../../utils/videoJsOptions';
+import scoringUtils from '../../utils/scoring';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-import scoringUtils from '../../utils/scoring';
 
-console.log('TCC: ', scoringUtils);
+// console.log('TCC: ', scoringUtils);
 
 //const tGS = {};
 //tGS.LTU = -Infinity;
-
 
 class RecordPractice extends React.Component {
   constructor(props) {
@@ -46,7 +50,11 @@ class RecordPractice extends React.Component {
       //worker: null,
       //LTU: 0,
       recording: [],
-      score: 0
+      selected: '',
+      attempts: {},
+      userActionAllowed: false
+      //grade: 0,
+      // allProcessedFrames: []
     };
 
     this.teamId = props.match.params.teamId;
@@ -57,52 +65,66 @@ class RecordPractice extends React.Component {
     this.drawBoth = this.drawBoth.bind(this);
   }
   componentDidMount() {
-    this.worker=((thisCont)=>{
-      let LTU=Infinity;
-      let replayStart=0;
-    const worker = new MyWorker();
-    worker.postMessage({resolution: {width: 1260, height: 720}});
-    // tGS.messages = [];
-    
-    worker.onmessage = event => {
-      console.log('Message received from worker: ', event);
-      thisCont.setState({allProcessedFrames : scoringUtils.parseForReplay(
-        event.data.data,
-        thisCont.props.routineFrames || event.data.data,
-        {x: 315, y: 150}, //midpoint
-        -1,
-        200,
-        num => {
-          thisCont.setState({score:num});
-        },
-        event.data.calibration,
-        thisCont.props.routine.calibrationframe.pose
-      )});
-      const video = document.querySelector('#video_html5_api');
-      video.addEventListener('play', () => {
+    this.worker = (thisCont => {
+      let LTU = Infinity;
+      let replayStart = 0;
+      const worker = new MyWorker();
+      worker.postMessage({resolution: {width: 1260, height: 720}});
+      // tGS.messages = [];
 
-        //console.log("HELLO");
-        replayStart=Date.now();
-      });
-    
-      video.addEventListener('timeupdate', event => {
-        const canvas = document.querySelector('#skeleton');
-        const ctx = canvas.getContext('2d');
-        // console.log('Start time is', tGS.replayStart);
-       // console.log("In time update event, thisCont is: ", thisCont);
-        scoringUtils.timeChangeCallback(
-          Date.now() - replayStart,
-          thisCont.state.allProcessedFrames,
-          ctx,
-          630,
-          360,
+      worker.onmessage = event => {
+        console.log('Message received from worker: ', event);
+        ///JM - Make sure that the user can't take calibration pic until poseNet's ready
+        if (event.data.type === 'Ready') {
+          thisCont.setState({userActionAllowed: true});
+          return;
+        }
+        const toSet = {};
+        toSet.allProcessedFrames = scoringUtils.parseForReplay(
+          event.data.data,
+          thisCont.props.routineFrames || event.data.data,
+          {x: 415, y: 200}, //midpoint
+          -1,
           200,
-          LTU
+          num => {
+            //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
+            toSet.grade = num;
+          },
+          event.data.calibration,
+          thisCont.props.routine.calibrationframe.pose
         );
-        LTU = Date.now() - replayStart;
-      });
-    };
-    return worker;})(this)
+        thisCont.setState({
+          attempts: {...thisCont.state.attempts, [event.data.name]: toSet}
+        });
+        const video = document.querySelector('#video_html5_api');
+
+        //BUG: SOMETIMES THIS GETS A BUG THAT SAYS CANNOT READ PROEPRTY ADDEVENTLISTENER OF NULL
+        video.addEventListener('play', () => {
+          //console.log("HELLO");
+          replayStart = Date.now();
+        });
+
+        video.addEventListener('timeupdate', () => {
+          if (thisCont.state.selected === event.data.name) {
+            const canvas = document.querySelector('#skeleton');
+            const ctx = canvas.getContext('2d');
+            // console.log('Start time is', tGS.replayStart);
+            // console.log("In time update event, thisCont is: ", thisCont);
+            scoringUtils.timeChangeCallback(
+              Date.now() - replayStart,
+              thisCont.state.attempts[event.data.name].allProcessedFrames,
+              ctx,
+              630,
+              360,
+              200,
+              LTU
+            );
+            LTU = Date.now() - replayStart;
+          }
+        });
+      };
+      return worker;
+    })(this);
     this.props.fetchRoutine(this.routineId).then(() => {
       this.playbackPlayer = videojs(
         this.playback,
@@ -152,14 +174,19 @@ class RecordPractice extends React.Component {
       });
 
       // user clicked the record button and started recording
+
+      const forStart = (tC => {
+        return () => tC.setState({selected: ''});
+      })(this);
       this.player.on('startRecord', () => {
+        forStart();
         console.log('started recording!');
       });
 
       // this.player.on('progressRecord', function() {
       //   console.log('currently recording', this.player.record().getDuration());
       // });
-      const forTimestamp=((worker)=>{
+      const forTimestamp = (worker => {
         const workerCanv = document.createElement('canvas');
         workerCanv.width = 630 * 2;
         workerCanv.height = 360 * 2;
@@ -167,13 +194,18 @@ class RecordPractice extends React.Component {
         return (video, timestamp) => {
           wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
           wcContext.drawImage(video, 0, 0);
-        
+
           worker.postMessage({
-            image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
+            image: wcContext.getImageData(
+              0,
+              0,
+              workerCanv.width,
+              workerCanv.height
+            ),
             timestamp: timestamp
           });
         };
-        })(this.worker)
+      })(this.worker);
       this.player.on('timestamp', function() {
         forTimestamp(
           document.querySelector('#video_html5_api'),
@@ -182,19 +214,24 @@ class RecordPractice extends React.Component {
       });
 
       // user completed recording and stream is available
-      const forFinish=((worker)=>{
-        return ()=>{
-          worker.postMessage({type: 'finished'});
-        }
-      })(this.worker)
+      const forFinish = ((worker, tC) => {
+        return name => {
+          worker.postMessage({type: 'finished', name});
+          tC.setState({selected: name});
+        };
+      })(this.worker, this);
       this.player.on('finishRecord', () => {
         // the blob object contains the recorded data that
         // can be downloaded by the user, stored on server etc.
-       
-       // tGS.recording = false;
-        forFinish();
+
+        // tGS.recording = false;
+        forFinish(this.player.recordedData.name);
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
+
+        //JM TESTING -- DOES THIS MAKE THE CAMERA TURN OFF?
+        // MediaStreamTrack.stop();
+        // console.log('MADE IT HERE');
         this.setState(state => {
           return {recording: [...state.recording, this.recordedData]};
         });
@@ -216,25 +253,6 @@ class RecordPractice extends React.Component {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
   }
-  upload() {
-    this.props.addPractice(
-      this.recordedData,
-      this.state.title,
-      this.routineId,
-      this.props.userId,
-      tGS.score
-    );
-
-    this.setState({...this.state, visible: true});
-  }
-
-  download() {
-    this.player.record().saveAs({video: 'video-name.webm'});
-  }
-
-  handleDismiss() {
-    this.setState({...this.state, visible: false});
-  }
 
   handleDelete(e, {name}) {
     this.setState(state => {
@@ -252,6 +270,9 @@ class RecordPractice extends React.Component {
     const newImage = document.createElement('img');
     newImage.src = calibration;
     newImage.decode().then(() => {
+      console.log('This on line 259', this);
+      ///RACE CONDITION
+
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
@@ -297,10 +318,14 @@ class RecordPractice extends React.Component {
         <div>
           <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
-              <Calibrator
-                calibration={this.state.calibration}
-                setCalibration={this.setCalibration}
-              />
+              {this.state.userActionAllowed ? (
+                <Calibrator
+                  calibration={this.state.calibration}
+                  setCalibration={this.setCalibration}
+                />
+              ) : (
+                <Message>Camera warming up. You should warm up, too!</Message>
+              )}
             </Modal.Content>
           </Modal>
         </div>
@@ -348,6 +373,8 @@ class RecordPractice extends React.Component {
             teamId={this.teamId}
             userId={this.props.userId}
             calibration={this.state.calibration}
+            //JM - PASSING ATTEMPTS OBJ WITH GRADE TO PREVATTEMPTS
+            attempts={this.state.attempts}
           />
         </div>
       </Segment>
