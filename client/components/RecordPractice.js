@@ -22,7 +22,7 @@ import MyWorker from '../workers/videoNet.worker.js';
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
 import scoringUtils from '../../utils/scoring';
 
-console.log('TCC: ', scoringUtils);
+// console.log('TCC: ', scoringUtils);
 
 //const tGS = {};
 //tGS.LTU = -Infinity;
