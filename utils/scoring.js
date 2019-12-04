@@ -156,40 +156,40 @@ const parseForReplay = (
   //May be worth changing if we run into performance issues
   const toReturn = new Map(
     minCostPairings(pwfs, cws, callback)
-      .pairs.map(pair => {
-        //pairs: first elem = dancer; second elem = choreographer
-        //this is scaling the choreographer to match the dancer
-        const target = labelPose(pair[0].pose); // practice
-        const source = labelPose(pair[1].pose); //routine
-        const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
+      .pairs// .map(pair => {
+      //   //pairs: first elem = dancer; second elem = choreographer
+      //   //this is scaling the choreographer to match the dancer
+      //   const target = labelPose(pair[0].pose); // practice
+      //   const source = labelPose(pair[1].pose); //routine
+      //   const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
 
-        // const routineCopy = {...pair[1]}
-        // const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
-        //   point.position.x = scaledRoutine[point.part].x
-        // })
-        // const unlabeledScaledRoutine = unLabelPose(scaledRoutine);
-        return [
-          pair[0],
-          {
-            ...pair[1],
-            pose: {
-              ...pair[1].pose,
-              keypoints: pair[1].pose.keypoints.map(point => ({
-                part: point.part,
-                score: point.score,
-                position: {
-                  x: scaledRoutine[point.part]
-                    ? scaledRoutine[point.part].x
-                    : scaledRoutine['head'].x,
-                  y: scaledRoutine[point.part]
-                    ? scaledRoutine[point.part].y
-                    : scaledRoutine['head'].y
-                }
-              }))
-            }
-          }
-        ];
-      })
+      //   // const routineCopy = {...pair[1]}
+      //   // const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
+      //   //   point.position.x = scaledRoutine[point.part].x
+      //   // })
+      //   // const unlabeledScaledRoutine = unLabelPose(scaledRoutine);
+      //   return [
+      //     pair[0],
+      //     {
+      //       ...pair[1],
+      //       pose: {
+      //         ...pair[1].pose,
+      //         keypoints: pair[1].pose.keypoints.map(point => ({
+      //           part: point.part,
+      //           score: point.score,
+      //           position: {
+      //             x: scaledRoutine[point.part]
+      //               ? scaledRoutine[point.part].x
+      //               : scaledRoutine['head'].x,
+      //             y: scaledRoutine[point.part]
+      //               ? scaledRoutine[point.part].y
+      //               : scaledRoutine['head'].y
+      //           }
+      //         }))
+      //       }
+      //     }
+      //   ];
+      // })
       .map(pair => {
         //    console.log("In pfr, first map statement, pair is: ", pair);
         return [
@@ -244,12 +244,12 @@ const timeChangeCallback = (
     ctx.clearRect(0, 0, width, height);
 
     // dancer
-    drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.4);
-    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.4);
+    drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.35);
+    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
 
     // choreographer
-    drawSkeleton(newDraws[1], 0, ctx, 0.4, 'green');
-    drawKeypoints(newDraws[1], 0, ctx, 0.4, 'green');
+    drawSkeleton(newDraws[1], 0, ctx, 0.35, 'yellow');
+    drawKeypoints(newDraws[1], 0, ctx, 0.35, 'yellow');
     //newDraws[1] contains the error path, which should also be drawn.
   }
 };

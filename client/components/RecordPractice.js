@@ -34,7 +34,7 @@ tGS.worker.onmessage = event => {
   tGS.allProcessedFrames = scoringUtils.parseForReplay(
     event.data.data,
     tGS.routineFrames || event.data.data /*should be cws, but scope issue*/,
-    {x: 315, y: 300}, //midpoint
+    {x: 315, y: 150}, //midpoint
     -1,
     200,
     num => {
