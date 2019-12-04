@@ -63,13 +63,13 @@ class RecordPractice extends React.Component {
     const worker = new MyWorker();
     worker.postMessage({resolution: {width: 1260, height: 720}});
     // tGS.messages = [];
-    
+
     worker.onmessage = event => {
       console.log('Message received from worker: ', event);
       thisCont.setState({allProcessedFrames : scoringUtils.parseForReplay(
         event.data.data,
         thisCont.props.routineFrames || event.data.data,
-        {x: 315, y: 150}, //midpoint
+        {x: 415, y: 200}, //midpoint
         -1,
         200,
         num => {
@@ -84,7 +84,7 @@ class RecordPractice extends React.Component {
         //console.log("HELLO");
         replayStart=Date.now();
       });
-    
+
       video.addEventListener('timeupdate', event => {
         const canvas = document.querySelector('#skeleton');
         const ctx = canvas.getContext('2d');
@@ -167,7 +167,7 @@ class RecordPractice extends React.Component {
         return (video, timestamp) => {
           wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
           wcContext.drawImage(video, 0, 0);
-        
+
           worker.postMessage({
             image: wcContext.getImageData(0, 0, workerCanv.width, workerCanv.height),
             timestamp: timestamp
@@ -190,7 +190,7 @@ class RecordPractice extends React.Component {
       this.player.on('finishRecord', () => {
         // the blob object contains the recorded data that
         // can be downloaded by the user, stored on server etc.
-       
+
        // tGS.recording = false;
         forFinish();
         console.log('finished recording: ', this.player.recordedData);
