@@ -5,6 +5,7 @@ import {Menu, Sidebar} from 'semantic-ui-react';
 
 const MembersSidebar = props => {
   const members = props.members || [];
+  //THIS WILL DEFAULT TO NOT VISIBLE
   const [visible, setVisible] = useState(true);
 
   //NEED WAY TO HANDLE OPEN
