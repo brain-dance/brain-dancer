@@ -8,7 +8,6 @@ const MembersSidebar = props => {
   const [visible, setVisible] = useState(true);
 
   //NEED WAY TO HANDLE OPEN
-  //NEED TO MOVE THIS
   const handleOpen = () => {
     setVisible(true);
   };
