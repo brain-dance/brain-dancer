@@ -28,11 +28,12 @@ const generateWireframes = async videoPath => {
 
   let i = 0;
   while (i < frameList.length) {
-    canvasify(frameList[i]).then(canvas => {
-      net.estimateSinglePose(canvas, {flipHorizontal: true}).then(wireframe => {
-        wireframes.push(wireframe);
-      });
+    const canvas = await canvasify(frameList[i]);
+    const wireframe = await net.estimateSinglePose(canvas, {
+      flipHorizontal: true
     });
+    wireframes.push(wireframe);
+
     i++;
   }
 
