@@ -33,6 +33,7 @@ const generateWireframes = async videoPath => {
         wireframes.push(wireframe);
       });
     });
+    i++;
   }
 
   removeFrames(frameList);
