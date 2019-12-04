@@ -52,6 +52,7 @@ class RecordPractice extends React.Component {
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
   }
+
   componentDidMount() {
     this.worker = (thisCont => {
       let LTU = Infinity;
@@ -78,7 +79,6 @@ class RecordPractice extends React.Component {
         });
         const video = document.querySelector('#video_html5_api');
         video.addEventListener('play', () => {
-          //console.log("HELLO");
           replayStart = Date.now();
         });
 
