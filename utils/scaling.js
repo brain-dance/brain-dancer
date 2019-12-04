@@ -174,13 +174,13 @@ const scaler = (source, target, calibration) => {
 
   //find new waist points (uses known waist midpoint and scaled waist length)
   scaled.leftHip = {
-    x: targetPelvis.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
-    y: targetPelvis.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
+    x: sourcePelvis.x + (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: sourcePelvis.y + (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
   scaled.rightHip = {
-    x: targetPelvis.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
-    y: targetPelvis.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
+    x: sourcePelvis.x - (Math.cos(waistAngle) * calibLengths.waist) / 2,
+    y: sourcePelvis.y - (Math.sin(waistAngle) * calibLengths.waist) / 2
   };
 
   //find left leg points using source angles
