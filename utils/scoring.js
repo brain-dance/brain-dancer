@@ -246,8 +246,8 @@ const timeChangeCallback = (
     ctx.clearRect(0, 0, width, height);
 
     // dancer
-    drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.35);
-    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
+    // drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.35);
+    // drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
 
     // choreographer
     drawSkeleton(newDraws[1], 0, ctx, 0.35, 'yellow');

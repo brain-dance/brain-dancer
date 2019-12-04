@@ -70,7 +70,7 @@ class RecordPractice extends React.Component {
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
           thisCont.props.routineFrames || event.data.data,
-          {x: 320, y: 480}, //midpoint
+          {x: 640, y: 480}, //midpoint
           -1,
           200,
           num => {
