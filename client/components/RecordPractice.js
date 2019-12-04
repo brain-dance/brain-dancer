@@ -324,9 +324,7 @@ class RecordPractice extends React.Component {
                   setCalibration={this.setCalibration}
                 />
               ) : (
-                <Message>
-                  Sorry! Camera warming up. You should warm up, too!
-                </Message>
+                <Message>Camera warming up. You should warm up, too!</Message>
               )}
             </Modal.Content>
           </Modal>
