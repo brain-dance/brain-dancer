@@ -2,7 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
-import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
+import {
+  Button,
+  Segment,
+  Message,
+  Modal,
+  Item,
+  Grid,
+  Header
+} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
@@ -43,7 +51,8 @@ class RecordPractice extends React.Component {
       //LTU: 0,
       recording: [],
       selected: '',
-      attempts: {}
+      attempts: {},
+      userActionAllowed: false
       //grade: 0,
       // allProcessedFrames: []
     };
@@ -65,6 +74,11 @@ class RecordPractice extends React.Component {
 
       worker.onmessage = event => {
         console.log('Message received from worker: ', event);
+        ///JM - Make sure that the user can't take calibration pic until poseNet's ready
+        if (event.data.type === 'Ready') {
+          thisCont.setState({userActionAllowed: true});
+          return;
+        }
         const toSet = {};
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
@@ -91,7 +105,7 @@ class RecordPractice extends React.Component {
         });
 
         video.addEventListener('timeupdate', () => {
-          if (thisCont.state.selected == event.data.name) {
+          if (thisCont.state.selected === event.data.name) {
             const canvas = document.querySelector('#skeleton');
             const ctx = canvas.getContext('2d');
             // console.log('Start time is', tGS.replayStart);
@@ -256,6 +270,9 @@ class RecordPractice extends React.Component {
     const newImage = document.createElement('img');
     newImage.src = calibration;
     newImage.decode().then(() => {
+      console.log('This on line 259', this);
+      ///RACE CONDITION
+
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
@@ -301,10 +318,16 @@ class RecordPractice extends React.Component {
         <div>
           <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
-              <Calibrator
-                calibration={this.state.calibration}
-                setCalibration={this.setCalibration}
-              />
+              {this.state.userActionAllowed ? (
+                <Calibrator
+                  calibration={this.state.calibration}
+                  setCalibration={this.setCalibration}
+                />
+              ) : (
+                <Message>
+                  Sorry! Camera warming up. You should warm up, too!
+                </Message>
+              )}
             </Modal.Content>
           </Modal>
         </div>
