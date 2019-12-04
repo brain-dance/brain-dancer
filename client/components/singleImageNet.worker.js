@@ -25,7 +25,7 @@ const init = () => {
       try {
         net
           .estimateSinglePose(event.data, {
-            flipHorizontal: false,
+            flipHorizontal: true,
             decodingMethod: 'single-person'
           })
           .then(result => {

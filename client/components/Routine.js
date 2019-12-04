@@ -16,7 +16,7 @@ const Routine = props => {
   return (
     //COULD ADD CHOREOGRAPHER [EAGER LOAD USERS ON ROUTINE]
     <Card
-      class="vidCard"
+      className="vidCard"
       raised
       name={`${id}`}
       onClick={redirectToWatchRoutine}
