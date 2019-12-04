@@ -13,7 +13,7 @@ const {
 const db = require('../server/db/db');
 const {green, red} = require('chalk');
 
-const {getPose} = require('../../backUtils/canvasify');
+const {getPose} = require('../backUtils/canvasify');
 const {createCanvas, loadImage} = require('canvas');
 
 const totalSeeds = 100;
@@ -193,18 +193,18 @@ async function createTestSeed() {
     routineId: armRoutine.id
   });
 
-  loadImage(
-    'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
-  ).then(image => {
-    ctx.clearRect(0, 0, 480, 360);
-    ctx.drawImage(image, 0, 0, 480, 360);
-  });
-  const sumoPose = await getPose(canvas);
-  // save calibration
-  await CalibrationFrame.create({
-    pose: sumoPose,
-    routineId: sumoRoutine.id
-  });
+  // loadImage(
+  //   'https://res.cloudinary.com/braindance/image/upload/v1575417047/e3bssmvvdpx5injax450.png'
+  // ).then(image => {
+  //   ctx.clearRect(0, 0, 480, 360);
+  //   ctx.drawImage(image, 0, 0, 480, 360);
+  // });
+  // const sumoPose = await getPose(canvas);
+  // // save calibration
+  // await CalibrationFrame.create({
+  //   pose: sumoPose,
+  //   routineId: sumoRoutine.id
+  // });
 
   loadImage(
     'https://res.cloudinary.com/braindance/image/upload/v1575435963/lraacfy3y0abaafi22ci.png'
@@ -220,18 +220,18 @@ async function createTestSeed() {
     routineId: jonRoutine.id
   });
 
-  loadImage(
-    'https://res.cloudinary.com/braindance/image/upload/v1575435361/rq2g3ijzfvyh4cgxkzji.png'
-  ).then(image => {
-    ctx.clearRect(0, 0, 480, 360);
-    ctx.drawImage(image, 0, 0, 480, 360);
-  });
-  const franticPose = await getPose(canvas);
-  // save calibration
-  await CalibrationFrame.create({
-    pose: franticPose,
-    routineId: franticRoutine.id
-  });
+  // loadImage(
+  //   'https://res.cloudinary.com/braindance/image/upload/v1575435361/rq2g3ijzfvyh4cgxkzji.png'
+  // ).then(image => {
+  //   ctx.clearRect(0, 0, 480, 360);
+  //   ctx.drawImage(image, 0, 0, 480, 360);
+  // });
+  // const franticPose = await getPose(canvas);
+  // // save calibration
+  // await CalibrationFrame.create({
+  //   pose: franticPose,
+  //   routineId: franticRoutine.id
+  // });
 
   // wireframes generated for each video
   const idkSkellies = await generateWireframes(idkRoutine.url);
@@ -256,16 +256,16 @@ async function createTestSeed() {
     })
   );
 
-  const sumoSkellies = await generateWireframes(sumoRoutine.url);
-  await Promise.all(
-    sumoSkellies.map((skelly, i) => {
-      return VideoFrame.create({
-        pose: skelly,
-        routineId: sumoRoutine.id,
-        frameNumber: i
-      });
-    })
-  );
+  // const sumoSkellies = await generateWireframes(sumoRoutine.url);
+  // await Promise.all(
+  //   sumoSkellies.map((skelly, i) => {
+  //     return VideoFrame.create({
+  //       pose: skelly,
+  //       routineId: sumoRoutine.id,
+  //       frameNumber: i
+  //     });
+  //   })
+  // );
 
   const jonSkellies = await generateWireframes(jonRoutine.url);
   await Promise.all(
@@ -278,16 +278,16 @@ async function createTestSeed() {
     })
   );
 
-  const franticSkellies = await generateWireframes(franticRoutine.url);
-  await Promise.all(
-    franticSkellies.map((skelly, i) => {
-      return VideoFrame.create({
-        pose: skelly,
-        routineId: franticRoutine.id,
-        frameNumber: i
-      });
-    })
-  );
+  // const franticSkellies = await generateWireframes(franticRoutine.url);
+  // await Promise.all(
+  //   franticSkellies.map((skelly, i) => {
+  //     return VideoFrame.create({
+  //       pose: skelly,
+  //       routineId: franticRoutine.id,
+  //       frameNumber: i
+  //     });
+  //   })
+  // );
 
   // END COMMENT OUT OF THINGS THAT TAKE A LONG TIME //
 
