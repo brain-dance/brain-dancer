@@ -75,7 +75,7 @@ class RecordPractice extends React.Component {
 
       worker.onmessage = event => {
         console.log('Message received from worker: ', event);
-        ///JM - Make sure that the user can't take calibration pic until poseNet's ready
+        //Make sure that the user can't take calibration pic until poseNet's ready
         if (event.data.type === 'Ready') {
           thisCont.setState({userActionAllowed: true});
           return;
@@ -230,9 +230,6 @@ class RecordPractice extends React.Component {
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
 
-        //JM TESTING -- DOES THIS MAKE THE CAMERA TURN OFF?
-        // MediaStreamTrack.stop();
-        // console.log('MADE IT HERE');
         this.setState(state => {
           return {recording: [...state.recording, this.recordedData]};
         });
@@ -254,7 +251,7 @@ class RecordPractice extends React.Component {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
     document.querySelectorAll('canvas').forEach(el => {
-      console.log('mount canvas', el)
+      console.log('mount canvas', el);
       el.width = 640;
       el.height = 480;
     });
@@ -276,9 +273,6 @@ class RecordPractice extends React.Component {
     const newImage = document.createElement('img');
     newImage.src = calibration;
     newImage.decode().then(() => {
-      console.log('This on line 259', this);
-      ///RACE CONDITION
-
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
@@ -380,7 +374,6 @@ class RecordPractice extends React.Component {
             teamId={this.teamId}
             userId={this.props.userId}
             calibration={this.state.calibration}
-            //JM - PASSING ATTEMPTS OBJ WITH GRADE TO PREVATTEMPTS
             attempts={this.state.attempts}
           />
         </div>
