@@ -53,7 +53,7 @@ export const Dashboard = props => {
   }, []);
 
   if (!teams || !teams.length) {
-    return <h3>Unexpected error! You do not exist!</h3>;
+    return <h3>Hmm. It looks like you do not have any teams yet.</h3>;
   } else {
     return (
       <Grid id="container">
@@ -74,7 +74,10 @@ export const Dashboard = props => {
 
           <Modal dimmer="inverted" open={memberModalOpen}>
             <Modal.Content>
-              <AddMemberForm setMemberModalOpen={setMemberModalOpen} />
+              <AddMemberForm
+                selectedTeamId={selectedTeamId}
+                setMemberModalOpen={setMemberModalOpen}
+              />
             </Modal.Content>
           </Modal>
 
