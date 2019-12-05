@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import {Routines, MembersSidebar} from './index';
 import {Segment, Button, Icon, Sidebar} from 'semantic-ui-react';
@@ -7,8 +7,13 @@ import {useSelector} from 'react-redux';
 const Team = props => {
   const teamId = props.match.params.teamId;
   const team = useSelector(state => state.teams.find(t => t.id === +teamId));
-
   const myRole = team.role;
+  const [visible, setVisible] = useState(false);
+
+  const handleOpen = () => {
+    setVisible(true);
+  };
+
   return !team || !myRole ? (
     <Segment color="orange">You are no longer on this team.</Segment>
   ) : (
@@ -16,7 +21,13 @@ const Team = props => {
       <MembersSidebar
         members={team.members}
         handleUpdateTeam={props.handleUpdateTeam}
+        handleOpen={handleOpen}
+        visible={visible}
+        setVisible={setVisible}
       />
+      <Button floated="right" color="blue" icon onClick={handleOpen}>
+        <Icon name="users" />
+      </Button>
       <Sidebar.Pusher>
         <Segment raised id="team">
           {myRole === 'choreographer' && (
