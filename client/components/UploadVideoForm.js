@@ -10,7 +10,7 @@ import {
 import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
-  const {blob, teamId, userId} = props;
+  const {blob, teamId, userId, blobInfo} = props;
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
@@ -19,36 +19,46 @@ const UploadVideoForm = props => {
   const [isUploaded, setIsUploaded] = useState(false);
   const dispatch = useDispatch();
   const isAssignedPractice = props.match.params.hasOwnProperty('routineId');
+  // ^ this means that UploadVideoForm is appearing
+  // on a RecordPractice page (as opposed to a RecordRoutine page)
+  // and therefore should be treated as a practice
 
   const handleSelectVid = () => {
     setOpen(!open);
     setIsClickedSelectVid(!isClickedSelectVid);
   };
 
+  const redirectToTeamPage = () => {
+    console.log('Team Id: ', teamId);
+    props.history.push(`/team/${teamId}`);
+  };
+
   const handleClickClose = () => {
     setOpen(!open);
     setIsClickedClose(!isClickedClose);
+    if (isUploaded) redirectToTeamPage();
   };
 
   const addRoutine = () => {
     dispatch(addRoutineThunk(blob, title, teamId, userId, props.calibration));
   };
 
-  const addPractice = () => {
-    let grade = 0;
-    dispatch(addPracticeThunk(blob, title, teamId, userId, grade));
+  const addPractice = grade => {
+    dispatch(
+      addPracticeThunk(blob, title, teamId, userId, props.calibration, grade)
+    );
   };
 
   const upload = () => {
     //add assigned practices submitted by dancers; mark assignment complete
     if (isAssignedPractice) {
       let routineId = +props.match.params.routineId;
-      dispatch(submitAssignmentThunk(blob, routineId));
-      addPractice(blob, title, teamId, userId, props.calibration);
+      dispatch(submitAssignmentThunk(routineId));
+      let grade = blobInfo.grade;
+      addPractice(grade);
     } else {
       //add routines submitted by choreographers
-      //NOTE SETTING GRADE TO ZERO FOR NOW
-      addRoutine(blob, title, teamId, userId, 0);
+      addRoutine();
     }
   };
 

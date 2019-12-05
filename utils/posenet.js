@@ -7,7 +7,7 @@ const singlePoseNet = (stride = 16) => {
     input: {
       architecture: 'MobileNetV1',
       outputStride: stride,
-      inputResolution: {width: 640, height: 360},
+      inputResolution: {width: 640, height: 480},
       multiplier: 0.75,
       quantBytes: 2
     },
@@ -30,5 +30,5 @@ const singlePoseNet = (stride = 16) => {
     })
     .then(net => net);
 };
-module.exports.singlePoseNet=singlePoseNet;
+module.exports.singlePoseNet = singlePoseNet;
 //module.exports = {singlePoseNet};

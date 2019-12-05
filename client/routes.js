@@ -14,7 +14,7 @@ import {
 } from './components';
 import {WatchRoutine} from './components/watchvideo';
 import {me, fetchUserTeams} from './store';
-import WireframeTest from './components/WireframeTest';
+// import WireframeTest from './components/WireframeTest';
 
 /**
  * COMPONENT
@@ -34,26 +34,9 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
         {/* <Route path="/routines/:id" component={Choreo} /> */}
-        <Route path="/test" component={WireframeTest} />
+        {/* <Route path="/test" component={WireframeTest} /> */}
 
-        {isLoggedIn && (
-          <Switch>
-            {/* Routes placed here are only available after logging in */}
-            <Route path="/watch/routines/:id" component={WatchRoutine} />
-            <Route exact path="/home" component={Dashboard} />
-            <Route
-              path="/team/:teamId/routine/:routineId/add"
-              component={RecordPractice}
-            />
-            <Route path="/team/:teamId/routine/:routineId" component={Choreo} />
-            <Route path="/team/:teamId/add" component={RecordRoutine} />
-            <Route path="/team/:teamId" component={Dashboard} />
-            {/* <Route exact path="/new-routine" component={RecordRoutine} />
-            <Route exact path="/new-practice" component={RecordPractice} /> */}
-            <Route exact path="/my-assignments" component={Assignments} />
-            <Route component={Dashboard} />
-          </Switch>
-        )}
+        {isLoggedIn && <Route component={Dashboard} />}
         {/* Displays our Login component as a fallback */}
         <Route component={Login} />
       </Switch>

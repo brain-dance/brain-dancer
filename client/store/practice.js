@@ -27,24 +27,42 @@ export const addPracticeThunk = (
   title,
   routineId,
   userId,
+  calibration,
   grade
 ) => async dispatch => {
+  const imageServerUrl =
+    'https://api.cloudinary.com/v1_1/braindance/image/upload';
+
   const serverUrl = 'https://api.cloudinary.com/v1_1/braindance/video/upload';
   var recording = recordedData;
-
   try {
+    // info to upload calibration image
+    const calibrationFormData = {
+      file: calibration,
+      upload_preset: 'acrhvgee'
+    };
+
+    // info to upload video
     var formData = new FormData();
     formData.append('file', recording, recording.name);
     formData.append('upload_preset', 'acrhvgee');
     // console.log('upload recording ' + recording.name + ' to ' + serverUrl);
 
-    // start upload
+    // start upload calibration
+    const calibUpload = await axios.post(imageServerUrl, calibrationFormData);
+    console.log('calibration uploaded', calibUpload);
+
+    // start upload video
     const upload = await axios.post(serverUrl, formData);
     console.log('upload', upload);
     // Docs: https://cloudinary.com/documentation/upload_videos
 
+    const uploadUrl = upload.data.url.split('.');
+    uploadUrl[uploadUrl.length - 1] = 'mp4';
+    const fixedUrl = uploadUrl.join('.');
+
     const newPractice = {
-      url: upload.data.url,
+      url: fixedUrl,
       title,
       routineId,
       userId,
@@ -53,6 +71,14 @@ export const addPracticeThunk = (
 
     //SETTING GRADE TO ZERO FOR NOW
     const {data} = await axios.post('/api/practices', newPractice);
+
+    // pass calibration image and routine ID to add new row + generate skelly
+    const res = await axios.post('/api/calibration', {
+      url: calibUpload.data.url,
+      practiceId: data.id
+    });
+    console.log('calibration skelly', res);
+
     dispatch(addPractice(data));
   } catch (err) {
     console.log(err);
