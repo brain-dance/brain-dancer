@@ -91,7 +91,7 @@ class RecordPractice extends React.Component {
           thisCont.props.routineFrames || event.data.data,
           {x: videoJsOptions.width, y: videoJsOptions.height}, //midpoint
           -1,
-          videoJsOptions.plugins.record.timeslice,
+          videoJsOptions.plugins.record.timeSlice,
           num => {
             //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
             toSet.grade = num;
@@ -122,7 +122,7 @@ class RecordPractice extends React.Component {
               ctx,
               videoJsOptions.width,
               videoJsOptions.height,
-              videoJsOptions.timeslice,
+              videoJsOptions.plugins.record.timeSlice,
               LTU
             );
             LTU = Date.now() - replayStart;
