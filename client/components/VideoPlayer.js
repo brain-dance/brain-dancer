@@ -1,8 +1,8 @@
 import React from 'react';
 import VideoPlayer from 'react-video-js-player';
-
+import videoJsOptions from '../../utils/videoJsOptions'
 const VideoAttemptViewer = () => {
-  const videoPlayer = {};
+  //let videoPlayer = {};
   const state = {
     video: {
       //WHAT CAN I PULL FROM BLOB?
@@ -15,7 +15,7 @@ const VideoAttemptViewer = () => {
 
   const onPlayerReady = player => {
     console.log('Player is ready: ', player);
-    videoPlayer = player;
+   // videoPlayer = player;
   };
 
   const onVideoPlay = duration => {
@@ -49,8 +49,8 @@ const VideoAttemptViewer = () => {
         controls={true}
         src={state.video.src}
         poster={state.video.poster}
-        width="720"
-        height="420"
+        width={`${videoJsOptions.width}`}
+        height={`${videoJsOptions.height}`}
         onReady={onPlayerReady}
         onPlay={onVideoPlay}
         onPause={onVideoPause}

@@ -1,9 +1,9 @@
 import {sendFrame, detectPoseInRealTime} from '../brain/posenet2';
-
+import videoJsOptions from '../utils/videoJsOptions'
 var options = {
   controls: true,
-  width: 640,
-  height: 480,
+  width: videoJsOptions.width,
+  height: videoJsOptions.height,
   fluid: false,
   controlBar: {
     volumePanel: false
@@ -13,7 +13,7 @@ var options = {
       audio: true,
       video: true,
       maxLength: 10,
-      timeSlice: 1000, //necessary for timestamp
+      timeSlice: videoJsOptions.plugins.record.timeSlice, //necessary for timestamp
       debug: true
     }
   }

@@ -5,13 +5,14 @@ let net = {};
 let calibration = {};
 
 self.onmessage = set => {
+  console.log(set);
   if (set.data.resolution) {
     poseNetConfig = {
       algorithm: 'single-pose', //other option: multi-pose
       input: {
         architecture: 'MobileNetV1',
         outputStride: 16,
-        inputResolution: {width: 640, height: 480},
+        inputResolution: set.data.resolution,
         multiplier: 0.75,
         quantBytes: 2
       },
@@ -24,6 +25,9 @@ self.onmessage = set => {
         showPoints: true
       }
     };
+    postMessage({type: 'Ready'});
+    
+     
     posenet.load(poseNetConfig.input).then(newNet => {
       net = newNet;
       postMessage({type: 'Ready'});
