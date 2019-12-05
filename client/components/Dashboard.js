@@ -43,7 +43,13 @@ export const Dashboard = props => {
       location[location.length - 2] === 'team'
     ) {
       setSelectedTeamId(+location[2]);
+    } else {
+      setSelectedTeamId(0);
     }
+
+    document.querySelector('body').classList.add('loggedin');
+
+    return () => document.querySelector('body').classList.remove('loggedin');
   }, []);
 
   if (!teams || !teams.length) {
