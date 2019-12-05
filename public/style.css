@@ -66,7 +66,7 @@ body.loggedin {
 }
 
 #navbar.loggedin {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 1);
   position: fixed;
   padding: 0px;
   top: 0;
@@ -276,4 +276,8 @@ video {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#grade {
+  color: white;
 }
