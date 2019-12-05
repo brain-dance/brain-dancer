@@ -62,6 +62,7 @@ export const addTeamThunk = teamBody => async dispatch => {
 };
 
 export const addTeamMemberThunk = (teamId, userId, role) => async dispatch => {
+  teamId = +teamId;
   const {data} = await axios.post(`/api/teams/${teamId}`, {
     role,
     userId

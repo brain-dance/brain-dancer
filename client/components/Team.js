@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 
 const Team = props => {
   const teamId = props.match.params.teamId;
+  const {setMemberModalOpen} = props;
   const team = useSelector(state => state.teams.find(t => t.id === +teamId));
   const [visible, setVisible] = useState(false);
 
@@ -24,6 +25,7 @@ const Team = props => {
           handleOpen={handleOpen}
           visible={visible}
           setVisible={setVisible}
+          setMemberModalOpen={setMemberModalOpen}
         />
         <Sidebar.Pusher>
           <Segment raised id="team">
