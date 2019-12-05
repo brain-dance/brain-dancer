@@ -2,7 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
-import {Button, Segment, Modal, Item, Grid, Header} from 'semantic-ui-react';
+import {
+  Button,
+  Segment,
+  Message,
+  Modal,
+  Item,
+  Grid,
+  Header
+} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
@@ -43,8 +51,9 @@ class RecordPractice extends React.Component {
       //LTU: 0,
       recording: [],
       selected: '',
-      attempts: {}
-      //score: 0,
+      attempts: {},
+      userActionAllowed: false
+      //grade: 0,
       // allProcessedFrames: []
     };
 
@@ -66,6 +75,11 @@ class RecordPractice extends React.Component {
 
       worker.onmessage = event => {
         console.log('Message received from worker: ', event);
+        ///JM - Make sure that the user can't take calibration pic until poseNet's ready
+        if (event.data.type === 'Ready') {
+          thisCont.setState({userActionAllowed: true});
+          return;
+        }
         const toSet = {};
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
@@ -75,7 +89,7 @@ class RecordPractice extends React.Component {
           200,
           num => {
             //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
-            toSet.score = num;
+            toSet.grade = num;
           },
           event.data.calibration,
           thisCont.props.routine.calibrationframe.pose
@@ -84,12 +98,15 @@ class RecordPractice extends React.Component {
           attempts: {...thisCont.state.attempts, [event.data.name]: toSet}
         });
         const video = document.querySelector('#video_html5_api');
+
+        //BUG: SOMETIMES THIS GETS A BUG THAT SAYS CANNOT READ PROEPRTY ADDEVENTLISTENER OF NULL
         video.addEventListener('play', () => {
+          //console.log("HELLO");
           replayStart = Date.now();
         });
 
         video.addEventListener('timeupdate', () => {
-          if (thisCont.state.selected == event.data.name) {
+          if (thisCont.state.selected === event.data.name) {
             const canvas = document.querySelector('#skeleton');
             const ctx = canvas.getContext('2d');
             // console.log('Start time is', tGS.replayStart);
@@ -212,6 +229,10 @@ class RecordPractice extends React.Component {
         forFinish(this.player.recordedData.name);
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
+
+        //JM TESTING -- DOES THIS MAKE THE CAMERA TURN OFF?
+        // MediaStreamTrack.stop();
+        // console.log('MADE IT HERE');
         this.setState(state => {
           return {recording: [...state.recording, this.recordedData]};
         });
@@ -233,25 +254,6 @@ class RecordPractice extends React.Component {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
   }
-  upload() {
-    this.props.addPractice(
-      this.recordedData,
-      this.state.title,
-      this.routineId,
-      this.props.userId,
-      tGS.score
-    );
-
-    this.setState({...this.state, visible: true});
-  }
-
-  download() {
-    this.player.record().saveAs({video: 'video-name.webm'});
-  }
-
-  handleDismiss() {
-    this.setState({...this.state, visible: false});
-  }
 
   handleDelete(e, {name}) {
     this.setState(state => {
@@ -269,6 +271,9 @@ class RecordPractice extends React.Component {
     const newImage = document.createElement('img');
     newImage.src = calibration;
     newImage.decode().then(() => {
+      console.log('This on line 259', this);
+      ///RACE CONDITION
+
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
@@ -314,10 +319,14 @@ class RecordPractice extends React.Component {
         <div>
           <Modal dimmer="inverted" open={this.state.modalOpen}>
             <Modal.Content>
-              <Calibrator
-                calibration={this.state.calibration}
-                setCalibration={this.setCalibration}
-              />
+              {this.state.userActionAllowed ? (
+                <Calibrator
+                  calibration={this.state.calibration}
+                  setCalibration={this.setCalibration}
+                />
+              ) : (
+                <Message>Camera warming up. You should warm up, too!</Message>
+              )}
             </Modal.Content>
           </Modal>
         </div>
@@ -366,6 +375,8 @@ class RecordPractice extends React.Component {
             teamId={this.teamId}
             userId={this.props.userId}
             calibration={this.state.calibration}
+            //JM - PASSING ATTEMPTS OBJ WITH GRADE TO PREVATTEMPTS
+            attempts={this.state.attempts}
           />
         </div>
       </Segment>

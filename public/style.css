@@ -58,6 +58,10 @@ body {
 }
 
 #navbar {
+  background-color: rgba(255, 255, 255, 0);
+}
+
+#navbar.loggedin {
   background-color: white;
   position: fixed;
   padding: 0px;
@@ -122,6 +126,17 @@ body,
   background-color: #f8f8f8;
   box-shadow: none;
   border: none;
+}
+
+.card {
+  margin: 20px !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.video-card {
+  width: 100%;
 }
 
 #choreo {

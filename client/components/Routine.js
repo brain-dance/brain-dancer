@@ -22,7 +22,7 @@ const Routine = props => {
       onClick={redirectToWatchRoutine}
     >
       <Card.Content>
-        <video id={title} width="200" src={url} />
+        <video id={title} className="video-card" width="200" src={url} />
         <Card.Header>{title}</Card.Header>
         {team && team.name ? (
           <Card.Meta>{team.name}</Card.Meta>

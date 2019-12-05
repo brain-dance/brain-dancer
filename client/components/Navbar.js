@@ -6,7 +6,7 @@ import {logout} from '../store';
 import {Menu, Header, Icon, Image} from 'semantic-ui-react';
 
 const Navbar = ({handleClick, isLoggedIn}) => (
-  <div id="navbar">
+  <div id="navbar" className={isLoggedIn ? 'loggedin' : ''}>
     {isLoggedIn ? (
       <Menu secondary className="item-container">
         {/* The Menubar will show these links after you log in */}
