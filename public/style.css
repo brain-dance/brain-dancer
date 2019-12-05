@@ -232,11 +232,13 @@ a.active {
   justify-content: center;
 }
 
-#record-button.hidden {
+#record-button.hidden,
+#toggleBtn.hidden {
   visibility: hidden !important;
 }
 
-#record-button > i {
+#record-button > i,
+#toggleBtn > i {
   margin: 0 0.5rem 0.5rem 0 !important;
   font-size: 1.3rem !important;
 }
@@ -254,18 +256,24 @@ video {
 }
 
 /* Members sidebar */
-.members,
-.toggle {
+#memberSidebar {
+  width: 100%;
+}
+
+.members {
   display: flex;
   align-content: center;
 }
 
-/* .members {
-  justify-content: space-around;
-} */
-
-.toggle {
-  justify-content: flex-start;
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 17px;
+#toggleBtn {
+  position: fixed;
+  right: 124px;
+  bottom: 54px;
+  background-color: #009aff;
+  color: #fff;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

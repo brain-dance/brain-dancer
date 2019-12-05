@@ -19,6 +19,7 @@ const Team = props => {
     <React.Fragment>
       <Sidebar.Pushable as={Segment}>
         <MembersSidebar
+          className="memberSidebar"
           members={team.members}
           handleUpdateTeam={props.handleUpdateTeam}
           handleOpen={handleOpen}
@@ -43,16 +44,11 @@ const Team = props => {
       )}
       <Button
         className={!visible ? 'visible' : 'hidden'}
-        id="toggle"
+        id="toggleBtn"
         circular
         icon="users"
         onClick={handleOpen}
-      >
-        {/* <div className="toggle">
-          <p>Show Members</p>
-          <Radio onClick={handleOpen} toggle />
-        </div> */}
-      </Button>
+      />
     </React.Fragment>
   );
 };
