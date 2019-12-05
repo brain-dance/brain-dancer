@@ -10,7 +10,7 @@ import {
 import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
-  const {blob, teamId, userId} = props;
+  const {blob, teamId, userId, blobInfo} = props;
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
@@ -49,7 +49,7 @@ const UploadVideoForm = props => {
       let routineId = +props.match.params.routineId;
       dispatch(submitAssignmentThunk(routineId));
       //NOTE SETTING GRADE TO ZERO FOR NOW -- will probably hand down grade from props/recordPractice via web worker
-      let grade = 0;
+      let grade = blobInfo.grade;
       addPractice(grade);
     } else {
       //add routines submitted by choreographers
