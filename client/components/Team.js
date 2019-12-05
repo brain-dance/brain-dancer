@@ -26,7 +26,7 @@ const Team = props => {
         setVisible={setVisible}
       />
       <div className="toggle">
-        <h3>Show Members</h3>
+        <p>Show Members</p>
         <Radio onClick={handleOpen} toggle />
       </div>
       <Sidebar.Pusher>
