@@ -64,6 +64,7 @@ class RecordPractice extends React.Component {
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
+    this.countdownRecord = this.countdownRecord.bind(this);
   }
 
   componentDidMount() {
@@ -252,7 +253,7 @@ class RecordPractice extends React.Component {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
     document.querySelectorAll('canvas').forEach(el => {
-      console.log('mount canvas', el);
+      // console.log('mount canvas', el);
       el.width = 640;
       el.height = 480;
     });
@@ -298,7 +299,21 @@ class RecordPractice extends React.Component {
     // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
     // drawKeypoints(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
   }
+  countdownRecord() {
+    this.playbackPlayer.play();
+    this.player.record().start();
+    // let i = 5;
+    // const countdown = setInterval(() => {
+    //   if (i < 9) this.setState({...this.state, count: i});
+    //   i++;
+    //   if (i === 10) {
+    //     this.player.record().start();
 
+    //     this.setState({...this.state, count: 0});
+    //     clearInterval(countdown);
+    //   }
+    // }, 600);
+  }
   render() {
     return (
       <Segment>
@@ -343,6 +358,12 @@ class RecordPractice extends React.Component {
               <source src={this.props.routine.url} type="video/mp4" />
             </video>
             <Button content="Play back" onClick={this.playboth} color="blue" />
+            <Button
+              color="red"
+              floated="right"
+              content={`Record ${this.state.count > 0 ? this.state.count : ''}`}
+              onClick={this.countdownRecord}
+            />
             <div id="gallery">
               <PrevAttempts
                 recording={this.state.recording}
