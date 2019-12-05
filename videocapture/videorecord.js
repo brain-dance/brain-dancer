@@ -2,8 +2,8 @@ import {sendFrame, detectPoseInRealTime} from '../brain/posenet2';
 
 var options = {
   controls: true,
-  width: 360,
-  height: 240,
+  width: 640,
+  height: 480,
   fluid: false,
   controlBar: {
     volumePanel: false

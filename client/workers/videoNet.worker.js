@@ -11,7 +11,7 @@ self.onmessage = set => {
       input: {
         architecture: 'MobileNetV1',
         outputStride: 16,
-        inputResolution: set.resolution,
+        inputResolution: {width: 640, height: 480},
         multiplier: 0.75,
         quantBytes: 2
       },

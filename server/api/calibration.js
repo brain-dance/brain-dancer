@@ -16,10 +16,10 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
   try {
-    const canvas = createCanvas(480, 360);
+    const canvas = createCanvas(640, 480);
     const ctx = canvas.getContext('2d');
     loadImage(req.body.url).then(image => {
-      ctx.drawImage(image, 0, 0, 480, 360);
+      ctx.drawImage(image, 0, 0, 640, 480);
     });
     const fetchedSkelly = await getPose(canvas);
     // const calibrationSkelly = await getPose(fetchedSkelly);
