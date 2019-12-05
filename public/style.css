@@ -14,8 +14,8 @@ body {
   top: 0;
   left: 0;
   z-index: 1;
-  width: 360px;
-  height: 210px;
+  width: 640;
+  height: 480px;
   margin: 8px;
 }
 
@@ -46,9 +46,11 @@ body {
 }
 
 #skeleton {
+  position: relative;
+  top: -480px;
   width: 640px;
-  height: 360px;
-  background-color: black;
+  height: 450px;
+  /* background-color: black; */
   border-radius: 5px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg); /* Safari and Chrome */
