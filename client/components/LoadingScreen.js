@@ -21,7 +21,7 @@ const LoadingScreen = props => {
   ) : (
     <Message
       header="Success!"
-      content="Your video has been uploaded, but it will take a few minutes to process that 5-star routine. We'll email you a link when it's done!"
+      content="Your video has been uploaded, but it will take a few minutes to process that 5-star routine. It will show up on your team page soon."
     />
   );
 };
