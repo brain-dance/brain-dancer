@@ -19,7 +19,6 @@ const Team = props => {
     <React.Fragment>
       <Sidebar.Pushable as={Segment}>
         <MembersSidebar
-          className="memberSidebar"
           members={team.members}
           handleUpdateTeam={props.handleUpdateTeam}
           handleOpen={handleOpen}

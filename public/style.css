@@ -256,8 +256,8 @@ video {
 }
 
 /* Members sidebar */
-#memberSidebar {
-  width: 100%;
+.ui.wide.right.sidebar {
+  width: 200px !important;
 }
 
 .members {
