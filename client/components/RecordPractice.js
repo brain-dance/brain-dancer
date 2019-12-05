@@ -71,7 +71,9 @@ class RecordPractice extends React.Component {
       let LTU = Infinity;
       let replayStart = 0;
       const worker = new MyWorker();
-      worker.postMessage({resolution: {width: videoJsOptions.width, height: videoJsOptions.height}});
+      worker.postMessage({
+        resolution: {width: videoJsOptions.width, height: videoJsOptions.height}
+      });
       // tGS.messages = [];
 
       worker.onmessage = event => {
@@ -87,7 +89,7 @@ class RecordPractice extends React.Component {
           thisCont.props.routineFrames || event.data.data,
           {x: videoJsOptions.width, y: videoJsOptions.height}, //midpoint
           -1,
-          videoJsOptions.plugins.record.timeslice,
+          videoJsOptions.plugins.record.timeSlice,
           num => {
             //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
             toSet.grade = num;
@@ -118,7 +120,7 @@ class RecordPractice extends React.Component {
               ctx,
               videoJsOptions.width,
               videoJsOptions.height,
-              videoJsOptions.timeslice,
+              videoJsOptions.plugins.record.timeSlice,
               LTU
             );
             LTU = Date.now() - replayStart;
@@ -278,7 +280,12 @@ class RecordPractice extends React.Component {
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
-        image: tempContext.getImageData(0, 0, videoJsOptions.width, videoJsOptions.height)
+        image: tempContext.getImageData(
+          0,
+          0,
+          videoJsOptions.width,
+          videoJsOptions.height
+        )
       });
     });
   }
