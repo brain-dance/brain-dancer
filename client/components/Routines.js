@@ -10,7 +10,7 @@ const Routines = props => {
     <Segment basic>
       {!routines.length ? (
         <div>
-          There are no routines yet for this team. Reach out to your
+          Welcome! There are no routines yet for this team. Reach out to your
           choreographer for assignments.
         </div>
       ) : (
