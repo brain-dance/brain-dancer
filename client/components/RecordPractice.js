@@ -65,6 +65,7 @@ class RecordPractice extends React.Component {
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
     this.countdownRecord = this.countdownRecord.bind(this);
+    this.playAndRecord = this.playAndRecord.bind(this);
   }
 
   componentDidMount() {
@@ -299,21 +300,19 @@ class RecordPractice extends React.Component {
     // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
     // drawKeypoints(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
   }
+
   countdownRecord() {
+    // this.playbackPlayer.play();
+    // this.player.record().start();
+    console.log('hello!?!?');
+    setTimeout(() => this.playAndRecord(), 2400);
+  }
+
+  playAndRecord() {
     this.playbackPlayer.play();
     this.player.record().start();
-    // let i = 5;
-    // const countdown = setInterval(() => {
-    //   if (i < 9) this.setState({...this.state, count: i});
-    //   i++;
-    //   if (i === 10) {
-    //     this.player.record().start();
-
-    //     this.setState({...this.state, count: 0});
-    //     clearInterval(countdown);
-    //   }
-    // }, 600);
   }
+
   render() {
     return (
       <Segment>
