@@ -253,6 +253,11 @@ class RecordPractice extends React.Component {
     if (this.props.routine.calibrationframe) {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
+    document.querySelectorAll('canvas').forEach(el => {
+      console.log('mount canvas', el)
+      el.width = 640;
+      el.height = 480;
+    });
   }
 
   handleDelete(e, {name}) {
