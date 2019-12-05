@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
-
+import {Link} from 'react-router-dom';
 import {addRoutineThunk} from '../store';
 
 import setupCamera from '../../utils/setupCamera';
@@ -12,7 +12,7 @@ import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Header, Modal} from 'semantic-ui-react';
+import {Header, Modal, Button, Segment} from 'semantic-ui-react';
 
 import Calibrator from './Calibrator';
 import PrevAttempts from './PrevAttempts';
@@ -26,12 +26,14 @@ class RecordRoutine extends React.Component {
     this.state = {
       calibration: {},
       recording: [],
-      modalOpen: true
+      modalOpen: true,
+      count: 0
     };
 
     this.teamId = props.match.params.teamId;
     this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
+    this.countdownRecord = this.countdownRecord.bind(this);
   }
 
   componentDidMount() {
@@ -105,13 +107,40 @@ class RecordRoutine extends React.Component {
   }
 
   setCalibration(calibration) {
-    console.log('calibration', calibration);
+    // console.log('calibration', calibration);
     this.setState({...this.state, calibration, modalOpen: false});
+  }
+
+  countdownRecord() {
+    let i = 5;
+    const countdown = setInterval(() => {
+      if (i < 9) this.setState({...this.state, count: i});
+      i++;
+      if (i === 10) {
+        this.player.record().start();
+
+        this.setState({...this.state, count: 0});
+        clearInterval(countdown);
+      }
+    }, 600);
   }
 
   render() {
     return (
-      <div>
+      <Segment>
+        <Button
+          primary
+          as={Link}
+          to={`/team/${this.teamId}`}
+          floated="left"
+          labelPosition="left"
+          icon="left chevron"
+          content="Back to Team"
+        />
+        <Header as="h2" floated="left">
+          Record Your Routine
+        </Header>
+        <br />
         <div>
           <Modal open={this.state.modalOpen} dimmer="inverted">
             <Modal.Content>
@@ -122,15 +151,23 @@ class RecordRoutine extends React.Component {
             </Modal.Content>
           </Modal>
         </div>
-        <Header as="h2">Record Your Routine</Header>
+        <br />
         <div id="recording" data-vjs-player>
           <video
             id="video"
             ref={node => (this.videoNode = node)}
-            controls={true}
+            controls={false}
             autoPlay
             className="video-js vjs-default-skin"
           ></video>
+        </div>
+        <br />
+        <div>
+          <Button
+            color="red"
+            content={`Record ${this.state.count > 0 ? this.state.count : ''}`}
+            onClick={this.countdownRecord}
+          />
         </div>
         <br />
         <div id="gallery">
@@ -142,7 +179,7 @@ class RecordRoutine extends React.Component {
             calibration={this.state.calibration}
           />
         </div>
-      </div>
+      </Segment>
     );
   }
 }
