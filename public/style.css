@@ -192,3 +192,20 @@ video {
   -webkit-transform: rotateY(180deg); /* Safari and Chrome */
   -moz-transform: rotateY(180deg); /* Firefox */
 }
+
+/* Members sidebar */
+.members,
+.toggle {
+  display: flex;
+  align-content: center;
+}
+
+/* .members {
+  justify-content: space-around;
+} */
+
+.toggle {
+  justify-content: flex-start;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 17px;
+}
