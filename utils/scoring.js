@@ -250,8 +250,8 @@ const timeChangeCallback = (
     // drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
 
     // choreographer
-    drawSkeleton(newDraws[1], 0, ctx, 0.35, 'yellow');
-    drawKeypoints(newDraws[1], 0, ctx, 0.35, 'yellow');
+    drawSkeleton(newDraws[1], 0, ctx, 1, 'yellow');
+    drawKeypoints(newDraws[1], 0, ctx, 1, 'yellow');
     //newDraws[1] contains the error path, which should also be drawn.
   }
 };
