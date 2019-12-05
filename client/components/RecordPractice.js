@@ -52,7 +52,8 @@ class RecordPractice extends React.Component {
       recording: [],
       selected: '',
       attempts: {},
-      userActionAllowed: false
+      userActionAllowed: false,
+      count: 0
       //grade: 0,
       // allProcessedFrames: []
     };
@@ -331,15 +332,28 @@ class RecordPractice extends React.Component {
         </div>
         <br />
         <div id="recording">
-          <video
-            id="routine"
-            ref={node => (this.playback = node)}
-            controls={true}
-            className="video-js"
-            // onTimeUpdate={this.drawBoth}
-          >
-            <source src={this.props.routine.url} type="video/mp4" />
-          </video>
+          <div>
+            <video
+              id="routine"
+              ref={node => (this.playback = node)}
+              controls={true}
+              className="video-js"
+              // onTimeUpdate={this.drawBoth}
+            >
+              <source src={this.props.routine.url} type="video/mp4" />
+            </video>
+            <Button content="Play back" onClick={this.playboth} color="blue" />
+            <div id="gallery">
+              <PrevAttempts
+                recording={this.state.recording}
+                handleDelete={this.handleDelete}
+                teamId={this.teamId}
+                userId={this.props.userId}
+                calibration={this.state.calibration}
+                attempts={this.state.attempts}
+              />
+            </div>
+          </div>
           <div>
             <video
               id="video"
@@ -350,32 +364,6 @@ class RecordPractice extends React.Component {
             />
             <canvas id="skeleton" ref={this.replayCanv}></canvas>
           </div>
-        </div>
-        <Grid column={1} centered>
-          <Segment basic compact padded="very">
-            <Item>
-              <Item.Content></Item.Content>
-              <Item.Content verticalAlign="top">
-                <Item.Header>
-                  <Button
-                    content="Play back"
-                    onClick={this.playboth}
-                    color="blue"
-                  />
-                </Item.Header>
-              </Item.Content>
-            </Item>
-          </Segment>
-        </Grid>
-        <div id="gallery">
-          <PrevAttempts
-            recording={this.state.recording}
-            handleDelete={this.handleDelete}
-            teamId={this.teamId}
-            userId={this.props.userId}
-            calibration={this.state.calibration}
-            attempts={this.state.attempts}
-          />
         </div>
       </Segment>
     );
