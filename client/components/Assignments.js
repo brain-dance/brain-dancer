@@ -38,9 +38,6 @@ export const Assignments = props => {
           src="https://static.thenounproject.com/png/26965-200.png"
         />
       </Header>
-      <Button primary onClick={redirectToDashboard}>
-        Back to Dashboard
-      </Button>
     </Segment>
   ) : (
     <div>
