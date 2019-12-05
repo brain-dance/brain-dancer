@@ -9,6 +9,10 @@ body {
   background-size: cover;
 }
 
+body.loggedin {
+  background: #fff;
+}
+
 #output {
   position: absolute;
   top: 0;
@@ -62,7 +66,7 @@ body {
 }
 
 #navbar.loggedin {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.8);
   position: fixed;
   padding: 0px;
   top: 0;
@@ -76,6 +80,7 @@ body {
 #routines {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* .top {
@@ -116,6 +121,10 @@ body,
   height: inherit;
 }
 
+.content {
+  padding: 0px !important;
+}
+
 #container > div {
   padding: 0px;
 }
@@ -123,22 +132,56 @@ body,
 #team {
   width: 100%;
   height: 100%;
-  background-color: #f8f8f8;
-  box-shadow: none;
-  border: none;
+  padding: 0px !important;
+  background-color: #f1f1f1;
+  box-shadow: none !important;
+  border: none !important;
 }
 
+a.active {
+  background-color: #009aff !important;
+  color: #fff !important;
+}
 .card {
-  margin: 20px !important;
+  margin: 8px !important;
   border: none !important;
   background: none !important;
   box-shadow: none !important;
+}
+
+#view-container {
+  border: none !important;
+  background-color: #f1f1f1;
+  box-shadow: none !important;
+  border-radius: 0px !important;
+  height: 100%;
+}
+
+.ui.stripped {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.ui.segment {
+  background-color: transparent !important;
 }
 
 .video-card {
   width: 100%;
 }
 
+.segment {
+  border: none !important;
+  border-radius: 0px !important;
+}
+.pusher {
+  padding: 0px;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: none !important;
+}
 #choreo {
   height: 100vh;
 }
@@ -160,6 +203,7 @@ body,
 #sidebar .item {
   font-size: 17px !important;
   padding: 1.5rem;
+  border-radius: 0px;
 }
 
 #sidebar > div {
@@ -179,6 +223,22 @@ body,
   position: fixed;
   right: 54px;
   bottom: 54px;
+  background-color: #009aff;
+  color: #fff;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#record-button.hidden {
+  visibility: hidden !important;
+}
+
+#record-button > i {
+  margin: 0 0.5rem 0.5rem 0 !important;
+  font-size: 1.3rem !important;
 }
 
 #calibrator {

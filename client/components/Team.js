@@ -16,38 +16,39 @@ const Team = props => {
   return !team || !team.role ? (
     <Segment color="orange">You are no longer on this team.</Segment>
   ) : (
-    <Sidebar.Pushable as={Segment}>
-      <MembersSidebar
-        members={team.members}
-        handleUpdateTeam={props.handleUpdateTeam}
-        handleOpen={handleOpen}
-        visible={visible}
-        setVisible={setVisible}
-      />
-      <div className="toggle">
-        <p>Show Members</p>
-        <Radio onClick={handleOpen} toggle />
-      </div>
-      <Sidebar.Pusher>
-        <Segment raised id="team">
-          {team.role === 'choreographer' && (
-            <Button.Group id="record-button">
-              <Button
-                color="orange"
-                onClick={() => props.setMemberModalOpen(true)}
-              >
-                <Icon name="user plus" />
-              </Button>
-              <Button primary as={Link} to={`/team/${team.id}/add`}>
-                <Icon name="add" />
-                <Icon name="record" />
-              </Button>
-            </Button.Group>
-          )}
-          <Routines team={team} routines={team.routines} />
-        </Segment>
-      </Sidebar.Pusher>
-    </Sidebar.Pushable>
+    <React.Fragment>
+      <Sidebar.Pushable as={Segment}>
+        <MembersSidebar
+          members={team.members}
+          handleUpdateTeam={props.handleUpdateTeam}
+          handleOpen={handleOpen}
+          visible={visible}
+          setVisible={setVisible}
+        />
+        <div className="toggle">
+          <p>Show Members</p>
+          <Radio onClick={handleOpen} toggle />
+        </div>
+        <Sidebar.Pusher>
+          <Segment raised id="team">
+            <Routines team={team} routines={team.routines} />
+          </Segment>
+        </Sidebar.Pusher>
+      </Sidebar.Pushable>
+      {team.role === 'choreographer' && (
+        <Button
+          className={!visible ? 'visible' : 'hidden'}
+          id="record-button"
+          circular
+          icon="record"
+          as={Link}
+          to={`/team/${team.id}/add`}
+        />
+      )}
+      {/* <Button color="orange" onClick={() => props.setMemberModalOpen(true)}>
+            <Icon name="user plus" />
+          </Button> */}
+    </React.Fragment>
   );
 };
 

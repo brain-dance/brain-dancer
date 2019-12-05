@@ -30,7 +30,7 @@ export const Assignments = props => {
   };
 
   return !pendingAssignments.length ? (
-    <Segment placeholder color="orange" textAlign="center">
+    <Segment placeholder className="stripped" textAlign="center">
       <Header>
         Your tasks are done. Go you!{' '}
         <Image
