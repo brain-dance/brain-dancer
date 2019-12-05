@@ -14,7 +14,7 @@ const Member = props => {
   const memberIsChoreo = member.userteams.role === 'choreographer';
 
   return (
-    <Menu.Item>
+    <Menu.Item id="members">
       {memberIsChoreo ? <Icon name="star" /> : <Icon name="male" />}{' '}
       {member.name}
       {thisTeam && thisTeam.role === 'choreographer' ? (
