@@ -10,7 +10,7 @@ import {
 import LoadingScreen from './LoadingScreen';
 
 const UploadVideoForm = props => {
-  const {blob, teamId, userId} = props;
+  const {blob, teamId, userId, blobInfo} = props;
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [isClickedSelectVid, setIsClickedSelectVid] = useState(false);
@@ -28,9 +28,15 @@ const UploadVideoForm = props => {
     setIsClickedSelectVid(!isClickedSelectVid);
   };
 
+  const redirectToTeamPage = () => {
+    console.log('Team Id: ', teamId);
+    props.history.push(`/team/${teamId}`);
+  };
+
   const handleClickClose = () => {
     setOpen(!open);
     setIsClickedClose(!isClickedClose);
+    if (isUploaded) redirectToTeamPage();
   };
 
   const addRoutine = () => {
@@ -48,8 +54,7 @@ const UploadVideoForm = props => {
     if (isAssignedPractice) {
       let routineId = +props.match.params.routineId;
       dispatch(submitAssignmentThunk(routineId));
-      //NOTE SETTING GRADE TO ZERO FOR NOW -- will probably hand down grade from props/recordPractice via web worker
-      let grade = 0;
+      let grade = blobInfo.grade;
       addPractice(grade);
     } else {
       //add routines submitted by choreographers

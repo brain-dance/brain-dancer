@@ -7,14 +7,13 @@ import {useSelector} from 'react-redux';
 const Team = props => {
   const teamId = props.match.params.teamId;
   const team = useSelector(state => state.teams.find(t => t.id === +teamId));
-  const myRole = team.role;
   const [visible, setVisible] = useState(false);
 
   const handleOpen = () => {
     setVisible(true);
   };
 
-  return !team || !myRole ? (
+  return !team || !team.role ? (
     <Segment color="orange">You are no longer on this team.</Segment>
   ) : (
     <Sidebar.Pushable as={Segment}>
@@ -31,7 +30,7 @@ const Team = props => {
       </div>
       <Sidebar.Pusher>
         <Segment raised id="team">
-          {myRole === 'choreographer' && (
+          {team.role === 'choreographer' && (
             <Button.Group id="record-button">
               <Button
                 color="orange"
