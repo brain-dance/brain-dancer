@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import {Routines, MembersSidebar} from './index';
-import {Segment, Button, Icon, Sidebar} from 'semantic-ui-react';
+import {Segment, Button, Icon, Sidebar, Radio} from 'semantic-ui-react';
 import {useSelector} from 'react-redux';
 
 const Team = props => {
@@ -25,9 +25,10 @@ const Team = props => {
         visible={visible}
         setVisible={setVisible}
       />
-      <Button floated="right" color="blue" icon onClick={handleOpen}>
-        <Icon name="users" />
-      </Button>
+      <div className="toggle">
+        <h3>Show Members</h3>
+        <Radio onClick={handleOpen} toggle />
+      </div>
       <Sidebar.Pusher>
         <Segment raised id="team">
           {myRole === 'choreographer' && (

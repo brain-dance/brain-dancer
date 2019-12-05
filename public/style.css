@@ -193,6 +193,13 @@ video {
   -moz-transform: rotateY(180deg); /* Firefox */
 }
 
+/* Members sidebar */
 #members {
+  display: inline-flex;
+}
+
+.toggle {
   display: flex;
+  justify-content: flex-start;
+  align-content: center;
 }
