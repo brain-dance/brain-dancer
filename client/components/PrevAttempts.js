@@ -55,6 +55,7 @@ const PrevAttempts = props => {
                 teamId={teamId}
                 userId={userId}
                 calibration={props.calibration}
+                blobInfo={blobInfo}
               />
             </Card>
           </div>
