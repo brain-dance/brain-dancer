@@ -74,6 +74,7 @@ body {
 #routines {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* .top {
@@ -122,21 +123,40 @@ body,
   width: 100%;
   height: 100%;
   background-color: #f8f8f8;
-  box-shadow: none;
-  border: none;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .card {
-  margin: 20px !important;
+  margin: 8px !important;
   border: none !important;
   background: none !important;
   box-shadow: none !important;
+}
+
+#view-container {
+  border: none !important;
+  background-color: #f8f8f8;
+  box-shadow: none !important;
+  border-radius: 0px !important;
+  height: 100%;
 }
 
 .video-card {
   width: 100%;
 }
 
+.segment {
+  border: none !important;
+  border-radius: 0px !important;
+}
+.pusher {
+  padding: 0px;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: none !important;
+}
 #choreo {
   height: 100vh;
 }
