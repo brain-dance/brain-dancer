@@ -1,5 +1,6 @@
 require('@tensorflow/tfjs-node');
 const posenet = require('@tensorflow-models/posenet');
+const params= require('./videoJsOptions');
 
 const singlePoseNet = (stride = 16) => {
   let poseNetConfig = {
@@ -7,7 +8,7 @@ const singlePoseNet = (stride = 16) => {
     input: {
       architecture: 'MobileNetV1',
       outputStride: stride,
-      inputResolution: {width: 640, height: 480},
+      inputResolution: {width: params.width, height: params.height},
       multiplier: 0.75,
       quantBytes: 2
     },

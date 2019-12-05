@@ -25,10 +25,6 @@ const Team = props => {
           visible={visible}
           setVisible={setVisible}
         />
-        <div className="toggle">
-          <p>Show Members</p>
-          <Radio onClick={handleOpen} toggle />
-        </div>
         <Sidebar.Pusher>
           <Segment raised id="team">
             <Routines team={team} routines={team.routines} />
@@ -45,9 +41,13 @@ const Team = props => {
           to={`/team/${team.id}/add`}
         />
       )}
-      {/* <Button color="orange" onClick={() => props.setMemberModalOpen(true)}>
-            <Icon name="user plus" />
-          </Button> */}
+      <Button
+        className={!visible ? 'visible' : 'hidden'}
+        id="toggleBtn"
+        circular
+        icon="users"
+        onClick={handleOpen}
+      />
     </React.Fragment>
   );
 };
