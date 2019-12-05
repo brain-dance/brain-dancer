@@ -70,7 +70,7 @@ class RecordPractice extends React.Component {
       let LTU = Infinity;
       let replayStart = 0;
       const worker = new MyWorker();
-      worker.postMessage({resolution: {width: 1260, height: 720}});
+      worker.postMessage({resolution: {width: videoJsOptions.width, height: videoJsOptions.height}});
       // tGS.messages = [];
 
       worker.onmessage = event => {
@@ -84,9 +84,9 @@ class RecordPractice extends React.Component {
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
           thisCont.props.routineFrames || event.data.data,
-          {x: 640, y: 480}, //midpoint
+          {x: videoJsOptions.width, y: videoJsOptions.height}, //midpoint
           -1,
-          200,
+          videoJsOptions.plugins.record.timeslice,
           num => {
             //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
             toSet.grade = num;
@@ -115,9 +115,9 @@ class RecordPractice extends React.Component {
               Date.now() - replayStart,
               thisCont.state.attempts[event.data.name].allProcessedFrames,
               ctx,
-              640,
-              480,
-              200,
+              videoJsOptions.width,
+              videoJsOptions.height,
+              videoJsOptions.timeslice,
               LTU
             );
             LTU = Date.now() - replayStart;
@@ -131,8 +131,8 @@ class RecordPractice extends React.Component {
         this.playback,
         {
           controls: true,
-          width: 640,
-          height: 480,
+          width: videoJsOptions.width,
+          height: videoJsOptions.height,
           playbackRates: [0.5, 1, 1.5, 2]
         },
         () => {
@@ -189,8 +189,8 @@ class RecordPractice extends React.Component {
       // });
       const forTimestamp = (worker => {
         const workerCanv = document.createElement('canvas');
-        workerCanv.width = 640;
-        workerCanv.height = 480;
+        workerCanv.width = videoJsOptions.width;
+        workerCanv.height = videoJsOptions.height;
         const wcContext = workerCanv.getContext('2d');
         return (video, timestamp) => {
           wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
@@ -240,6 +240,7 @@ class RecordPractice extends React.Component {
   }
 
   componentWillUnmount() {
+    this.worker.terminate();
     this.player.dispose();
     this.props.clearRoutine();
   }
@@ -252,8 +253,8 @@ class RecordPractice extends React.Component {
     }*/
     document.querySelectorAll('canvas').forEach(el => {
       console.log('mount canvas', el);
-      el.width = 640;
-      el.height = 480;
+      el.width = videoJsOptions.width;
+      el.height = videoJsOptions.height;
     });
   }
 
@@ -267,8 +268,8 @@ class RecordPractice extends React.Component {
     this.setState({...this.state, calibration, modalOpen: false});
     // worker send msg to worker
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = 640;
-    tempCanvas.height = 480;
+    tempCanvas.width = videoJsOptions.width;
+    tempCanvas.height = videoJsOptions.height;
     const tempContext = tempCanvas.getContext('2d');
     const newImage = document.createElement('img');
     newImage.src = calibration;
@@ -276,7 +277,7 @@ class RecordPractice extends React.Component {
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
-        image: tempContext.getImageData(0, 0, 640, 480)
+        image: tempContext.getImageData(0, 0, videoJsOptions.width, videoJsOptions.height)
       });
     });
   }
@@ -289,7 +290,7 @@ class RecordPractice extends React.Component {
   drawBoth() {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, 640, 480);
+    ctx.clearRect(0, 0, videoJsOptions.width, videoJsOptions.height);
     // console.log('draw!');
     // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');

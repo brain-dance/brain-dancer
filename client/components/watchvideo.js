@@ -3,6 +3,7 @@ import {getSingleRoutine} from '../store'
 import VideoPlayer from 'react-video-js-player'
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
+import videoJsOptions from '../../utils/videoJsOptions'
 class WatchVideo extends React.Component{
     componentDidMount(){
         //using the generic name fetch video b/c we can recycle for a non-routine I think quite easily
@@ -20,8 +21,9 @@ class WatchVideo extends React.Component{
                     controls={true}
                     src={this.props.singleVideo.url}
                     
-                    width="680"
-                    height="450"
+                    width={`${videoJsOptions.width}`}
+                    height={`${videoJsOptions.height}`}
+            
                 />
         </div>
         }
