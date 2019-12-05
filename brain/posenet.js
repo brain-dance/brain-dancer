@@ -46,7 +46,7 @@ let poseNetConfig = {
     architecture: 'MobileNetV1',
     // architecture: 'ResNet50',
     outputStride: 16,
-    inputResolution: {width: 640, height: 360},
+    inputResolution: {width: 640, height: 480},
     multiplier: 1,
     quantBytes: 2
   },

@@ -6,7 +6,9 @@ const {
   scaler,
   getCalibration
 } = require('./scaling');
+
 const {drawSkeleton, drawKeypoints} = require('../frontUtils/draw');
+
 const errCost = (wfOne, wfTwo) => {
   let errs = angleDifferences(wfOne.pose, wfTwo.pose);
   let temp = Object.keys(errs);
@@ -132,83 +134,83 @@ const parseForReplay = (
   //Transform into the lookup map
   //Return the new arr, which then gets interacted with by an event handler
 
-  const labeledPracticeCalibration = labelPose(practiceCalibration);
-  const labeledRoutineCalibration = labelPose(routineCalibration);
-  const calibrator = getCalibration(
-    labeledRoutineCalibration,
-    labeledPracticeCalibration
-  );
+  // const labeledPracticeCalibration = labelPose(practiceCalibration);
+  // const labeledRoutineCalibration = labelPose(routineCalibration);
+  // const calibrator = getCalibration(
+  //   labeledRoutineCalibration,
+  //   labeledPracticeCalibration
+  // );
 
-  let globalTranslate = {
-    x: centroid(pwfs[0].pose.keypoints).x - center.x,
-    y: centroid(pwfs[0].pose.keypoints).y - center.y
-  };
-  const translator = wireframe =>
-    wireframe.map(keypoint => ({
-      ...keypoint,
-      position: {
-        x: keypoint.position.x - globalTranslate.x,
-        y: keypoint.position.y - globalTranslate.y
-      }
-    }));
+  // let globalTranslate = {
+  //   x: centroid(pwfs[0].pose.keypoints).x - center.x,
+  //   y: centroid(pwfs[0].pose.keypoints).y - center.y
+  // };
+  // const translator = wireframe =>
+  //   wireframe.map(keypoint => ({
+  //     ...keypoint,
+  //     position: {
+  //       x: keypoint.position.x - globalTranslate.x,
+  //       y: keypoint.position.y - globalTranslate.y
+  //     }
+  //   }));
   //Note - optimal implementation does all the transformations in a single map
   //No reason not to do that, except that this approach is easier to reason about
   //May be worth changing if we run into performance issues
   const toReturn = new Map(
     minCostPairings(pwfs, cws, callback)
-      .pairs.map(pair => {
-        //pairs: first elem = dancer; second elem = choreographer
-        //this is scaling the choreographer to match the dancer
-        const target = labelPose(pair[0].pose); // practice
-        const source = labelPose(pair[1].pose); //routine
-        const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
+      .pairs // .map(pair => {
+      //   //pairs: first elem = dancer; second elem = choreographer
+      //   //this is scaling the choreographer to match the dancer
+      //   const target = labelPose(pair[0].pose); // practice
+      //   const source = labelPose(pair[1].pose); //routine
+      //   const scaledRoutine = scaler(source, target, calibrator); // the routine bit but corrected
 
-        // const routineCopy = {...pair[1]}
-        // const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
-        //   point.position.x = scaledRoutine[point.part].x
-        // })
-        // const unlabeledScaledRoutine = unLabelPose(scaledRoutine);
-        return [
-          pair[0],
-          {
-            ...pair[1],
-            pose: {
-              ...pair[1].pose,
-              keypoints: pair[1].pose.keypoints.map(point => ({
-                part: point.part,
-                score: point.score,
-                position: {
-                  x: scaledRoutine[point.part]
-                    ? scaledRoutine[point.part].x
-                    : scaledRoutine['head'].x,
-                  y: scaledRoutine[point.part]
-                    ? scaledRoutine[point.part].y
-                    : scaledRoutine['head'].y
-                }
-              }))
-            }
-          }
-        ];
-      })
-      .map(pair => {
-        //    console.log("In pfr, first map statement, pair is: ", pair);
-        return [
-          {
-            ...pair[0],
-            pose: {
-              ...pair[0].pose,
-              keypoints: translator(pair[0].pose.keypoints)
-            }
-          },
-          {
-            ...pair[1],
-            pose: {
-              ...pair[1].pose,
-              keypoints: translator(pair[1].pose.keypoints)
-            }
-          }
-        ];
-      })
+      //   // const routineCopy = {...pair[1]}
+      //   // const scaledRoutineCopy = routineCopy.keypoints.map(point=> {
+      //   //   point.position.x = scaledRoutine[point.part].x
+      //   // })
+      //   // const unlabeledScaledRoutine = unLabelPose(scaledRoutine);
+      //   return [
+      //     pair[0],
+      //     {
+      //       ...pair[1],
+      //       pose: {
+      //         ...pair[1].pose,
+      //         keypoints: pair[1].pose.keypoints.map(point => ({
+      //           part: point.part,
+      //           score: point.score,
+      //           position: {
+      //             x: scaledRoutine[point.part]
+      //               ? scaledRoutine[point.part].x
+      //               : scaledRoutine['head'].x,
+      //             y: scaledRoutine[point.part]
+      //               ? scaledRoutine[point.part].y
+      //               : scaledRoutine['head'].y
+      //           }
+      //         }))
+      //       }
+      //     }
+      //   ];
+      // })
+      // .map(pair => {
+      //   //    console.log("In pfr, first map statement, pair is: ", pair);
+      //   return [
+      //     {
+      //       ...pair[0],
+      //       pose: {
+      //         ...pair[0].pose,
+      //         keypoints: translator(pair[0].pose.keypoints)
+      //       }
+      //     },
+      //     {
+      //       ...pair[1],
+      //       pose: {
+      //         ...pair[1].pose,
+      //         keypoints: translator(pair[1].pose.keypoints)
+      //       }
+      //     }
+      //   ];
+      // })
       .map(pair => {
         //Theoretically, render mistakes should be the only time it's even possible to get deviation; everything else is equivalent
         // console.log('We expect the pairs to be the same here: ', pair);
@@ -244,12 +246,12 @@ const timeChangeCallback = (
     ctx.clearRect(0, 0, width, height);
 
     // dancer
-    drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.35);
-    drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
+    // drawSkeleton(newDraws[0].pose.keypoints, 0, ctx, 0.35);
+    // drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
 
     // choreographer
-    drawSkeleton(newDraws[1], 0, ctx, 0.35, 'yellow');
-    drawKeypoints(newDraws[1], 0, ctx, 0.35, 'yellow');
+    drawSkeleton(newDraws[1], 0, ctx, 1, 'yellow');
+    drawKeypoints(newDraws[1], 0, ctx, 1, 'yellow');
     //newDraws[1] contains the error path, which should also be drawn.
   }
 };

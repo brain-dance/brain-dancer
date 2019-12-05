@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import React from 'react';
+import {Link} from 'react-router-dom';
 import {Image, Menu} from 'semantic-ui-react';
 
 export const TeamList = props => {

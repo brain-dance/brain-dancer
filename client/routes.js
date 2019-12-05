@@ -14,7 +14,7 @@ import {
 } from './components';
 import {WatchRoutine} from './components/watchvideo';
 import {me, fetchUserTeams} from './store';
-import WireframeTest from './components/WireframeTest';
+// import WireframeTest from './components/WireframeTest';
 
 /**
  * COMPONENT
@@ -34,7 +34,7 @@ class Routes extends Component {
         <Route path="/signup" component={Signup} />
         <Route path="/addteam" component={AddTeamForm} />
         {/* <Route path="/routines/:id" component={Choreo} /> */}
-        <Route path="/test" component={WireframeTest} />
+        {/* <Route path="/test" component={WireframeTest} /> */}
 
         {isLoggedIn && <Route component={Dashboard} />}
         {/* Displays our Login component as a fallback */}

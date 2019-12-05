@@ -64,6 +64,7 @@ class RecordPractice extends React.Component {
     this.playboth = this.playboth.bind(this);
     this.drawBoth = this.drawBoth.bind(this);
   }
+
   componentDidMount() {
     this.worker = (thisCont => {
       let LTU = Infinity;
@@ -74,7 +75,7 @@ class RecordPractice extends React.Component {
 
       worker.onmessage = event => {
         console.log('Message received from worker: ', event);
-        ///JM - Make sure that the user can't take calibration pic until poseNet's ready
+        //Make sure that the user can't take calibration pic until poseNet's ready
         if (event.data.type === 'Ready') {
           thisCont.setState({userActionAllowed: true});
           return;
@@ -83,7 +84,7 @@ class RecordPractice extends React.Component {
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
           thisCont.props.routineFrames || event.data.data,
-          {x: 415, y: 200}, //midpoint
+          {x: 640, y: 480}, //midpoint
           -1,
           200,
           num => {
@@ -114,8 +115,8 @@ class RecordPractice extends React.Component {
               Date.now() - replayStart,
               thisCont.state.attempts[event.data.name].allProcessedFrames,
               ctx,
-              630,
-              360,
+              640,
+              480,
               200,
               LTU
             );
@@ -131,7 +132,7 @@ class RecordPractice extends React.Component {
         {
           controls: true,
           width: 640,
-          height: 360,
+          height: 480,
           playbackRates: [0.5, 1, 1.5, 2]
         },
         () => {
@@ -188,8 +189,8 @@ class RecordPractice extends React.Component {
       // });
       const forTimestamp = (worker => {
         const workerCanv = document.createElement('canvas');
-        workerCanv.width = 630 * 2;
-        workerCanv.height = 360 * 2;
+        workerCanv.width = 640;
+        workerCanv.height = 480;
         const wcContext = workerCanv.getContext('2d');
         return (video, timestamp) => {
           wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
@@ -229,9 +230,6 @@ class RecordPractice extends React.Component {
         console.log('finished recording: ', this.player.recordedData);
         this.recordedData = this.player.recordedData;
 
-        //JM TESTING -- DOES THIS MAKE THE CAMERA TURN OFF?
-        // MediaStreamTrack.stop();
-        // console.log('MADE IT HERE');
         this.setState(state => {
           return {recording: [...state.recording, this.recordedData]};
         });
@@ -252,6 +250,11 @@ class RecordPractice extends React.Component {
     if (this.props.routine.calibrationframe) {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
+    document.querySelectorAll('canvas').forEach(el => {
+      console.log('mount canvas', el);
+      el.width = 640;
+      el.height = 480;
+    });
   }
 
   handleDelete(e, {name}) {
@@ -264,19 +267,16 @@ class RecordPractice extends React.Component {
     this.setState({...this.state, calibration, modalOpen: false});
     // worker send msg to worker
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = 630;
-    tempCanvas.height = 360;
+    tempCanvas.width = 640;
+    tempCanvas.height = 480;
     const tempContext = tempCanvas.getContext('2d');
     const newImage = document.createElement('img');
     newImage.src = calibration;
     newImage.decode().then(() => {
-      console.log('This on line 259', this);
-      ///RACE CONDITION
-
       tempContext.drawImage(newImage, 0, 0);
       this.worker.postMessage({
         type: 'calibration',
-        image: tempContext.getImageData(0, 0, 630, 360)
+        image: tempContext.getImageData(0, 0, 640, 480)
       });
     });
   }
@@ -289,7 +289,7 @@ class RecordPractice extends React.Component {
   drawBoth() {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, 630, 360);
+    ctx.clearRect(0, 0, 640, 480);
     // console.log('draw!');
     // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
@@ -340,20 +340,21 @@ class RecordPractice extends React.Component {
           >
             <source src={this.props.routine.url} type="video/mp4" />
           </video>
-          <video
-            id="video"
-            ref={node => (this.videoNode = node)}
-            controls={true}
-            autoPlay
-            className="video-js vjs-default-skin"
-          />
+          <div>
+            <video
+              id="video"
+              ref={node => (this.videoNode = node)}
+              controls={true}
+              autoPlay
+              className="video-js vjs-default-skin"
+            />
+            <canvas id="skeleton" ref={this.replayCanv}></canvas>
+          </div>
         </div>
         <Grid column={1} centered>
           <Segment basic compact padded="very">
             <Item>
-              <Item.Content>
-                <canvas id="skeleton" ref={this.replayCanv}></canvas>
-              </Item.Content>
+              <Item.Content></Item.Content>
               <Item.Content verticalAlign="top">
                 <Item.Header>
                   <Button
@@ -373,7 +374,6 @@ class RecordPractice extends React.Component {
             teamId={this.teamId}
             userId={this.props.userId}
             calibration={this.state.calibration}
-            //JM - PASSING ATTEMPTS OBJ WITH GRADE TO PREVATTEMPTS
             attempts={this.state.attempts}
           />
         </div>
