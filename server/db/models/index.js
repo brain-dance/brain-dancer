@@ -1,11 +1,11 @@
-const User = require('./user');
-const Team = require('./team');
+const User = require('./User');
+const Team = require('./Team');
 const UserTeam = require('./UserTeam');
-const CalibrationFrame = require('./calibrationframe');
-const VideoFrame = require('./videoframe');
-const Routine = require('./routine');
-const Practice = require('./practice');
-const Assignment = require('./assignment');
+const CalibrationFrame = require('./CalibrationFrame');
+const VideoFrame = require('./VideoFrame');
+const Routine = require('./Routine');
+const Practice = require('./Practice');
+const Assignment = require('./Assignment');
 
 //Assignment
 User.hasMany(Assignment);
