@@ -241,6 +241,7 @@ const timeChangeCallback = (
 ) => {
   let temp = timestamp - (timestamp % refreshrate);
   let newDraws = map.get(temp);
+  console.log('TCL: map', map);
   if (temp !== lastupdate && newDraws) {
     // console.log("Context, width, height: ", ctx, width, height);
     ctx.clearRect(0, 0, width, height);
@@ -255,6 +256,7 @@ const timeChangeCallback = (
     //newDraws[1] contains the error path, which should also be drawn.
   }
 };
+
 module.exports.minCostPairings = minCostPairings;
 module.exports.parseForReplay = parseForReplay;
 module.exports.timeChangeCallback = timeChangeCallback;
