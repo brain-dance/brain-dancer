@@ -1,7 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {Member} from './index';
-import {Menu, Sidebar} from 'semantic-ui-react';
+import {Icon, Menu, Sidebar} from 'semantic-ui-react';
 
 const MembersSidebar = props => {
   const members = props.members || [];
@@ -11,6 +11,10 @@ const MembersSidebar = props => {
     setVisible(false);
   };
 
+  const handleClickAddMember = () => {
+    props.setMemberModalOpen(true);
+  };
+
   return (
     <Sidebar
       className="membersSidebar"
@@ -18,7 +22,6 @@ const MembersSidebar = props => {
       inverted
       animation="overlay"
       direction="right"
-      // icon="labeled"
       onHide={handleHide}
       onShow={handleOpen}
       vertical
@@ -33,6 +36,10 @@ const MembersSidebar = props => {
           handleUpdateTeam={props.handleUpdateTeam}
         />
       ))}
+      <br />
+      <Menu.Item id="add-team" onClick={handleClickAddMember}>
+        <Icon name="add" /> Add Member
+      </Menu.Item>
     </Sidebar>
   );
 };

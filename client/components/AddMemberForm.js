@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {withRouter} from 'react-router-dom';
-import {Form, Header, Icon} from 'semantic-ui-react';
+import {Form, Header} from 'semantic-ui-react';
 import {fetchAllUsers, addTeamMemberThunk} from '../store';
 
 const AddMemberForm = function(props) {
   const dispatch = useDispatch();
   const allUsers = useSelector(state => state.users);
+  const {selectedTeamId} = props;
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -28,7 +28,7 @@ const AddMemberForm = function(props) {
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    dispatch(addTeamMemberThunk(props.match.params.teamId, userId, role));
+    dispatch(addTeamMemberThunk(selectedTeamId, userId, role));
     props.setMemberModalOpen(false);
   };
 
@@ -69,4 +69,4 @@ const AddMemberForm = function(props) {
   );
 };
 
-export default withRouter(AddMemberForm);
+export default AddMemberForm;
