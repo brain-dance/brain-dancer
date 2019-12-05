@@ -1,5 +1,5 @@
 const videoJsOptions = {
-  controls: true,
+  controls: false, //true,
   width: 640,
   height: 480,
   fluid: false,
