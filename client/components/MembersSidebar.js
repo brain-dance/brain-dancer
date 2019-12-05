@@ -13,17 +13,19 @@ const MembersSidebar = props => {
 
   return (
     <Sidebar
+      className="membersSidebar"
       as={Menu}
       inverted
       animation="overlay"
-      icon="labeled"
       direction="right"
+      // icon="labeled"
       onHide={handleHide}
       onShow={handleOpen}
       vertical
       visible={visible}
-      width="thin"
+      width="wide"
     >
+      <Menu.Item header>Team Members</Menu.Item>
       {members.map(member => (
         <Member
           member={member}

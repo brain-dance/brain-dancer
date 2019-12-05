@@ -2,7 +2,6 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Icon, Menu} from 'semantic-ui-react';
-// import {deleteTeamMemberThunk} from '../store';
 
 const Member = props => {
   const {member, handleUpdateTeam} = props;
@@ -14,11 +13,16 @@ const Member = props => {
   const memberIsChoreo = member.userteams.role === 'choreographer';
 
   return (
-    <Menu.Item id="members">
-      {memberIsChoreo ? <Icon name="star" /> : <Icon name="male" />}{' '}
+    <Menu.Item className="members">
       {member.name}
+      {memberIsChoreo ? (
+        <Icon name="star" className="memberIcon" />
+      ) : (
+        <Icon name="male" />
+      )}
       {thisTeam && thisTeam.role === 'choreographer' ? (
         <Icon
+          className="memberIcon"
           size="small"
           floated="right"
           name="trash"
