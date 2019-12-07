@@ -66,9 +66,11 @@ class RecordPractice extends React.Component {
     this.drawBoth = this.drawBoth.bind(this);
     this.countdownRecord = this.countdownRecord.bind(this);
     this.playAndRecord = this.playAndRecord.bind(this);
+    this.createVideoPlayer = this.createVideoPlayer.bind(this);
   }
 
   componentDidMount() {
+    // CREATE WEBWORKER
     this.worker = (thisCont => {
       let LTU = Infinity;
       let replayStart = 0;
@@ -76,15 +78,16 @@ class RecordPractice extends React.Component {
       worker.postMessage({
         resolution: {width: videoJsOptions.width, height: videoJsOptions.height}
       });
-      // tGS.messages = [];
 
+      // HANDLE WHEN WORKER RECEIVES MESSAGE
       worker.onmessage = event => {
-        console.log('Message received from worker: ', event);
         //Make sure that the user can't take calibration pic until poseNet's ready
         if (event.data.type === 'Ready') {
           thisCont.setState({userActionAllowed: true});
           return;
         }
+
+        //HANDLES WORKER PROCESSING
         const toSet = {};
         toSet.allProcessedFrames = scoringUtils.parseForReplay(
           event.data.data,
@@ -93,7 +96,6 @@ class RecordPractice extends React.Component {
           -1,
           videoJsOptions.plugins.record.timeSlice,
           num => {
-            //thisCont.setState({attempts:{...attempts, [event.data.name]: score:num});
             toSet.grade = num;
           },
           event.data.calibration,
@@ -102,20 +104,22 @@ class RecordPractice extends React.Component {
         thisCont.setState({
           attempts: {...thisCont.state.attempts, [event.data.name]: toSet}
         });
+
+        //FIND VIDEOJS VIDEO ELEMENT
         const video = document.querySelector('#video_html5_api');
 
         //BUG: SOMETIMES THIS GETS A BUG THAT SAYS CANNOT READ PROEPRTY ADDEVENTLISTENER OF NULL
+
+        //FIND WHEN VIDEO STARTS PLAYING
         video.addEventListener('play', () => {
-          //console.log("HELLO");
           replayStart = Date.now();
         });
 
+        //ON PLAYBACK FIND SKELETON CANVAS AND DRAW SKELETONS
         video.addEventListener('timeupdate', () => {
           if (thisCont.state.selected === event.data.name) {
-            const canvas = document.querySelector('#skeleton');
+            const canvas = document.querySelector('#skeleton'); //could possible add a ref
             const ctx = canvas.getContext('2d');
-            // console.log('Start time is', tGS.replayStart);
-            // console.log("In time update event, thisCont is: ", thisCont);
             scoringUtils.timeChangeCallback(
               Date.now() - replayStart,
               thisCont.state.attempts[event.data.name].allProcessedFrames,
@@ -131,7 +135,10 @@ class RecordPractice extends React.Component {
       };
       return worker;
     })(this);
+
+    //GET ROUTINE INFO
     this.props.fetchRoutine(this.routineId).then(() => {
+      //SET UP PLAYBACK VIDEO PLAYER
       this.playbackPlayer = videojs(
         this.playback,
         {
@@ -144,103 +151,12 @@ class RecordPractice extends React.Component {
           videojs.log('playback screen is live!');
         }
       );
-      this.player = videojs(this.videoNode, videoJsOptions, () => {
-        // print version information at startup
-        var msg =
-          'Using video.js ' +
-          videojs.VERSION +
-          ' with videojs-record ' +
-          videojs.getPluginVersion('record') +
-          ' and recordrtc ' +
-          RecordRTC.version;
-        videojs.log(msg);
-      });
-
-      const temp1 = document.querySelector('.vjs-record-canvas canvas');
-      const temp2 = temp1.getContext('2d');
-      // yeah... it's the canvas
-      this.setState({
-        cameraCanvas: temp1,
-        context: temp2
-      });
-      // this.setState({context: this.state.cameraCanvas.getContext('2d')});
-
-      // error handling
-      this.player.on('deviceError', function() {
-        console.warn('device error:', this.player.deviceErrorCode);
-      });
-
-      this.player.on('error', (element, error) => {
-        console.error(error);
-      });
-
-      // device is ready
-      this.player.on('deviceReady', () => {
-        console.log('device is ready!');
-      });
-
-      // user clicked the record button and started recording
-
-      const forStart = (tC => {
-        return () => tC.setState({selected: ''});
-      })(this);
-      this.player.on('startRecord', () => {
-        forStart();
-        console.log('started recording!');
-      });
 
       // this.player.on('progressRecord', function() {
       //   console.log('currently recording', this.player.record().getDuration());
       // });
-      const forTimestamp = (worker => {
-        const workerCanv = document.createElement('canvas');
-        workerCanv.width = videoJsOptions.width;
-        workerCanv.height = videoJsOptions.height;
-        const wcContext = workerCanv.getContext('2d');
-        return (video, timestamp) => {
-          wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
-          wcContext.drawImage(video, 0, 0);
 
-          worker.postMessage({
-            image: wcContext.getImageData(
-              0,
-              0,
-              workerCanv.width,
-              workerCanv.height
-            ),
-            timestamp: timestamp
-          });
-        };
-      })(this.worker);
-      this.player.on('timestamp', function() {
-        forTimestamp(
-          document.querySelector('#video_html5_api'),
-          this.currentTimestamp
-        );
-      });
-
-      // user completed recording and stream is available
-      const forFinish = ((worker, tC) => {
-        return name => {
-          worker.postMessage({type: 'finished', name});
-          tC.setState({selected: name});
-        };
-      })(this.worker, this);
-      this.player.on('finishRecord', () => {
-        // the blob object contains the recorded data that
-        // can be downloaded by the user, stored on server etc.
-
-        // tGS.recording = false;
-        forFinish(this.player.recordedData.name);
-        console.log('finished recording: ', this.player.recordedData);
-        this.recordedData = this.player.recordedData;
-
-        this.setState(state => {
-          return {recording: [...state.recording, this.recordedData]};
-        });
-      });
-
-      this.player.record().getDevice();
+      this.createVideoPlayer();
     });
   }
 
@@ -256,10 +172,10 @@ class RecordPractice extends React.Component {
     if (this.props.routine.calibrationframe) {
       tGS.routineCalibration = this.props.routine.calibrationframe;
     }*/
-    document.querySelectorAll('canvas').forEach(el => {
-      el.width = videoJsOptions.width;
-      el.height = videoJsOptions.height;
-    });
+    // document.querySelectorAll('canvas').forEach(el => {
+    //   el.width = videoJsOptions.width;
+    //   el.height = videoJsOptions.height;
+    // });
   }
 
   handleDelete(e, {name}) {
@@ -311,14 +227,107 @@ class RecordPractice extends React.Component {
   countdownRecord() {
     // this.playbackPlayer.play();
     // this.player.record().start();
-    console.log('hello!?!?');
     this.playAndRecord();
     // setTimeout(() => this.playAndRecord(), 2400);
   }
 
-  playAndRecord() {
-    this.playbackPlayer.play();
-    this.player.record().start();
+  createVideoPlayer() {
+    //SET UP VIDEOJS RECORDER PLAYER
+    this.player = videojs(this.videoNode, videoJsOptions);
+
+    const temp1 = document.querySelector('.vjs-record-canvas canvas');
+    const temp2 = temp1.getContext('2d');
+    // yeah... it's the canvas
+    this.setState({
+      cameraCanvas: temp1,
+      context: temp2
+    });
+
+    // error handling
+    this.player.on('deviceError', function() {
+      console.warn('device error:', this.player.deviceErrorCode);
+    });
+
+    this.player.on('error', (element, error) => {
+      console.error(error);
+    });
+
+    // device is ready
+    this.player.on('deviceReady', () => {
+      console.log('device is ready!');
+    });
+
+    // user clicked the record button and started recording
+    const forStart = (tC => {
+      return () => tC.setState({selected: ''});
+    })(this);
+    this.player.on('startRecord', () => {
+      forStart();
+      console.log('started recording!');
+    });
+
+    //WOKRER FUNCTION TO DEAL WITH TIMESTAMP
+    // const forTimestamp = (worker => {
+    //   const workerCanv = document.createElement('canvas');
+    //   workerCanv.width = videoJsOptions.width;
+    //   workerCanv.height = videoJsOptions.height;
+    //   const wcContext = workerCanv.getContext('2d');
+    //   return (video, timestamp) => {
+    //     wcContext.clearRect(0, 0, workerCanv.width, workerCanv.height);
+    //     wcContext.drawImage(video, 0, 0);
+    //     worker.postMessage({
+    //       image: wcContext.getImageData(
+    //         0,
+    //         0,
+    //         workerCanv.width,
+    //         workerCanv.height
+    //       ),
+    //       timestamp: timestamp
+    //     });
+    //   };
+    // })(this.worker);
+
+    // this.player.on('timestamp', function() {
+    //   forTimestamp(
+    //     document.querySelector('#video_html5_api'),
+    //     this.currentTimestamp
+    //   );
+    // });
+
+    // user completed recording and stream is available
+
+    const forFinish = ((worker, tC) => {
+      return name => {
+        worker.postMessage({type: 'finished', name});
+        tC.setState({selected: name});
+      };
+    })(this.worker, this);
+    this.player.on('finishRecord', async () => {
+      // the blob object contains the recorded data that
+      // can be downloaded by the user, stored on server etc.
+
+      console.log('finished recording: ', this.player.recordedData);
+      // forFinish(this.player.recordedData.name);
+      this.recordedData = await this.player.recordedData;
+      this.setState(state => {
+        return {recording: [...state.recording, this.recordedData]};
+      });
+    });
+
+    this.player.record().getDevice();
+
+    return this.player;
+  }
+
+  async playAndRecord() {
+    // this.playbackPlayer.play();
+    // if (this.player) {
+    //   this.player.record().destroy();
+    // }
+
+    // await this.createVideoPlayer();
+
+    await this.player.record().start();
   }
 
   render() {
@@ -399,7 +408,7 @@ class RecordPractice extends React.Component {
 }
 
 if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
-  videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
+  // videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
 }
 
 const mapStateToProps = state => {
