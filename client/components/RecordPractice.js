@@ -408,11 +408,7 @@ class RecordPractice extends React.Component {
 }
 
 if (!!window.opera || navigator.userAgent.indexOf('OPR/') !== -1) {
-<<<<<<< HEAD
-  // videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
-=======
   //videoJsOptions.plugins.record.videoMimeType = 'video/webm;codecs=vp8'; // or vp9
->>>>>>> 618805cdef36298d96d99f5b707f8b841065a71f
 }
 
 const mapStateToProps = state => {
