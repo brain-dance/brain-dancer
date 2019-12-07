@@ -14,6 +14,12 @@ const videoJsOptions = {
       timeSlice: 250, //necessary for timestamp
       debug: false,
       videoMimeType: "video/mp4",
+      videoEngine: 'webm-wasm',
+            videoWorkerURL: '/webm-worker.js',
+            videoWebAssemblyURL: '/webm-wasm.wasm',
+            videoBitRate: 1200,
+            videoFrameRate: 30
+
       //convertEngine: 'ffmpeg.js',
       // convertOptions: []
     }

@@ -13,7 +13,7 @@ import {
 } from 'semantic-ui-react';
 
 import videojs from 'video.js';
-import RecordRTC from 'recordrtc';
+//import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
@@ -150,9 +150,8 @@ class RecordPractice extends React.Component {
           'Using video.js ' +
           videojs.VERSION +
           ' with videojs-record ' +
-          videojs.getPluginVersion('record') +
-          ' and recordrtc ' +
-          RecordRTC.version;
+          videojs.getPluginVersion('record');
+          //RecordRTC.version;
         videojs.log(msg);
       });
 
@@ -167,7 +166,7 @@ class RecordPractice extends React.Component {
 
       // error handling
       this.player.on('deviceError', function() {
-        console.warn('device error:', this.player.deviceErrorCode);
+        console.warn('device error:', this.deviceErrorCode);
       });
 
       this.player.on('error', (element, error) => {
