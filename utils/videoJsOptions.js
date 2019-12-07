@@ -8,12 +8,13 @@ const videoJsOptions = {
   },
   plugins: {
     record: {
-      audio: true,
+      audio: false,
       video: true,
       maxLength: 10,
-      timeSlice: 200, //necessary for timestamp
-      debug: true
-      // convertEngine: 'ffmpeg.js',
+      timeSlice: 250, //necessary for timestamp
+      debug: false,
+      videoMimeType: "video/mp4",
+      //convertEngine: 'ffmpeg.js',
       // convertOptions: []
     }
   }
