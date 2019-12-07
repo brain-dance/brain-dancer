@@ -77,10 +77,18 @@ body.loggedin {
   /* margin-bottom: 5rem; */
 }
 
-#routines {
+#routines,
+#assignments {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  justify-content: space-between;
+}
+
+#routines::after,
+#assignments::after {
+  content: '';
+  flex: auto;
 }
 
 /* .top {
