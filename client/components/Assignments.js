@@ -3,8 +3,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Button, Card, Header, Image, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
+import Routine from './Routine';
 
-export const Assignments = props => {
+const Assignments = props => {
+  console.log('in assignments');
   const assignments = useSelector(state => state.assignments);
   const pendingAssignments = assignments.filter(
     assignment => assignment.completed === false
@@ -40,36 +42,17 @@ export const Assignments = props => {
       </Header>
     </Segment>
   ) : (
-    <div>
-      <Header as="h3">Assignments</Header>
-      <Card.Group itemsPerRow={3}>
-        {pendingAssignments.map(assignment => {
-          let {id, title, url, teamId, team} = assignment.routine;
-          if (assignment.completed !== true) {
-            return (
-              <Card
-                className="vidCard"
-                name={`${teamId} ${id}`}
-                onClick={redirectToPractice}
-                key={assignment.id}
-                raised
-              >
-                <Card.Content>
-                  <video id={title} width="200" src={url} />
-                  <Card.Header>{title}</Card.Header>
-                  {team && team.name ? (
-                    <Card.Meta>{team.name}</Card.Meta>
-                  ) : (
-                    <Card.Meta>Team Name</Card.Meta>
-                  )}
-                </Card.Content>
-              </Card>
-            );
-          }
-        })}
-      </Card.Group>
+    <div id="assignments">
+      {pendingAssignments.map(assignment => {
+        const routine = assignment.routine;
+        if (assignment.completed !== true) {
+          return (
+            <Routine key={routine.id} routine={routine} team={routine.team} />
+          );
+        }
+      })}
     </div>
   );
 };
 
-export default withRouter(Assignments);
+export default Assignments;
