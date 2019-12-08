@@ -15,7 +15,12 @@ const Team = props => {
   };
 
   return !team || !team.role ? (
-    <Segment color="orange">You are no longer on this team.</Segment>
+    <Segment basic>
+      <div>
+        You do not have any teams yet. Reach out to your choreographer to make
+        sure they have created a team!
+      </div>
+    </Segment>
   ) : (
     <React.Fragment>
       <Sidebar.Pushable as={Segment}>

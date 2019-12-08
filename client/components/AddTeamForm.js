@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {Form, Header, Icon} from 'semantic-ui-react';
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {Form, Header} from 'semantic-ui-react';
 import {addTeamThunk} from '../store';
 
 const AddTeamForm = function(props) {
   const dispatch = useDispatch();
-
+  const {newTeamCount, setNewTeamCount} = props;
   const initFormState = {
     name: '',
     description: '',
@@ -25,6 +25,7 @@ const AddTeamForm = function(props) {
     evt.preventDefault();
     dispatch(addTeamThunk(formState));
     props.setModalOpen(false);
+    setNewTeamCount(newTeamCount + 1);
   };
 
   return (
