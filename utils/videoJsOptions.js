@@ -13,7 +13,7 @@ const videoJsOptions = {
       maxLength: 10,
       timeSlice: 250, //necessary for timestamp
       debug: false,
-      videoMimeType: "video/mp4",
+      videoMimeType: 'video/mp4'
       //convertEngine: 'ffmpeg.js',
       // convertOptions: []
     }
