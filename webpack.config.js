@@ -45,6 +45,14 @@ module.exports = {
           loader: 'worker-loader',
           options: {inline: true, name: 'public/worker.js'}
         }
+      },
+      {
+        test: /fibonacci\.wasm$/,
+        type: 'javascript/auto', // ← !!
+        loader: 'file-loader',
+        options: {
+          publicPath: 'public/'
+        }
       }
     ]
   },
