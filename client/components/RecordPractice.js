@@ -2,15 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
-import {
-  Button,
-  Segment,
-  Message,
-  Modal,
-  Item,
-  Grid,
-  Header
-} from 'semantic-ui-react';
+import {Button, Segment, Message, Modal, Header} from 'semantic-ui-react';
 
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
@@ -26,8 +18,6 @@ import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
 //import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-
-// console.log('TCC: ', scoringUtils);
 
 //const tGS = {};
 //tGS.LTU = -Infinity;
@@ -118,9 +108,7 @@ class RecordPractice extends React.Component {
     });
 
     // device is ready
-    this.player.on('deviceReady', () => {
-      console.log('device is ready!');
-    });
+    this.player.on('deviceReady', () => {});
 
     // user clicked the record button and started recording
     const forStart = () => this.setState({selected: ''});
@@ -281,7 +269,6 @@ class RecordPractice extends React.Component {
     const canvas = document.querySelector('#skeleton');
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, videoJsOptions.width, videoJsOptions.height);
-    // console.log('draw!');
     // not sure how to go about this specifically per frame
     // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
     // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
@@ -290,10 +277,7 @@ class RecordPractice extends React.Component {
   }
 
   countdownRecord() {
-    // this.playbackPlayer.play();
-    // this.player.record().start();
     this.playAndRecord();
-    // setTimeout(() => this.playAndRecord(), 2400);
   }
 
   finishedRecording(recordedData) {

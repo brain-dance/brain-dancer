@@ -29,7 +29,6 @@ const UploadVideoForm = props => {
   };
 
   const redirectToTeamPage = () => {
-    console.log('Team Id: ', teamId);
     props.history.push(`/team/${teamId}`);
   };
 
