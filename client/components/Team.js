@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import {Routines, MembersSidebar} from './index';
-import {Segment, Button, Icon, Sidebar, Radio} from 'semantic-ui-react';
+import {Segment, Button, Sidebar} from 'semantic-ui-react';
 import {useSelector} from 'react-redux';
 
 const Team = props => {

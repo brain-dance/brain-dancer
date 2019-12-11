@@ -1,6 +1,4 @@
 import 'babel-polyfill';
-// import tf from '@tensorflow/tfjs-node';
-// import {posenet} from '@tensorflow-models/posenet';
 
 const posenet = require('@tensorflow-models/posenet');
 const _ = require('lodash');
@@ -62,7 +60,6 @@ let poseNetConfig = {
 };
 
 //call getWireframe function (something from ./wireframe.js) that pulls keypoints from posenet read, and returns an object
-
 const color = 'aqua';
 const lineWidth = 2;
 
@@ -130,7 +127,6 @@ function detectPoseInRealTime(video, net) {
 
   canvas.width = videoWidth;
   canvas.height = videoHeight;
-  // let i = 0;
 
   let pose = {score: 0, keypoints: []};
   async function poseDetectionFrame() {
@@ -171,9 +167,6 @@ function detectPoseInRealTime(video, net) {
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
         if (poseNetConfig.output.showPoints) {
-          // handsKeyPoints = keypoints;
-          // leftHandPosition = getLeftHand(keypoints);
-          // rightHandPosition = getRightHand(keypoints);
           drawKeypoints(keypoints, minPartConfidence, ctx);
           drawSkeleton(keypoints, minPartConfidence, ctx);
         }
@@ -186,8 +179,8 @@ function detectPoseInRealTime(video, net) {
       pose.frame = frame;
     });
   }
+  //return wireframes
   poseDetectionFrame();
-  // return wireframes;
 }
 
 async function init() {
@@ -211,7 +204,6 @@ async function init() {
 
   detectPoseInRealTime(video, net);
   //wireframes becomes array of arrays
-  console.log('Wireframes: ', wireframes);
 }
 
 navigator.getUserMedia =

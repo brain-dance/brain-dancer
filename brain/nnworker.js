@@ -1,8 +1,5 @@
 const posenet = require('@tensorflow-models/posenet');
 
-console.log('NETWORKER INITIATING');
-
-//init();
 const poses = [];
 
 let poseNetConfig = {
@@ -35,35 +32,27 @@ posenet
     quantBytes: poseNetConfig.input.quantBytes
   })
   .then(result => {
-    //console.log("LOADED")
     net = result;
     onmessage = event => {
       try {
-        //console.log("MESSAGE RECEIVED");
-        // console.log(event);
         // let temp = new ImageData(event.data.data, 360);
-        //console.log('nnworker', event.data.image);
         net
           .estimateSinglePose(event.data.image, {
             flipHorizontal: false,
             decodingMethod: 'single-person'
           })
           .then(result => {
-            // console.log("NN result is", result);
-
             postMessage({pose: result, timestamp: event.data.timestamp});
           })
           .catch(err =>
-            console.log('Inside estimate single pose, error occurred: ', err)
+            console.error('Inside estimate single pose, error occurred: ', err)
           );
-        //console.log(poses.length)
         //postMessage(poses);
       } catch (err) {
-        console.log('Error in web worker: ', err);
-        console.log('event that threw this error was: ', event);
+        console.error('Error in web worker: ', err);
+        console.error('event that threw this error was: ', event);
       }
     };
-    console.log('READY');
   });
 
 /*onMessage=(video)=>{poses.push(net.estimateSinglePose(video, {
