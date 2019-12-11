@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {Button, Card, Header, Image, Segment} from 'semantic-ui-react';
+import {Card, Header, Image, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
 
 export const Assignments = props => {
