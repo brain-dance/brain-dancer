@@ -37,7 +37,6 @@ const Choreo = props => {
     playbackPlayer = videojs(
       playback.current,
       {
-        controls: true,
         width: 640,
         height: 480,
         playbackRates: [0.5, 1, 1.5, 2]
@@ -62,18 +61,22 @@ const Choreo = props => {
     members = teamInfo.find(team => team.id === routine.teamId).members;
     role = teamInfo.find(team => team.id === routine.teamId).role;
   }
+
+  let choreographer = '';
+  if (routine.user) {
+    choreographer = routine.user.name;
+  }
   return (
     <Segment id="choreo">
-      <div>
-        <Modal open={modalOpen} dimmer="inverted">
-          <Modal.Content>
-            <AssignRoutine setModal={setModal} members={members} />
-          </Modal.Content>
-        </Modal>
-      </div>
-      <Header as="h2">
+      <Modal open={modalOpen} dimmer="inverted">
+        <Modal.Content>
+          <AssignRoutine setModal={setModal} members={members} />
+        </Modal.Content>
+      </Modal>
+
+      <div id="buttons">
         <Button color="blue" as={Link} to={`/team/${teamId}`} floated="left">
-          <Icon name="backward" /> Back to Team
+          <Icon name="backward" /> Team
         </Button>{' '}
         <Button
           color="orange"
@@ -90,12 +93,28 @@ const Choreo = props => {
             <Icon name="user plus" />
           </Button>
         )}
-      </Header>
-      <Divider />
-      <Header as="h2">{routine.title}</Header>
-      <video id="routine" ref={playback} controls={true} className="video-js">
-        {thisRoutine && <source src={thisRoutine} type="video/mp4" />}
-      </video>
+      </div>
+      <div id="video-display">
+        <video id="routine" ref={playback} className="video-js">
+          {thisRoutine && <source src={thisRoutine} type="video/mp4" />}
+        </video>
+        <div className="hover-controls">
+          <Button>
+            <Icon
+              name="play"
+              size="massive"
+              onClick={() => playback.current.play()}
+            />
+          </Button>
+          {/* <Button>
+            <Icon name="pause" size="huge" />
+          </Button> */}
+        </div>
+      </div>
+      <div id="video-info">
+        <h2>{routine.title}</h2>
+        <h2>{choreographer}</h2>
+      </div>
       <Header as="h3">Practice Submissions</Header>
       {routine.practices &&
         routine.practices.map(practice => {
