@@ -312,16 +312,14 @@ video {
 .hover-controls {
   position: absolute;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column-reverse;
   height: 480px;
   width: 640px;
   z-index: 99;
 }
 
-.hover-controls:hover {
-  background-color: #0099ffc9;
+.hover-controls:hover .control-bar {
+  background-color: rgba(0, 0, 0, 0.55);
 }
 
 .hover-controls button {
@@ -329,7 +327,6 @@ video {
   background-color: transparent !important;
   font-size: 30pt;
   width: fit-content;
-  margin-left: 50px !important;
 }
 
 .hover-controls:hover button {
@@ -341,6 +338,31 @@ video {
 
 .hover-controls:hover button > i:hover {
   color: #fff;
+}
+
+.hover-controls .control-bar {
+  display: flex;
+  justify-content: center;
+  height: 120px;
+  width: 100%;
+}
+
+.hover-controls .control-bar button {
+  margin: 0 20px !important;
+  padding: 0px !important;
+  color: #fff !important;
+  font-size: 1rem;
+}
+
+.hover-controls .control-bar button.rate {
+  color: rgba(255, 255, 255, 0.749) !important;
+  margin: 0px !important;
+  font-size: 2rem;
+  text-align: left;
+}
+
+.hover-controls .control-bar button.rate:hover {
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 #video-info {
