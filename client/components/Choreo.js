@@ -32,20 +32,21 @@ const Choreo = props => {
   let members = [];
   let role;
 
+  const [isPlaying, setIsPlaying] = useState(false);
+
   //set up video
   useEffect(() => {
-    playbackPlayer = videojs(
-      playback.current,
-      {
-        width: 640,
-        height: 480,
-        playbackRates: [0.5, 1, 1.5, 2]
-      },
-      () => {
-        videojs.log('playback screen is live!');
-      }
-    );
-    playbackPlayer.addClass('vjs-waiting');
+    playbackPlayer = videojs(playback.current, {
+      muted: true,
+      width: 640,
+      height: 480,
+      playbackRates: [0.5, 1, 1.5, 2]
+    });
+
+    playbackPlayer.on('ended', () => {
+      playback.current.currentTime = 0;
+      setIsPlaying(false);
+    });
     dispatch(getSingleRoutine(routineId));
 
     return () => {
@@ -100,15 +101,25 @@ const Choreo = props => {
         </video>
         <div className="hover-controls">
           <Button>
-            <Icon
-              name="play"
-              size="massive"
-              onClick={() => playback.current.play()}
-            />
+            {!isPlaying ? (
+              <Icon
+                name="play"
+                size="massive"
+                onClick={() => {
+                  setIsPlaying(true);
+                  playback.current.play();
+                }}
+              />
+            ) : (
+              <Icon
+                name="undo alternate"
+                size="massive"
+                onClick={() => {
+                  playback.current.currentTime = 0;
+                }}
+              />
+            )}
           </Button>
-          {/* <Button>
-            <Icon name="pause" size="huge" />
-          </Button> */}
         </div>
       </div>
       <div id="video-info">
