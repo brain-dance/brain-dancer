@@ -356,7 +356,7 @@ video {
 
 .hover-controls .control-bar button.rate {
   color: rgba(255, 255, 255, 0.749) !important;
-  margin: 0px !important;
+  margin: 8px 0 0px -10px !important;
   font-size: 2rem;
   text-align: left;
 }
