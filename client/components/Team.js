@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {withRouter, Link} from 'react-router-dom';
 import {Routines, MembersSidebar} from './index';
-import {Segment, Button, Icon, Sidebar, Radio} from 'semantic-ui-react';
+import {Segment, Button, Sidebar} from 'semantic-ui-react';
 import {useSelector} from 'react-redux';
 
 const Team = props => {
@@ -15,7 +15,12 @@ const Team = props => {
   };
 
   return !team || !team.role ? (
-    <Segment color="orange">You are no longer on this team.</Segment>
+    <Segment basic>
+      <div>
+        You do not have any teams yet. Reach out to your choreographer to make
+        sure they have created a team!
+      </div>
+    </Segment>
   ) : (
     <React.Fragment>
       <Sidebar.Pushable as={Segment}>

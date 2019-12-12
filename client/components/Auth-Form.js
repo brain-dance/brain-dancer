@@ -3,16 +3,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {auth, fetchUserTeams} from '../store';
-import {
-  Button,
-  Segment,
-  Image,
-  Header,
-  Grid,
-  Divider,
-  Form,
-  Input
-} from 'semantic-ui-react';
+import {Button, Segment, Form, Input} from 'semantic-ui-react';
 
 /**
  * COMPONENT

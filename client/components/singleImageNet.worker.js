@@ -32,11 +32,11 @@ const init = () => {
             postMessage(result);
           })
           .catch(err =>
-            console.log('Inside estimate single pose, error occurred: ', err)
+            console.error('Inside estimate single pose, error occurred: ', err)
           );
       } catch (err) {
-        console.log('Error in web worker: ', err);
-        console.log('event that threw this error was: ', event);
+        console.error('Error in web worker: ', err);
+        // console.error('Event that threw this error was: ', event);
       }
     };
   });

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {addRoutineThunk} from '../store';
@@ -59,14 +59,10 @@ class RecordRoutine extends React.Component {
     });
 
     // device is ready
-    this.player.on('deviceReady', () => {
-      console.log('device is ready!');
-    });
+    this.player.on('deviceReady', () => {});
 
     // user clicked the record button and started recording
-    this.player.on('startRecord', () => {
-      console.log('started recording!');
-    });
+    this.player.on('startRecord', () => {});
 
     // this.player.on('progressRecord', function() {
     //   console.log('currently recording', this.player.record().getDuration());
@@ -81,7 +77,6 @@ class RecordRoutine extends React.Component {
     this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
-      console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
       this.setState(state => {
         return {recording: [...state.recording, this.recordedData]};
@@ -107,7 +102,6 @@ class RecordRoutine extends React.Component {
   }
 
   setCalibration(calibration) {
-    // console.log('calibration', calibration);
     this.setState({...this.state, calibration, modalOpen: false});
   }
 

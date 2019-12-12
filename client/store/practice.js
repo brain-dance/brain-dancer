@@ -57,7 +57,7 @@ export const addPracticeThunk = (
     console.log('upload', upload);
     // Docs: https://cloudinary.com/documentation/upload_videos
 
-    const uploadUrl = upload.data.url.split('.');
+    const uploadUrl = upload.data.secure_url.split('.');
     uploadUrl[uploadUrl.length - 1] = 'mp4';
     const fixedUrl = uploadUrl.join('.');
 
@@ -74,7 +74,7 @@ export const addPracticeThunk = (
 
     // pass calibration image and routine ID to add new row + generate skelly
     const res = await axios.post('/api/calibration', {
-      url: calibUpload.data.url,
+      url: calibUpload.data.secure_url,
       practiceId: data.id
     });
     console.log('calibration skelly', res);

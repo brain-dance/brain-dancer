@@ -53,7 +53,7 @@ export const addRoutineThunk = (
     // start upload video
     const upload = await axios.post(serverUrl, formData);
     console.log('video uploaded', upload);
-    const uploadUrl = upload.data.url.split('.');
+    const uploadUrl = upload.data.secure_url.split('.');
     uploadUrl[uploadUrl.length - 1] = 'mp4';
     const fixedUrl = uploadUrl.join('.');
 
@@ -71,7 +71,7 @@ export const addRoutineThunk = (
 
     // pass calibration image and routine ID to add new row + generate skelly
     const res = await axios.post('/api/calibration', {
-      url: calibUpload.data.url,
+      url: calibUpload.data.secure_url,
       routineId: data.id
     });
     console.log('calibration skelly', res);
