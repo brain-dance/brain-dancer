@@ -329,11 +329,18 @@ video {
   background-color: transparent !important;
   font-size: 30pt;
   width: fit-content;
-  margin-left: 80px !important;
+  margin-left: 50px !important;
 }
 
 .hover-controls:hover button {
   visibility: visible;
+}
+.hover-controls:hover button > i {
+  color: rgba(255, 255, 255, 0.749);
+}
+
+.hover-controls:hover button > i:hover {
+  color: #fff;
 }
 
 #video-info {
