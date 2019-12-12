@@ -32,15 +32,17 @@ const Choreo = props => {
   let members = [];
   let role;
 
+  const playbackRates = [0.5, 1, 2];
   const [isPlaying, setIsPlaying] = useState(false);
+  const [rateIndex, setRateIndex] = useState(1);
 
   //set up video
   useEffect(() => {
+    playback.current.playbackRate = 1;
     playbackPlayer = videojs(playback.current, {
       muted: true,
       width: 640,
-      height: 480,
-      playbackRates: [0.5, 1, 1.5, 2]
+      height: 480
     });
 
     playbackPlayer.on('ended', () => {
@@ -55,6 +57,10 @@ const Choreo = props => {
     };
   }, []);
 
+  useEffect(() => {
+    playback.current.playbackRate = playbackRates[rateIndex];
+  }, [rateIndex]);
+
   //set up assignment modal
   const [modalOpen, setModal] = useState(false);
 
@@ -67,6 +73,7 @@ const Choreo = props => {
   if (routine.user) {
     choreographer = routine.user.name;
   }
+
   return (
     <Segment id="choreo">
       <Modal open={modalOpen} dimmer="inverted">
@@ -100,26 +107,46 @@ const Choreo = props => {
           {thisRoutine && <source src={thisRoutine} type="video/mp4" />}
         </video>
         <div className="hover-controls">
-          <Button>
-            {!isPlaying ? (
-              <Icon
-                name="play"
-                size="massive"
-                onClick={() => {
-                  setIsPlaying(true);
-                  playback.current.play();
-                }}
-              />
-            ) : (
+          <div className="control-bar">
+            <Button>
               <Icon
                 name="undo alternate"
-                size="massive"
+                size="big"
                 onClick={() => {
                   playback.current.currentTime = 0;
                 }}
               />
-            )}
-          </Button>
+            </Button>
+            <Button>
+              {!isPlaying ? (
+                <Icon
+                  name="play"
+                  size="huge"
+                  onClick={() => {
+                    setIsPlaying(true);
+                    playback.current.play();
+                  }}
+                />
+              ) : (
+                <Icon
+                  name="pause"
+                  size="huge"
+                  onClick={() => {
+                    setIsPlaying(false);
+                    playback.current.pause();
+                  }}
+                />
+              )}
+            </Button>
+            <Button
+              className="rate"
+              onClick={() => {
+                setRateIndex((rateIndex + 1) % playbackRates.length);
+              }}
+            >
+              x{playbackRates[rateIndex]}
+            </Button>
+          </div>
         </div>
       </div>
       <div id="video-info">
