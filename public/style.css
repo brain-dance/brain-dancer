@@ -90,12 +90,6 @@ body.loggedin {
   background-color: #f1f1f1;
 }
 
-/* #routines::after,
-#assignments::after {
-  content: '';
-  flex: auto;
-} */
-
 /* .top {
   margin-top: 5rem;
 } */
@@ -199,9 +193,6 @@ a.active {
   box-shadow: none !important;
   border-radius: none !important;
 }
-#choreo {
-  height: 100vh;
-}
 
 .ui.segment.pushable {
   margin: 0px !important;
@@ -302,4 +293,55 @@ video {
 
 #grade {
   color: white;
+}
+
+#choreo {
+  background-color: #f1f1f1 !important;
+}
+
+#buttons {
+  height: 55px;
+  width: 100%;
+}
+
+#video-display {
+  display: flex;
+  justify-content: center;
+}
+
+.hover-controls {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 480px;
+  width: 640px;
+  z-index: 99;
+}
+
+.hover-controls:hover {
+  background-color: #0099ffc9;
+}
+
+.hover-controls button {
+  visibility: hidden;
+  background-color: transparent !important;
+  font-size: 30pt;
+  width: fit-content;
+  margin-left: 80px !important;
+}
+
+.hover-controls:hover button {
+  visibility: visible;
+}
+
+#video-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 50px;
+}
+
+#video-info > h2 {
+  margin: 0;
 }
