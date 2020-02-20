@@ -20,7 +20,7 @@ const videoJsOptions = {
       audio: false,
       video: true,
       maxLength: 10,
-      timeSlice: 250, //necessary for timestamp
+      timeSlice: 350, // 250, //necessary for timestamp
       debug: false,
       videoMimeType: 'video/mp4'
       //convertEngine: 'ffmpeg.js',
