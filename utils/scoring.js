@@ -16,11 +16,12 @@ const errCost = (wfOne, wfTwo) => {
   const toRet =
     temp.reduce((acc, curr) => acc + errs[curr] ** 2, 0) ** 0.5 / temp.length;
 
-  //console.log("In errCost, cost is: ", toRet);
   return toRet;
 };
+
 const costToScore = (errcost, framecount) =>
   Math.round(10000 - (10000 * errcost) / (2 * Math.PI * framecount));
+
 const minCostPairings = (playerwfs, choreowfs, callback) => {
   //So, what do these wireframes actually look like?
   //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
@@ -230,9 +231,21 @@ const parseForReplay = (
   // console.log('Parsed: result is: ', toReturn);
   return toReturn;
 };
+
+/* ********************
+  timeChangeCallback takes:
+    timestamp - amount of time passed since video started playing
+    processedFrames - array of processed video frame data
+    context - the context for the canvas to display the skellies
+    width - of the canvas/video player
+    height - of the canvas/video player
+    refresh rate - timeSlice
+    last update
+  The function takes the array of processed frames,
+  ******************** */
 const timeChangeCallback = (
   timestamp,
-  map,
+  processedFrames,
   ctx,
   width,
   height,
@@ -240,9 +253,8 @@ const timeChangeCallback = (
   lastupdate
 ) => {
   let temp = timestamp - (timestamp % refreshrate);
-  let newDraws = map.get(temp);
+  let newDraws = processedFrames.get(temp);
   if (temp !== lastupdate && newDraws) {
-    // console.log("Context, width, height: ", ctx, width, height);
     ctx.clearRect(0, 0, width, height);
 
     // dancer
@@ -250,11 +262,12 @@ const timeChangeCallback = (
     // drawKeypoints(newDraws[0].pose.keypoints, 0, ctx, 0.35);
 
     // choreographer
+    //newDraws[1] contains the error path, which should be drawn.
     drawSkeleton(newDraws[1], 0, ctx, 1, 'yellow');
     drawKeypoints(newDraws[1], 0, ctx, 1, 'yellow');
-    //newDraws[1] contains the error path, which should also be drawn.
   }
 };
+
 module.exports.minCostPairings = minCostPairings;
 module.exports.parseForReplay = parseForReplay;
 module.exports.timeChangeCallback = timeChangeCallback;
