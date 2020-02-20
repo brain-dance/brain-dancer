@@ -206,6 +206,7 @@ class RecordPractice extends React.Component {
       the form of an array. We listen to the video player's timeupdate event,
       and use that as a benchmark for when we display each skelly atop the
       dancer's video as it's played back.
+      scoringUtils.timeChangeCallback is called to draw the new skelly.
        ******************** */
     this.cameraVideoTag.addEventListener('timeupdate', () => {
       if (this.state.selected === event.data.name) {
