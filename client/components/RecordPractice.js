@@ -57,7 +57,7 @@ class RecordPractice extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
-    this.drawBoth = this.drawBoth.bind(this);
+    // this.drawBoth = this.drawBoth.bind(this);
     this.countdownRecord = this.countdownRecord.bind(this);
     this.playAndRecord = this.playAndRecord.bind(this);
     this.createRecorder = this.createRecorder.bind(this);
@@ -89,6 +89,7 @@ class RecordPractice extends React.Component {
     window.addEventListener('beforeunload', this.manualUnmount);
   }
 
+  // SET UP VIDEO PLAYBACK OF ROUTINE
   createPlayback() {
     this.playbackPlayer = videojs(
       this.playback,
@@ -104,8 +105,8 @@ class RecordPractice extends React.Component {
     );
   }
 
+  // SET UP VIDEOJS RECORDER PLAYER
   createRecorder() {
-    //SET UP VIDEOJS RECORDER PLAYER
     this.player = videojs(this.videoNode, videoJsOptions);
 
     // error handling
@@ -138,6 +139,13 @@ class RecordPractice extends React.Component {
     this.player.record().getDevice();
   }
 
+  // SETS UP WEBWORKER
+  /* ********************
+    createWorker sets up a new instance of a webworker, and sends an
+    initial message with the resolution of the video player/recorder.
+    The worker uses a temporary canvas, not shown on the user's screen, to do
+    the video processing.
+   ******************** */
   createWorker() {
     this.LTU = Infinity;
     this.replayStart = 0;
@@ -151,7 +159,7 @@ class RecordPractice extends React.Component {
     this.workerCanvas.width = videoJsOptions.width;
     this.workerCanvas.height = videoJsOptions.height;
 
-    // HANDLE WHEN WORKER RECEIVES MESSAGE
+    // HANDLE WHEN COMPONENT RECEIVES MESSAGE FROM WORKER
     this.worker.onmessage = this.gotWorkerData;
   }
 
@@ -162,7 +170,21 @@ class RecordPractice extends React.Component {
       return;
     }
 
-    //HANDLES WORKER PROCESSING
+    // HANDLES PROCESSING DATA FROM WORKER
+    /* ********************
+      Once the worker sends back a message (that isn't the 'Ready' message),
+      we should have all the processed skellies from the dancer's most recently
+      recorded video.
+      We create an object, in which we set all the procesed frames.
+      The frames are processed by our scoringUtils.parseForReplay() method,
+      which takes the data from the worker's message, the routine's data,
+      video resolution/midpoint, an error bound, the time slice (amount of
+      time between images captured), a callback, calibration object, and the
+      routine's calibration pose.
+
+      Then, this is all saved in the previous attempts object on local state,
+      so the user can play back and review.
+       ******************** */
     const toSet = {};
     toSet.allProcessedFrames = scoringUtils.parseForReplay(
       event.data.data,
@@ -186,6 +208,12 @@ class RecordPractice extends React.Component {
     });
 
     //ON PLAYBACK FIND SKELETON CANVAS AND DRAW SKELETONS
+    /* ********************
+      Once we get all the data back and it's parsed for replay, it's still in
+      the form of an array. We listen to the video player's timeupdate event,
+      and use that as a benchmark for when we display each skelly atop the
+      dancer's video as it's played back.
+       ******************** */
     this.cameraVideoTag.addEventListener('timeupdate', () => {
       if (this.state.selected === event.data.name) {
         const ctx = this.replayCanv.current.getContext('2d');
@@ -203,6 +231,11 @@ class RecordPractice extends React.Component {
     });
   }
 
+  /* ********************
+    sendFrameToWorker takes the video stream and the current timestamp
+    Every time we call this function, we take the image, draw it on our
+    worker's temporary canvas, and pass it to the worker to get processed.
+     ******************** */
   sendFrameToWorker(video, timestamp) {
     const wcContext = this.workerCanvas.getContext('2d');
     wcContext.clearRect(
@@ -234,6 +267,11 @@ class RecordPractice extends React.Component {
     this.props.clearRoutine();
   }
 
+  /* ********************
+    Whenever the component updates, we want to enforce the dimensions of the
+    video player/recorder(s) to match resolution with our videoJS config, so
+    things make sense
+   ******************** */
   componentDidUpdate() {
     document.querySelectorAll('canvas').forEach(el => {
       el.width = videoJsOptions.width;
@@ -241,12 +279,21 @@ class RecordPractice extends React.Component {
     });
   }
 
+  /* ********************
+    If the user removes a previous attempt, it will be removed from state
+   ******************** */
   handleDelete(e, {name}) {
     this.setState(state => {
       return {recording: state.recording.filter(blob => blob.name !== name)};
     });
   }
 
+  /* ********************
+    The calibration modal shows above this entire component on load. This method
+    saves the image to local state, and then takes the image taken, draws it on
+    a temporary canvas, and passes it to the worker to be processed. The JSON
+    resulting from processing will be sent back after the video is recorded.
+   ******************** */
   setCalibration(calibration) {
     this.setState(state => ({...state, calibration, modalOpen: false}));
     // worker send msg to worker
@@ -275,16 +322,16 @@ class RecordPractice extends React.Component {
     this.playbackPlayer.play();
   }
 
-  drawBoth() {
-    const canvas = document.querySelector('#skeleton');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, videoJsOptions.width, videoJsOptions.height);
-    // not sure how to go about this specifically per frame
-    // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
-    // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
-    // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
-    // drawKeypoints(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
-  }
+  // drawBoth() {
+  //   const canvas = document.querySelector('#skeleton');
+  //   const ctx = canvas.getContext('2d');
+  //   ctx.clearRect(0, 0, videoJsOptions.width, videoJsOptions.height);
+  //   // not sure how to go about this specifically per frame
+  //   // drawSkeleton(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
+  //   // drawKeypoints(scored[i][0].keypoints, 0, ctx, 0.4, 'red');
+  //   // drawSkeleton(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
+  //   // drawKeypoints(scored[i][1].keypoints, 0, ctx, 0.4, 'green');
+  // }
 
   countdownRecord() {
     this.playAndRecord();
@@ -312,7 +359,6 @@ class RecordPractice extends React.Component {
           as={Link}
           to={`/team/${this.teamId}/routine/${this.routineId}`}
           floated="left"
-          //Do we want a left chevron icon here?
           labelPosition="left"
           icon="left chevron"
           content="Back to Routine"
