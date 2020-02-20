@@ -22,11 +22,6 @@ import scoringUtils from '../../utils/scoring';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
-//import {parseForReplay, timeChangeCallback} from '../../utils/scoring'
-
-//const tGS = {};
-//tGS.LTU = -Infinity;
-
 class RecordPractice extends React.Component {
   constructor(props) {
     super(props);
@@ -48,9 +43,7 @@ class RecordPractice extends React.Component {
       count: 0
     };
 
-    /* ********************
-    routing: match appropriate teamId and routineId per URI
-       ******************** */
+    // ROUTING
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
 
