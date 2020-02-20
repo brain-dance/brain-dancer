@@ -4,6 +4,21 @@ const {singlePoseNet} = require('./posenet');
 const fs = require('fs');
 const glob = require('glob');
 
+/* ********************
+  This file includes functions involved in processing an uploaded video prior to
+  sending it to our database.
+
+  generateFrames takes the video and passes it through ffmpeg to extract all the
+  frames, saving them in the ./utils folder.
+
+  generateWireframes takes these files, canvasifies them (using a utility
+    function, generates a temporary canvas, draws the image file, and returns),
+    and then passes the canvas through PoseNet. These results are saved in
+    sequential order in the wireframes [] array.
+
+    After the processing is done, removeFrames removes the frame jpg files that were originally generated
+    in the ./utils folder.
+  ******************** */
 const generateFrames = async videoPath => {
   await extractFrames({
     input: videoPath,
