@@ -1,17 +1,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
+
+// redux thunks and react components
 import {addPracticeThunk, getSingleRoutine, setSingleRoutine} from '../store';
+import Calibrator from './Calibrator';
+import PrevAttempts from './PrevAttempts';
+
+// styling
 import {Button, Segment, Message, Modal, Header} from 'semantic-ui-react';
 
+// video and recording plugins
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import Calibrator from './Calibrator';
-import PrevAttempts from './PrevAttempts';
-
+// config and utils for posenet, scoring, drawing images/skellies
 import videoJsOptions from '../../utils/videoJsOptions';
 import scoringUtils from '../../utils/scoring';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
@@ -25,12 +30,12 @@ import MyWorker from '../workers/videoNet.worker.js';
 class RecordPractice extends React.Component {
   constructor(props) {
     super(props);
-    this.recordedData = {name: 'empty'};
-    this.videoNode = document.querySelector('#video');
+    this.recordedData = {name: 'empty'}; // will contain video recording
+    this.videoNode = document.querySelector('#video'); // used to initialize videoJS
     this.playback = document.querySelector('#routine');
-    this.replayCanv = React.createRef();
-    this.cameraVideoTag = React.createRef();
-    this.player = '';
+    this.replayCanv = React.createRef(); // canvas for skellies after recording
+    this.cameraVideoTag = React.createRef(); // videoJS generates a separate canvas for their camera. We need to set a ref to this once it's mounted
+    this.player = ''; // used by videoJS/record
     this.state = {
       title: '',
       visible: false,
@@ -43,8 +48,12 @@ class RecordPractice extends React.Component {
       count: 0
     };
 
+    /* ********************
+    routing: match appropriate teamId and routineId per URI
+       ******************** */
     this.teamId = props.match.params.teamId;
     this.routineId = props.match.params.routineId;
+
     this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
     this.playboth = this.playboth.bind(this);
@@ -76,6 +85,7 @@ class RecordPractice extends React.Component {
       this.createWorker();
     });
 
+    // clear out worker, player, recordedData when leaving page
     window.addEventListener('beforeunload', this.manualUnmount);
   }
 
