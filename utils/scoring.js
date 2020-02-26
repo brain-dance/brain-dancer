@@ -9,6 +9,12 @@ const {
 
 const {drawSkeleton, drawKeypoints} = require('../frontUtils/draw');
 
+/**
+ * Calculates the error between two wireframes (usually dancer vs choreographer)
+ * @TODO please clarify the purpose of this function :)
+ * @param {object} wfOne
+ * @param {object} wfTwo
+ */
 const errCost = (wfOne, wfTwo) => {
   let errs = angleDifferences(wfOne.pose, wfTwo.pose);
   let temp = Object.keys(errs);
@@ -19,21 +25,32 @@ const errCost = (wfOne, wfTwo) => {
   return toRet;
 };
 
+/**
+ * @TODO decent description of function
+ * @param {number} errcost
+ * @param {number} framecount
+ */
 const costToScore = (errcost, framecount) =>
   Math.round(10000 - (10000 * errcost) / (2 * Math.PI * framecount));
 
+/**
+ * @TODO decent description of function
+ * @param {object} playerwfs
+ * @param {object} choreowfs
+ * @param {function} callback
+ */
 const minCostPairings = (playerwfs, choreowfs, callback) => {
   //So, what do these wireframes actually look like?
   //A playerwireframe is an object with a pose array, a timestamp, and a confidence score?
 
-  //const costarr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
-  const costarr = [];
+  //const costArr=(new Array(playerwfs.length)).fill(new Array(choreowfs.length));
+  const costArr = [];
   for (let i = 0; i < playerwfs.length; i++) {
-    costarr[i] = new Array(choreowfs.length);
+    costArr[i] = new Array(choreowfs.length);
   }
-  const illegalRepCheck = deepCopy(costarr).map(row => row.fill(0));
+  const illegalRepCheck = deepCopy(costArr).map(row => row.fill(0));
 
-  // console.log('cost arr initialized to: ', deepCopy(costarr));
+  // console.log('cost arr initialized to: ', deepCopy(costArr));
   // let count=0;
   const minCostDynamic = (
     playerwfs,
@@ -45,15 +62,15 @@ const minCostPairings = (playerwfs, choreowfs, callback) => {
     // count++;
     if (playerind === playerwfs.length) return 0;
     //console.log("Here?")
-    if (typeof costarr[playerind][choreoind] === 'number') {
+    if (typeof costArr[playerind][choreoind] === 'number') {
       //console.log("This is being reached?");
       //console.log("IF so, ")
-      return costarr[playerind][choreoind];
+      return costArr[playerind][choreoind];
     }
     // console.log("Or here?");
     if (playerwfs.length - playerind > choreowfs.length - choreoind) {
       illegalRepCheck[playerind][choreoind]++;
-      costarr[playerind][choreoind] = Infinity;
+      costArr[playerind][choreoind] = Infinity;
       return Infinity;
     }
     let paircost = errCost(playerwfs[playerind], choreowfs[choreoind]);
@@ -61,24 +78,24 @@ const minCostPairings = (playerwfs, choreowfs, callback) => {
     for (let j = choreoind; j < choreowfs.length; j++) {
       let jcost =
         paircost + minCostDynamic(playerwfs, choreowfs, playerind + 1, j);
-      //costarr[playerind][j]=jcost;
+      //costArr[playerind][j]=jcost;
       if (jcost < currcost) currcost = jcost;
     }
     illegalRepCheck[playerind][choreoind]++;
-    costarr[playerind][choreoind] = currcost;
+    costArr[playerind][choreoind] = currcost;
     //console.log(currcost);
     return currcost;
   };
   const cost = minCostDynamic(playerwfs, choreowfs);
   let pairs = [];
   let currj = 0;
-  // console.log('Cost Array: ', costarr);
+  // console.log('Cost Array: ', costArr);
   // console.log('Reps?', illegalRepCheck);
-  for (let i = 0; i < costarr.length; i++) {
+  for (let i = 0; i < costArr.length; i++) {
     let currcost = Infinity;
     for (let j = currj; j < choreowfs.length; j++) {
-      if (typeof costarr[i][j] == 'number' && costarr[i][j] < currcost) {
-        currcost = costarr[i][j];
+      if (typeof costArr[i][j] == 'number' && costArr[i][j] < currcost) {
+        currcost = costArr[i][j];
         currj = j;
       }
     }
@@ -89,6 +106,12 @@ const minCostPairings = (playerwfs, choreowfs, callback) => {
   return {pairs, cost: costToScore(cost, playerwfs.length)};
 };
 
+/**
+ * @TODO decent description of function
+ * @param {object} playerwf
+ * @param {object} choreowf
+ * @param {number} errbound
+ */
 const rendermistakes = (playerwf, choreowf, errbound) => {
   //console.log("In render mistakes, player wireframe is: ", playerwf);
   //console.log("In render mistakes, choreo wireframe is: ", choreowf);
@@ -119,6 +142,19 @@ const rendermistakes = (playerwf, choreowf, errbound) => {
   //return toDisplay.map(path);
 };
 
+/**
+ * Starts with an array of dancer wireframes and choreographer wireframes.
+ * Map to dancer wireframes paired with mistake set of choreographer wireframes.
+ * Center in the canvas, transform into lokoup map. Retun new array, which gets interacted with by event handler.
+ * @param {array} pwfs dancer (player) wireframes
+ * @param {array} cws choreographer wireframes
+ * @param {object} center
+ * @param {number} errbound
+ * @param {number} refreshrate
+ * @param {function} callback
+ * @param {object} practiceCalibration
+ * @param {object} routineCalibration
+ */
 const parseForReplay = (
   pwfs,
   cws,
@@ -232,17 +268,16 @@ const parseForReplay = (
   return toReturn;
 };
 
-/* ********************
-  timeChangeCallback takes:
-    timestamp - amount of time passed since video started playing
-    processedFrames - array of processed video frame data
-    context - the context for the canvas to display the skellies
-    width - of the canvas/video player
-    height - of the canvas/video player
-    refresh rate - timeSlice
-    last update
-  The function takes the array of processed frames,
-  ******************** */
+/**
+ * @TODO description of what this does... -jyw
+ * @param {timestamp} timestamp amount of time passed since video started playing
+ * @param {array} processedFrames processed video frame data
+ * @param {context} ctx for the canvas to display skellies
+ * @param {number} width of canvas/video player
+ * @param {number} height of canvas/video player
+ * @param {number} refreshrate timeSlice
+ * @param {number} lastupdate last time updated
+ */
 const timeChangeCallback = (
   timestamp,
   processedFrames,

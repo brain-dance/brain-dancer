@@ -6,6 +6,11 @@ const {getMidpoint, distance, angle, extrapolate} = require('./geometry');
 //Keypoints we have access to.
 //Additionally, all functions are pure - a new wireframe is returned any time scale or translate is called.
 
+/**
+ * Creates a deep copy of an object.
+ * @param {object} obj
+ * @returns {object}
+ */
 const deepCopy = obj => {
   //console.log(obj.prototype);
   if (Array.isArray(obj)) {
@@ -29,6 +34,12 @@ const deepCopy = obj => {
     let curr={x1: 0, y1: 0, x2: 1, y2: 0};
 
 }*/
+
+/**
+ * Generates center of a given wireframe object.
+ * @param {object} wireframe
+ * @returns {object}
+ */
 const centroid = wireframe => {
   let toReturn = {x: 0, y: 0};
   let temp = Object.keys(wireframe);
@@ -53,6 +64,10 @@ const translate = (wireframe, newCenter) => {
   return toReturn;
 };
 
+/**
+ * @TODO decent description of function
+ * @param {object} wireframe
+ */
 const getVol = wireframe => {
   let temp = {
     x1,
@@ -76,6 +91,13 @@ const getVol = wireframe => {
   });
   return (temp.y2 - temp.y1) * (temp.x2 - temp.x1);
 };
+
+/**
+ * Scales a wireframe by a given ratio.
+ * @param {object} wireframe
+ * @param {number} ratio
+ *
+ */
 const simpleScale = (wireframe, ratio) => {
   //Going to assume that we don't care about preserving position during a rescale, since we set that manually everywhere
   let toReturn = deepCopy(wireframe);
@@ -105,6 +127,11 @@ const SEGMENTS = {
   head: ['leftEar', 'rightEar']
 };
 
+/**
+ * Takes a pose object and returns the spine length.
+ * @param {object} pose
+ * @returns {number}
+ */
 const getSpineLength = pose => {
   const neck = getMidpoint(pose.leftShoulder, pose.rightShoulder);
   const pelvis = getMidpoint(pose.leftHip, pose.rightHip);
@@ -112,6 +139,11 @@ const getSpineLength = pose => {
   return distance(pelvis.x, pelvis.y, neck.x, neck.y);
 };
 
+/**
+ * Takes a pose object and returns the neck length.
+ * @param {object} pose
+ * @returns {number}
+ */
 const getNeckLength = pose => {
   const neck = getMidpoint(pose.leftShoulder, pose.rightShoulder);
   const head = pose.head;
@@ -119,7 +151,10 @@ const getNeckLength = pose => {
   return distance(neck.x, neck.y, head.x, head.y);
 };
 
-//finds all lengths for a given pose including the spine
+/**
+ * finds all lengths for a given pose including the spine
+ * @param {object} pose
+ */
 const getLengths = pose => {
   const initial = {spine: getSpineLength(pose), neck: getNeckLength(pose)};
   return Object.keys(SEGMENTS).reduce((lengths, segment) => {
@@ -134,7 +169,11 @@ const getLengths = pose => {
   }, initial);
 };
 
-//returns a wireframe of the relative segment lengths
+/**
+ * returns a wireframe of the relative segment lengths
+ * @param {object} source
+ * @param {object} target
+ */
 const getCalibration = (source, target) => {
   const sourceLens = getLengths(source);
   const targetLens = getLengths(target);
@@ -145,7 +184,11 @@ const getCalibration = (source, target) => {
   }, {});
 };
 
-//takes a source wireframe and retuns calibrated segment lengths
+/**
+ * takes a source wireframe and returns calibrated segment lengths
+ * @param {object} source
+ * @param {object} calibration
+ */
 const calibrate = (source, calibration) => {
   const sourceLens = getLengths(source);
   return Object.keys(sourceLens).reduce((calibratedLens, segment) => {
@@ -154,7 +197,15 @@ const calibrate = (source, calibration) => {
   }, {});
 };
 
-//accepts labeled poses only
+/**
+ * accepts labeled poses only
+ * Takes a source pose, target pose, and calibration. Returns an object that scales the target by the source's calibration.
+ * @TODO working description of what scaler does.
+ * @param {object} source
+ * @param {object} target
+ * @param {object} calibration
+ * @returns {object}
+ */
 const scaler = (source, target, calibration) => {
   //get angles of correct wireframe
   const sourceAngles = getAngles(source);
