@@ -15,6 +15,7 @@ const AddTeamForm = function(props) {
 
   const [formState, setFormState] = useState(initFormState);
 
+  // can be expanded in the future... :)
   const options = [
     {key: 'b', text: 'ballet', value: 'ballet'},
     {key: 'h', text: 'tap', value: 'tap'},

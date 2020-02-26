@@ -1,5 +1,11 @@
 const {angle, getMidpoint} = require('./geometry');
 
+/**
+ * Takes a PoseNet generated pose and updates key-value pairs so that the pose can be used for processing in other functions
+ * <br/>
+ * Refactors input pose to be uniform with format needed for some utility functions, like getAngle
+ * @param {object} pose PoseNet model generated JSON object
+ */
 const labelPose = pose => {
   const labeled = pose.keypoints.reduce((all, point) => {
     all[point.part] = point.position;
@@ -15,6 +21,10 @@ const labelPose = pose => {
   return labeled;
 };
 
+/**
+ * Logical reverse of labelPose. Refactors input pose to be uniform with PoseNet format
+ * @param {object} labeledPose
+ */
 const unlabelPose = labeledPose => {
   return {
     keypoints: Object.keys(labeledPose).map(part => {
@@ -71,6 +81,12 @@ const ANGLES = {
   }
 };
 
+/**
+  * takes a pose object, calculates all the angles between spine, shoulders,
+  neck, and head () and outputs as an object.
+  * @param {object} pose
+  * @returns object
+  */
 const getAngles = pose => {
   let labeled;
   if (pose.score) {
@@ -149,6 +165,14 @@ const getAngles = pose => {
   return angles;
 };
 
+/**
+   * angleDifferences takes the angles from the dancer's pose and the target
+  (choreographer's) pose and returns an object with the difference in angles,
+  dancer angle - target angle.
+   * @param {object} pose dancer's pose
+   * @param {object} targetPose choreographer's pose
+   * @returns {object} differences
+   */
 const angleDifferences = (pose, targetPose) => {
   // if poses are not labeled
   if (pose.score) pose = labelPose(pose);
@@ -178,7 +202,6 @@ module.exports.getAngles = getAngles;
 module.exports.angleDifferences = angleDifferences;
 module.exports.ANGLES = ANGLES;
 module.exports.unlabelPose = unlabelPose;
-// module.exports.canvasify = canvasify;
 /*module.exports = {
   getPose,
   canvasify,

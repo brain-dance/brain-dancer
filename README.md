@@ -4,6 +4,8 @@
 
 Coreo uses TensorFlow's PoseNet pose estimation library, web workers, and video.js / videojs-record to provide immediate video feedback.
 
+### [View our talk](https://www.youtube.com/watch?v=FbEfbmgOsj8)
+
 ### Live demo: [http://coreo-ai.herokuapp.com/](http://coreo-ai.herokuapp.com/)
 
 ![example screencap](coreo-example.png)

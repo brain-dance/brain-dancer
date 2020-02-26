@@ -1,5 +1,10 @@
-const posenet = require('@tensorflow-models/posenet');
-console.log(posenet.scalePose.toString());
+/* ********************
+  Currently this file is for reference only - exposing the IDs, methods, and
+  pose chain outputs from PoseNet.
+  ******************** */
+
+// const posenet = require('@tensorflow-models/posenet');
+// console.log(posenet.scalePose.toString());
 
 // {
 //   MobileNet: [Function: MobileNet],
