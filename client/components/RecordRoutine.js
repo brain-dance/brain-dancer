@@ -1,28 +1,32 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
+
+// redux thunks and react components
 import {addRoutineThunk} from '../store';
+import Calibrator from './Calibrator';
+import PrevAttempts from './PrevAttempts';
 
-import setupCamera from '../../utils/setupCamera';
-import videoJsOptions from '../../utils/videoJsOptions';
-import {stopWebcam} from '../../frontUtils/workarounds';
+// styling
+import {Header, Modal, Button, Segment} from 'semantic-ui-react';
 
+// video and recording plugins
 import videojs from 'video.js';
 import RecordRTC from 'recordrtc';
 import * as Record from 'videojs-record';
 import 'webrtc-adapter';
 
-import {Header, Modal, Button, Segment} from 'semantic-ui-react';
-
-import Calibrator from './Calibrator';
-import PrevAttempts from './PrevAttempts';
+// utils for setting up camera and recording
+import setupCamera from '../../utils/setupCamera';
+import videoJsOptions from '../../utils/videoJsOptions';
+import {stopWebcam} from '../../frontUtils/workarounds';
 
 class RecordRoutine extends React.Component {
   constructor(props) {
     super(props);
-    this.recordedData = {name: 'empty'};
-    this.videoNode = React.createRef();
-    this.player = '';
+    this.recordedData = {name: 'empty'}; // will contain video recording
+    this.videoNode = React.createRef(); // a ref from the video stream to React
+    this.player = ''; // used by videoJS/record
     this.state = {
       calibration: {},
       recording: [],
@@ -30,13 +34,16 @@ class RecordRoutine extends React.Component {
       count: 0
     };
 
+    // ROUTING
     this.teamId = props.match.params.teamId;
+
     this.handleDelete = this.handleDelete.bind(this);
     this.setCalibration = this.setCalibration.bind(this);
     this.countdownRecord = this.countdownRecord.bind(this);
   }
 
   componentDidMount() {
+    // SET UP VIDEO PLAYER
     this.player = videojs(this.videoNode, videoJsOptions, () => {
       // print version information at startup
       var msg =
@@ -59,14 +66,10 @@ class RecordRoutine extends React.Component {
     });
 
     // device is ready
-    this.player.on('deviceReady', () => {
-      console.log('device is ready!');
-    });
+    this.player.on('deviceReady', () => {});
 
     // user clicked the record button and started recording
-    this.player.on('startRecord', () => {
-      console.log('started recording!');
-    });
+    this.player.on('startRecord', () => {});
 
     // this.player.on('progressRecord', function() {
     //   console.log('currently recording', this.player.record().getDuration());
@@ -81,7 +84,6 @@ class RecordRoutine extends React.Component {
     this.player.on('finishRecord', () => {
       // the blob object contains the recorded data that
       // can be downloaded by the user, stored on server etc.
-      console.log('finished recording: ', this.player.recordedData);
       this.recordedData = this.player.recordedData;
       this.setState(state => {
         return {recording: [...state.recording, this.recordedData]};
@@ -107,7 +109,6 @@ class RecordRoutine extends React.Component {
   }
 
   setCalibration(calibration) {
-    // console.log('calibration', calibration);
     this.setState({...this.state, calibration, modalOpen: false});
   }
 

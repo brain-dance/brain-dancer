@@ -1,5 +1,6 @@
 import {sendFrame, detectPoseInRealTime} from '../brain/posenet2';
-import videoJsOptions from '../utils/videoJsOptions'
+import videoJsOptions from '../utils/videoJsOptions';
+
 var options = {
   controls: true,
   width: videoJsOptions.width,

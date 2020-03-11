@@ -1,8 +1,3 @@
-// import 'babel-polyfill';
-// import tf from '@tensorflow/tfjs-node';
-// import {posenet} from '@tensorflow-models/posenet';
-// import {player} from '../videocapture/videorecord'; //player from recording
-
 const posenet = require('@tensorflow-models/posenet');
 let myWorker;
 let messages = [];
@@ -43,7 +38,6 @@ async function setupCamera() {
     );
   }
 
-  //console.log('HELLO ARE YOU REBUILDING');
   // let recordingListener;
   const video = document.querySelector('video');
   console.log('this is a video', video);
@@ -65,7 +59,6 @@ async function setupCamera() {
   //video.width = videoWidth;
   //video.height = videoHeight;
 
-  //console.log('vid', video);
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -73,10 +66,8 @@ async function setupCamera() {
       height: video.height //videoHeight
     }
   });
-  // console.log('stream', stream);
   video.srcObject = stream;
 
-  console.log('srcObj', video.srcObject);
   return new Promise(resolve => {
     video.onloadedmetadata = () => resolve(video);
   });
@@ -90,7 +81,6 @@ function toTuple({y, x}) {
 }
 
 function drawPoint(ctx, y, x, r, color) {
-  //console.log(ctx);
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
   ctx.fillStyle = color;
@@ -98,8 +88,6 @@ function drawPoint(ctx, y, x, r, color) {
 }
 
 function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
-  //console.log(ctx);
-  //console.log('draw segment');
   ctx.beginPath();
   ctx.moveTo(ax * scale, ay * scale);
   ctx.lineTo(bx * scale, by * scale);
@@ -109,7 +97,6 @@ function drawSegment([ay, ax], [by, bx], color, scale, ctx) {
 }
 
 export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
-  console.log('draw skeleton', keypoints);
   const adjacentKeypoints = posenet.getAdjacentKeyPoints(
     keypoints,
     minConfidence
@@ -124,7 +111,6 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
       ctx
     );
   });
-  //console.log(canvas.toDataURL());
 }
 
 function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
@@ -169,7 +155,6 @@ export function detectPoseInRealTime(video) {
 
 async function init() {
   // We load the model.
-
   myWorker = new Worker('nnworker.js');
 
   myWorker.onmessage = mess => {

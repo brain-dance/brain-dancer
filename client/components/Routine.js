@@ -5,11 +5,10 @@ import {Card} from 'semantic-ui-react';
 const Routine = props => {
   const {routine, team} = props;
   let {id, title, url} = routine;
-  const teamId = props.match.params.teamId || routine.teamId;
+  const teamId = team.id;
 
   const redirectToWatchRoutine = (e, {name}) => {
     let selectedRoutineId = name;
-
     props.history.push(`/team/${teamId}/routine/${selectedRoutineId}`);
   };
 

@@ -1,7 +1,11 @@
 require('@tensorflow/tfjs-node');
 const posenet = require('@tensorflow-models/posenet');
-const params= require('./videoJsOptions');
+const params = require('./videoJsOptions');
 
+/**
+ * Sets config for PoseNet and loads it up. For more info: https://github.com/tensorflow/tfjs-models/tree/master/posenet
+ * @param {number} stride Specifies the output stride of the PoseNet model. The smaller the value, the larger the output resolution, and more accurate the model at the cost of speed. Set this to a larger value to increase speed at the cost of accuracy.
+ */
 const singlePoseNet = (stride = 16) => {
   let poseNetConfig = {
     algorithm: 'single-pose', //other option: multi-pose

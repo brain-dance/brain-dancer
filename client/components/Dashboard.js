@@ -25,6 +25,7 @@ export const Dashboard = props => {
   const [selectedTeamId, setSelectedTeamId] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [newTeamCount, setNewTeamCount] = useState(0);
 
   const handleUpdateTeam = (teamId, memberId) => {
     dispatch(deleteTeamMemberThunk(teamId, memberId));
@@ -34,6 +35,7 @@ export const Dashboard = props => {
       members: selectedTeam.members.filter(member => member.id !== memberId)
     };
     setSelectedTeamId(updatedSelectedTeam.id);
+    setNewTeamCount(newTeamCount + 1);
   };
 
   const location = useLocation().pathname.split('/');
@@ -68,7 +70,11 @@ export const Dashboard = props => {
         <Grid.Column width={13} id="view-container">
           <Modal dimmer="inverted" open={modalOpen}>
             <Modal.Content>
-              <AddTeamForm setModalOpen={setModalOpen} />
+              <AddTeamForm
+                setModalOpen={setModalOpen}
+                newTeamCount={newTeamCount}
+                setNewTeamCount={setNewTeamCount}
+              />
             </Modal.Content>
           </Modal>
 
@@ -96,6 +102,8 @@ export const Dashboard = props => {
                 <Team
                   setMemberModalOpen={setMemberModalOpen}
                   handleUpdateTeam={handleUpdateTeam}
+                  newTeamCount={newTeamCount}
+                  setNewTeamCount={setNewTeamCount}
                 />
               )}
             />

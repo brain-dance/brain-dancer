@@ -1,11 +1,9 @@
 import React from 'react';
 import VideoPlayer from 'react-video-js-player';
-import videoJsOptions from '../../utils/videoJsOptions'
+import videoJsOptions from '../../utils/videoJsOptions';
 const VideoAttemptViewer = () => {
-  //let videoPlayer = {};
   const state = {
     video: {
-      //WHAT CAN I PULL FROM BLOB?
       src:
         'https://res.cloudinary.com/braindance/video/upload/v1574452783/iedfpxyyuog4h0b1rjbj.mkv',
       poster:
@@ -15,7 +13,6 @@ const VideoAttemptViewer = () => {
 
   const onPlayerReady = player => {
     console.log('Player is ready: ', player);
-   // videoPlayer = player;
   };
 
   const onVideoPlay = duration => {

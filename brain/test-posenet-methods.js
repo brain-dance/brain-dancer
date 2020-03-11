@@ -1,10 +1,10 @@
-// import posenet from '@tensorflow-models/posenet';
+/* ********************
+  Currently this file is for reference only - exposing the IDs, methods, and
+  pose chain outputs from PoseNet.
+  ******************** */
 
-// const tf = require('@tensorflow/tfjs-node');
-const posenet = require('@tensorflow-models/posenet');
-// console.log(typeof tf);
-console.log(posenet.scalePose.toString());
-// console.log(posenet.getAdjacentKeyPoints.toString());
+// const posenet = require('@tensorflow-models/posenet');
+// console.log(posenet.scalePose.toString());
 
 // {
 //   MobileNet: [Function: MobileNet],

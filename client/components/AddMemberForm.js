@@ -3,6 +3,10 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Form, Header} from 'semantic-ui-react';
 import {fetchAllUsers, addTeamMemberThunk} from '../store';
 
+/* ********************
+  Add Member Form component. User can select from all users and add them as
+  members to their team.
+  ******************** */
 const AddMemberForm = function(props) {
   const dispatch = useDispatch();
   const allUsers = useSelector(state => state.users);
