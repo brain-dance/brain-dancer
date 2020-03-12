@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Form, Header} from 'semantic-ui-react';
 import {fetchAllUsers, addTeamMemberThunk} from '../store';
+import PropTypes from 'prop-types';
 
 /* ********************
   Add Member Form component. User can select from all users and add them as
@@ -71,6 +72,11 @@ const AddMemberForm = function(props) {
       </Form.Group>
     </Form>
   );
+};
+
+AddMemberForm.propTypes = {
+  selectedTeamId: PropTypes.number,
+  setMemberModalOpen: PropTypes.func
 };
 
 export default AddMemberForm;
