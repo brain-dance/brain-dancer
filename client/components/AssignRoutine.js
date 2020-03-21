@@ -50,4 +50,8 @@ const AssignRoutine = props => {
   );
 };
 
+AssignRoutine.propTypes = {
+  members: PropTypes.array,
+  setModal: PropTypes.func
+};
 export default AssignRoutine;

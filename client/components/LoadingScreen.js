@@ -27,5 +27,9 @@ const LoadingScreen = props => {
   );
 };
 
+LoadingScreen.propTypes = {
+  isUploaded: PropTypes.boolean,
+  setIsUploaded: PropTypes.func
+};
 
 export default LoadingScreen;

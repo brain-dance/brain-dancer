@@ -39,4 +39,11 @@ export const DashSidebar = props => {
   );
 };
 
+DashSidebar.propTypes = {
+  teams: PropTypes.array,
+  selectedTeamId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  setSelectedTeamId: PropTypes.func,
+  setModalOpen: PropTypes.func
+};
+
 export default DashSidebar;
