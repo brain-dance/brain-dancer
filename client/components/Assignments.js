@@ -4,7 +4,6 @@ import {withRouter} from 'react-router-dom';
 import {Card, Header, Image, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
 import Routine from './Routine';
-import PropTypes from 'prop-types';
 
 const Assignments = props => {
   const assignments = useSelector(state => state.assignments);
