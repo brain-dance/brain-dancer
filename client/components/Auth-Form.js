@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {auth, fetchUserTeams} from '../store';
 import {Button, Segment, Form, Input} from 'semantic-ui-react';
-
+import PropTypes from 'prop-types';
 /**
  * COMPONENT
  */

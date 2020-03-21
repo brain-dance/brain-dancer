@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {Loader, Message} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const LoadingScreen = props => {
   const {isUploaded, setIsUploaded} = props;
@@ -25,5 +26,6 @@ const LoadingScreen = props => {
     />
   );
 };
+
 
 export default LoadingScreen;

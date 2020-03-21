@@ -13,6 +13,8 @@ import {Button, Image, Header} from 'semantic-ui-react';
 
 import {stopWebcam} from '../../frontUtils/workarounds';
 
+import PropTypes from 'prop-types';
+
 const Calibrator = props => {
   const [camera, setCamera] = useState({});
   const [count, setCount] = useState(0);
@@ -100,6 +102,10 @@ const Calibrator = props => {
       </div>
     </div>
   );
+};
+
+Calibrator.propTypes = {
+  setCalibration: PropTypes.func
 };
 
 export default Calibrator;

@@ -3,6 +3,7 @@ import {withRouter, Link} from 'react-router-dom';
 import {Routines, MembersSidebar} from './index';
 import {Segment, Button, Sidebar} from 'semantic-ui-react';
 import {useSelector} from 'react-redux';
+import PropTypes from 'prop-types';
 
 const Team = props => {
   const teamId = props.match.params.teamId;
@@ -57,6 +58,13 @@ const Team = props => {
       />
     </React.Fragment>
   );
+};
+
+Team.propTypes = {
+  setMemberModalOpen: PropTypes.func,
+  handleUpdateTeam: PropTypes.func,
+  newTeamCount: PropTypes.number
+  // also, staticContext (idk what that is)
 };
 
 export default withRouter(Team);

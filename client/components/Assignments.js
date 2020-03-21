@@ -4,9 +4,9 @@ import {withRouter} from 'react-router-dom';
 import {Card, Header, Image, Segment} from 'semantic-ui-react';
 import {fetchAssignments} from '../store/assignment';
 import Routine from './Routine';
+import PropTypes from 'prop-types';
 
 const Assignments = props => {
-  console.log('in assignments');
   const assignments = useSelector(state => state.assignments);
   const pendingAssignments = assignments.filter(
     assignment => assignment.completed === false
