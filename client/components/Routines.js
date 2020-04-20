@@ -1,6 +1,7 @@
 import React from 'react';
 import {Routine} from './index';
 import {Header, Segment} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const Routines = props => {
   const routines = props.routines || [];
@@ -22,6 +23,20 @@ const Routines = props => {
       )}
     </Segment>
   );
+};
+
+Routines.propTypes = {
+  team: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    category: PropTypes.string,
+    imgUrl: PropTypes.string,
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string
+  }),
+  routines: PropTypes.array,
+  members: PropTypes.array
 };
 
 export default Routines;

@@ -22,6 +22,9 @@ import scoringUtils from '../../utils/scoring';
 import {drawSkeleton, drawKeypoints} from '../../frontUtils/draw';
 import MyWorker from '../workers/videoNet.worker.js';
 
+// documentation for props
+import PropTypes from 'prop-types';
+
 class RecordPractice extends React.Component {
   constructor(props) {
     super(props);
@@ -445,4 +448,28 @@ const mapDispatchToProps = dispatch => {
     }
   };
 };
+
+RecordPractice.propTypes = {
+  userId: PropTypes.number,
+  routine: PropTypes.shape({
+    id: PropTypes.number,
+    url: PropTypes.string,
+    title: PropTypes.string,
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string,
+    teamId: PropTypes.number,
+    userId: PropTypes.number,
+    user: PropTypes.object,
+    videoframes: PropTypes.array,
+    practices: PropTypes.array,
+    assignments: PropTypes.array,
+    calibrationframe: PropTypes.object
+  }),
+  routineFrames: PropTypes.array,
+  addPractice: PropTypes.func,
+  fetchRoutine: PropTypes.func,
+  clearRoutine: PropTypes.func
+  // also staticContext (idk what this is)
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(RecordPractice);

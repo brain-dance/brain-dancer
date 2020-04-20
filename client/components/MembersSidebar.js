@@ -2,6 +2,7 @@ import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {Member} from './index';
 import {Icon, Menu, Sidebar} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const MembersSidebar = props => {
   const members = props.members || [];
@@ -42,6 +43,15 @@ const MembersSidebar = props => {
       </Menu.Item>
     </Sidebar>
   );
+};
+
+MembersSidebar.propTypes = {
+  members: PropTypes.array,
+  handleOpen: PropTypes.func,
+  visible: PropTypes.bool,
+  setVisible: PropTypes.func,
+  handleUpdateTeam: PropTypes.func,
+  setMemberModalOpen: PropTypes.func
 };
 
 export default withRouter(MembersSidebar);

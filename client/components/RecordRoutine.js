@@ -21,6 +21,9 @@ import setupCamera from '../../utils/setupCamera';
 import videoJsOptions from '../../utils/videoJsOptions';
 import {stopWebcam} from '../../frontUtils/workarounds';
 
+// props documentation
+import PropTypes from 'prop-types';
+
 class RecordRoutine extends React.Component {
   constructor(props) {
     super(props);
@@ -201,4 +204,10 @@ const mapDispatchToProps = dispatch => {
     }
   };
 };
+
+RecordRoutine.propTypes = {
+  userId: PropTypes.number,
+  addRoutine: PropTypes.func
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(RecordRoutine);

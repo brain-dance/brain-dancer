@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {Image, Menu} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 export const TeamList = props => {
   const {teams, setSelectedTeamId, selectedTeamId} = props;
@@ -35,6 +36,12 @@ export const TeamList = props => {
       })}
     </div>
   );
+};
+
+TeamList.propTypes = {
+  teams: PropTypes.array,
+  selectedTeamId: PropTypes.number,
+  setSelectedTeamId: PropTypes.func
 };
 
 export default TeamList;

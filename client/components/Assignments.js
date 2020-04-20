@@ -6,7 +6,6 @@ import {fetchAssignments} from '../store/assignment';
 import Routine from './Routine';
 
 const Assignments = props => {
-  console.log('in assignments');
   const assignments = useSelector(state => state.assignments);
   const pendingAssignments = assignments.filter(
     assignment => assignment.completed === false

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {Form, Header} from 'semantic-ui-react';
 import {addTeamThunk} from '../store';
+import PropTypes from 'prop-types';
 
 const AddTeamForm = function(props) {
   const dispatch = useDispatch();
@@ -79,6 +80,12 @@ const AddTeamForm = function(props) {
       </Form.Group>
     </Form>
   );
+};
+
+AddTeamForm.propTypes = {
+  setModalOpen: PropTypes.func,
+  newTeamCount: PropTypes.number,
+  setNewTeamCount: PropTypes.func
 };
 
 export default AddTeamForm;

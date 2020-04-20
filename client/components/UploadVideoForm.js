@@ -8,6 +8,7 @@ import {
   addPracticeThunk
 } from '../store';
 import LoadingScreen from './LoadingScreen';
+import PropTypes from 'prop-types';
 
 const UploadVideoForm = props => {
   const {blob, teamId, userId, blobInfo} = props;
@@ -122,6 +123,20 @@ const UploadVideoForm = props => {
       )}
     </Modal>
   );
+};
+
+UploadVideoForm.propTypes = {
+  teamId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  userId: PropTypes.number,
+  calibration: PropTypes.string
+  // other items in props not defined here:
+  /**
+   * attached
+   * blob
+   * blobInfo
+   * history, location, match
+   * staticContext
+   */
 };
 
 export default withRouter(UploadVideoForm);

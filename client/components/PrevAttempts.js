@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Card, Header, Icon} from 'semantic-ui-react';
 import UploadVideoForm from './UploadVideoForm';
+import PropTypes from 'prop-types';
 
 const PrevAttempts = props => {
   let {recording, handleDelete, teamId, userId, attempts} = props;
@@ -67,6 +68,15 @@ const PrevAttempts = props => {
       })}
     </div>
   );
+};
+
+PrevAttempts.propTypes = {
+  recording: PropTypes.array,
+  handleDelete: PropTypes.func,
+  teamId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  calibration: PropTypes.string,
+  attempts: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default PrevAttempts;

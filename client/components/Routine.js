@@ -1,6 +1,7 @@
 import React from 'react';
 import {withRouter} from 'react-router-dom';
 import {Card} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const Routine = props => {
   const {routine, team} = props;
@@ -31,6 +32,12 @@ const Routine = props => {
       </Card.Content>
     </Card>
   );
+};
+
+Routine.propTypes = {
+  routine: PropTypes.object,
+  team: PropTypes.object
+  // also staticContext
 };
 
 export default withRouter(Routine);

@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {Loader, Message} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const LoadingScreen = props => {
   const {isUploaded, setIsUploaded} = props;
@@ -24,6 +25,11 @@ const LoadingScreen = props => {
       content="Your video has been uploaded, but it will take a few minutes to process that 5-star routine. It will show up on your team page soon."
     />
   );
+};
+
+LoadingScreen.propTypes = {
+  isUploaded: PropTypes.boolean,
+  setIsUploaded: PropTypes.func
 };
 
 export default LoadingScreen;

@@ -2,6 +2,7 @@ import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Button} from 'semantic-ui-react';
 import {postAssignment, deleteAssignment} from '../store';
+import PropTypes from 'prop-types';
 
 const AssignRoutine = props => {
   const dispatch = useDispatch();
@@ -49,4 +50,8 @@ const AssignRoutine = props => {
   );
 };
 
+AssignRoutine.propTypes = {
+  members: PropTypes.array,
+  setModal: PropTypes.func
+};
 export default AssignRoutine;

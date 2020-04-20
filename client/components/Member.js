@@ -2,6 +2,7 @@ import React from 'react';
 import {useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {Icon, Menu} from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 const Member = props => {
   const {member, handleUpdateTeam} = props;
@@ -33,6 +34,11 @@ const Member = props => {
       )}
     </Menu.Item>
   );
+};
+
+Member.propTypes = {
+  member: PropTypes.object,
+  handleUpdateTeam: PropTypes.func
 };
 
 export default withRouter(Member);
