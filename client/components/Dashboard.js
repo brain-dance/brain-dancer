@@ -8,7 +8,7 @@ import {
   RecordRoutine,
   Choreo,
   Assignments,
-  WatchRoutine
+  Routine
 } from './index';
 import {deleteTeamMemberThunk} from '../store';
 import AddTeamForm from './AddTeamForm';
@@ -88,7 +88,7 @@ export const Dashboard = props => {
           </Modal>
 
           <Switch>
-            <Route path="/watch/routines/:id" component={WatchRoutine} />
+            <Route path="/watch/routines/:id" component={Routine} />
             <Route
               path="/team/:teamId/routine/:routineId/add"
               component={RecordPractice}
