@@ -48,7 +48,7 @@
     "glob": "^7.1.6",
     "history": "^4.10.1",
     "image-size": "^0.8.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-google-oauth": "^2.0.0",
